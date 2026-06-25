@@ -1,0 +1,103 @@
+{
+  "version": 1,
+  "description": "Phase 3 retrieval golden set for the first Smoothieware code QA demo.",
+  "metrics": {
+    "primary": "Recall@5 >= 4/5 questions",
+    "secondary": "Recall@10 should cover the core expected files for multi-hop questions"
+  },
+  "questions": [
+    {
+      "id": "Q1",
+      "question": "G-code 从哪里进入系统？",
+      "expected_files": [
+        "src/modules/communication/SerialConsole.cpp",
+        "src/modules/communication/GcodeDispatch.cpp",
+        "src/modules/utils/player/Player.cpp"
+      ],
+      "expected_symbols": [
+        "SerialConsole::on_main_loop",
+        "GcodeDispatch::on_console_line_received",
+        "Player::on_main_loop"
+      ]
+    },
+    {
+      "id": "Q2",
+      "question": "G-code 如何变成运动命令？",
+      "expected_files": [
+        "src/modules/communication/GcodeDispatch.cpp",
+        "src/modules/robot/Robot.cpp",
+        "src/modules/robot/Planner.cpp",
+        "src/modules/robot/Conveyor.cpp",
+        "src/libs/StepTicker.cpp"
+      ],
+      "expected_symbols": [
+        "GcodeDispatch::on_console_line_received",
+        "Robot::on_gcode_received",
+        "Robot::process_move",
+        "Robot::append_milestone",
+        "Planner::append_block",
+        "Conveyor::queue_head_block",
+        "StepTicker::step_tick"
+      ]
+    },
+    {
+      "id": "Q3",
+      "question": "Motion / Planner / Stepper 相关代码在哪里？",
+      "expected_files": [
+        "src/modules/robot/Robot.cpp",
+        "src/modules/robot/Planner.cpp",
+        "src/modules/robot/Block.cpp",
+        "src/modules/robot/Conveyor.cpp",
+        "src/libs/StepTicker.cpp",
+        "src/libs/StepperMotor.cpp"
+      ],
+      "expected_symbols": [
+        "Planner::append_block",
+        "Block::calculate_trapezoid",
+        "Conveyor::get_next_block",
+        "StepTicker::step_tick",
+        "StepperMotor::step"
+      ]
+    },
+    {
+      "id": "Q4",
+      "question": "error / stop / halt / emergency 逻辑在哪里？",
+      "expected_files": [
+        "src/libs/Kernel.cpp",
+        "src/modules/communication/SerialConsole.cpp",
+        "src/modules/communication/GcodeDispatch.cpp",
+        "src/modules/utils/killbutton/KillButton.cpp",
+        "src/modules/robot/Endstops.cpp",
+        "src/modules/robot/Conveyor.cpp",
+        "src/libs/StepperMotor.cpp"
+      ],
+      "expected_symbols": [
+        "Kernel::immediate_halt",
+        "Kernel::call_event",
+        "KillButton::on_idle",
+        "Conveyor::on_halt",
+        "StepperMotor::on_halt"
+      ]
+    },
+    {
+      "id": "Q5",
+      "question": "模块系统如何注册、触发、通信？",
+      "expected_files": [
+        "src/libs/Module.h",
+        "src/libs/Module.cpp",
+        "src/libs/Kernel.h",
+        "src/libs/Kernel.cpp",
+        "src/main.cpp",
+        "src/libs/PublicData.cpp"
+      ],
+      "expected_symbols": [
+        "Module::register_for_event",
+        "Kernel::add_module",
+        "Kernel::register_for_event",
+        "Kernel::call_event",
+        "PublicData::get_value",
+        "PublicData::set_value"
+      ]
+    }
+  ]
+}

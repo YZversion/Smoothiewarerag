@@ -55,7 +55,7 @@
 - Phase 1.3：ripgrep 实际搜索，统计高频文件 ✅
 - Phase 1.4：写 `notes/smoothieware_code_map.md` ✅
 - Phase 1.5：选定 10 个重点文件 ✅
-- Phase 2：`01_scan_files.py` / `02_extract_symbols.py` ⬜
+- Phase 2：`01_scan_files.py` / `02_extract_symbols.py` ✅
 
 ---
 
@@ -105,6 +105,49 @@
 9.  src/modules/utils/killbutton/KillButton.cpp
 10. src/modules/robot/Endstops.cpp
 ```
+
+---
+
+## 2026-06-25 — Session 2
+
+### Phase 2 完成
+
+- `industrial-cpp-kb-lab/src/01_scan_files.py` 已完成并生成 `data/file_manifest.json`
+- `industrial-cpp-kb-lab/src/02_extract_symbols.py` 已完成并生成 `data/symbol_index.json`
+- 脚本已参数化，支持 `--repo-root`、`--src-root`、`--manifest`、`--output`，方便后续迁移到 wire bonder 代码
+- 验证结果：扫描 Smoothieware 源码 269 个文件；ctags 提取 3072 条符号
+
+### Phase 3 计划细化
+
+- `PLAN.md` 已同步当前进度：Phase 0、1、2 完成，下一步进入 Phase 3
+- 明确 10 个重点文件只是 canary / golden set 种子，不限制索引范围
+- Phase 3 增加 `03_build_chunks.py`，按 ctags 符号边界优先分块，过长 chunk 再切窗口
+- 明确代码友好 tokenizer：保留原始 token，同时拆 snake_case、camelCase、路径片段、`::` / `->`
+- 新增 `industrial-cpp-kb-lab/eval/eval_questions.json`，用于 Recall@5 / Recall@10 验收
+
+### LLM 与迁移策略调整
+
+- LLM 不再在架构里写死具体供应商，统一为 `LLM_PROVIDER` / `LLM_MODEL`
+- Phase 7 不再要求物理替换 `repos/Smoothieware/`，改为脚本参数指定目标代码库
+
+### Plan B：CodeGraph 结构图谱实验
+
+- `PLAN.md` 新增 Plan B：CodeGraph 代码结构图谱实验
+- 定位：只验证「代码结构怎么找」，不替代 `rg + ctags + BM25` 主线，不替代源码核查
+- 目标：在 Smoothieware 上对比 `rg/BM25` 与 CodeGraph 是否更适合回答模块、函数、调用链、影响范围问题
+- 实验产物规划：
+  - `notes/smoothieware_rg_findings.md`
+  - `notes/smoothieware_codegraph_findings.md`
+  - `notes/comparison.md`
+- `architecture.md` 已补充 Plan B 的结构图谱层说明
+- `AGENTS.md` / `CLAUDE.md` 已同步最新进度、约束和常用命令
+
+### 下一步
+
+- 实现 `03_build_chunks.py`
+- 实现 `03_search.py`
+- 用 `eval/eval_questions.json` 跑 Recall@K
+- Phase 3 基础检索跑通后，再并行做 CodeGraph A/B 实验
 
 ---
 

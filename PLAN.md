@@ -20,6 +20,8 @@
 - [ ] 不在 Smoothieware 仓库里乱写，所有产物放外层 `industrial-cpp-kb-lab`
 - [ ] 不做嵌入式构建（ARM GCC / LPC1768 / 烧录都不是当前主线）
 - [ ] 每个 phase 有明确「验收标准」，没达标不进入下一个 phase
+- [ ] Phase 1 选出的 10 个重点文件只作为人工理解与评估种子；索引仍覆盖扫描到的全部源码文件
+- [ ] CodeGraph 只作为 Plan B 结构图谱实验：先做 Smoothieware 小规模 A/B 验证，不现在押注、不替代源码核查
 
 ---
 
@@ -90,6 +92,7 @@
 
 ### 1.5 选出第一版知识库输入
 - [x] 选定 10 个重点源码文件作为知识库第一批输入
+- [x] 说明：这 10 个文件是 canary / golden set 种子，不限制后续索引范围；Phase 2 起仍扫描全仓库源码
 
 **✅ Phase 1 验收（= 文档里的「第一天验收标准」）**
 - [x] clone 成功
@@ -105,21 +108,21 @@
 **目标：把「人工探索」变成「可重复的数据」，产出 file_manifest.json 和 symbol_index.json。**
 
 ### 2.1 `01_scan_files.py` → `data/file_manifest.json`
-- [ ] 遍历 `repos/Smoothieware/`，收集 `.cpp/.h/.hpp/.c` 文件
-- [ ] 记录：路径、大小、行数、所属一级目录
-- [ ] 过滤掉无关目录（build 产物、第三方、文档图片等）
-- [ ] 输出 `file_manifest.json`
+- [x] 遍历 `repos/Smoothieware/`，收集 `.cpp/.h/.hpp/.c` 文件
+- [x] 记录：路径、大小、行数、所属一级目录
+- [x] 过滤掉无关目录（build 产物、第三方、文档图片等）
+- [x] 输出 `file_manifest.json`
 
 ### 2.2 `02_extract_symbols.py` → `data/symbol_index.json`
-- [ ] 用 ctags 提取 C++ 的 **class / function / macro / enum**
-- [ ] 解析 ctags 输出为结构化记录：symbol 名、类型、文件、行号
-- [ ] 输出 `symbol_index.json`
-- [ ] 抽查 Phase 1 里的核心符号（如 Planner、Stepper、on_gcode_received 之类）能否被检索到
+- [x] 用 ctags 提取 C++ 的 **class / function / macro / enum**
+- [x] 解析 ctags 输出为结构化记录：symbol 名、类型、文件、行号
+- [x] 输出 `symbol_index.json`
+- [x] 抽查 Phase 1 里的核心符号（如 Planner、Stepper、on_gcode_received 之类）能否被检索到
 
 **✅ Phase 2 验收**
-- [ ] `file_manifest.json` 覆盖全部源码文件
-- [ ] `symbol_index.json` 能按符号名查到「文件:行号」
-- [ ] 5 个练习问题相关的关键符号都能被定位
+- [x] `file_manifest.json` 覆盖全部源码文件
+- [x] `symbol_index.json` 能按符号名查到「文件:行号」
+- [x] 5 个练习问题相关的关键符号都能被定位
 
 ---
 
@@ -128,19 +131,25 @@
 **目标：建立可被关键词检索的 chunks，并实现 search.py（ripgrep + ctags + BM25 融合）。**
 
 ### 3.1 分块 → `data/chunks.jsonl`
-- [ ] 按函数/类边界（基于 symbol_index）或固定窗口切分源码
-- [ ] 每个 chunk 带元数据：文件路径、起止行号、所属符号
+- [ ] 新增 `03_build_chunks.py`：读取 `file_manifest.json` + `symbol_index.json`
+- [ ] 优先按 ctags 符号边界切分：同文件内按行号排序，`symbol.line` 到下一个 symbol 前一行
+- [ ] 过长 chunk 再切为 120 行窗口，overlap 20 行；没有符号的文件回退为 100 行窗口，overlap 20 行
+- [ ] 每个 chunk 带元数据：`id`、文件路径、起止行号、所属符号、符号类型、文本
 - [ ] 输出 `chunks.jsonl`
 
 ### 3.2 `03_search.py`（融合检索）
+- [ ] 实现代码友好的 tokenizer：保留原始 token，同时拆 snake_case、camelCase、路径片段和 `::`/`->` 附近标识符
+- [ ] 加最小同义词表：`gcode/G-code/Gcode`、`halt/stop/emergency/e-stop/kill/alarm`、`stepper/StepTicker/StepperMotor`
 - [ ] BM25 索引（如 `rank_bm25` 或轻量倒排）建在 chunks 上
 - [ ] 检索流程：关键词 → BM25 召回 chunk + ctags 精确符号定位 + ripgrep 兜底
-- [ ] 返回结果含「文件:行号」引用路径
-- [ ] 用 5 个练习问题逐一测试召回质量
+- [ ] 融合排序：符号精确命中、rg 精确命中、BM25 分数分别加权；按 chunk id 去重
+- [ ] 返回结果含「文件:行号」引用路径、命中来源、分数、snippet
+- [ ] 用 `industrial-cpp-kb-lab/eval/eval_questions.json` 的 5 个问题逐一测试召回质量
 
 **✅ Phase 3 验收**
 - [ ] 输入模块名/函数名/G-code/error 关键词，能返回相关 chunk + 引用路径
-- [ ] 5 个问题中至少能召回到正确文件的命中率达标（自定一个阈值，如 ≥4/5）
+- [ ] `eval_questions.json` 的 5 个问题 Recall@5 ≥ 4/5，Recall@10 覆盖每题的核心 expected files
+- [ ] 对 Q2 这类跨链路问题，Top-10 至少覆盖 `Robot.cpp`、`Planner.cpp`、`Conveyor.cpp`、`StepTicker.cpp` 中的 3 个
 
 ---
 
@@ -154,6 +163,7 @@
 
 ### 4.2 `04_answer.py`
 - [ ] 串起 search.py 的检索结果 → 拼接上下文 → 调 LLM
+- [ ] LLM 调用通过 `LLM_PROVIDER` / `LLM_MODEL` 配置，不把 Claude / OpenAI / 本地模型写死在主流程里
 - [ ] 输出：解释 + 相关源码片段 + 引用路径
 - [ ] 跑通 5 个练习问题，人工核对答案是否「有据可查」
 
@@ -201,14 +211,100 @@
 
 ---
 
+## Plan B — CodeGraph 代码结构图谱实验
+
+**目标：验证对 C++ 设备控制项目，图结构索引是否比普通 `rg` / BM25 RAG 更快找到模块、函数、调用关系和影响范围。**
+
+这个 Plan B 不替代 Phase 3–5 主线。它是一个克制的小实验：先在 Smoothieware 上比较 **A. ripgrep/BM25** 和 **B. CodeGraph/代码图谱**，证明有价值后再考虑是否接入 wire bonder 知识库。
+
+### B.1 为什么值得研究
+- [ ] 帮助理解大型 C++ 项目的模块结构
+- [ ] 帮 AI Agent 减少反复 `grep` / 读文件造成的上下文爆炸
+- [ ] 支持查询函数定义、调用者、被调用者、依赖关系和影响范围
+- [ ] 未来可作为 wire bonder 知识库的「代码结构层」
+
+### B.2 明确边界
+- [ ] CodeGraph 解决「代码结构怎么找」，不解决「设备业务怎么懂」
+- [ ] 它不能自动理解 wire bonding 工艺、报警排查、维修经验和现场日志
+- [ ] 对 C++ 宏、条件编译、函数指针、回调、MFC 消息映射、动态派发、跨 DLL 调用可能漏关系或错关系
+- [ ] 图谱结果只能作为候选线索，最终事实仍以源码、编译配置和工程师确认为准
+- [ ] 现在不研究全部功能，只做 5 个问题的 A/B 测试
+
+### B.3 候选工具判断标准
+选择 CodeGraph / code graph 工具时，只看 6 个指标：
+
+- [ ] 是否支持 C/C++
+- [ ] 是否本地运行
+- [ ] 是否不需要上传代码
+- [ ] 是否能输出函数 / 类 / 调用关系 / include 关系
+- [ ] 是否能被 Codex / Cursor / Claude Code 通过 MCP 或 CLI 调用
+- [ ] 是否能导出或查询结构化结果，而不只是漂亮图
+
+满足前 4 个，值得试；满足 6 个，才考虑深度集成。
+
+### B.4 Smoothieware A/B 实验问题
+用同一组问题比较 `rg/BM25` 与 `CodeGraph`：
+
+- [ ] G-code 的入口文件在哪里？
+- [ ] `Gcode` 类 / 函数被哪些模块调用？
+- [ ] Motion planner 相关核心类有哪些？
+- [ ] halt / error / stop 的调用链在哪里？
+- [ ] 修改某个函数后可能影响哪些模块？
+
+### B.5 实验产物
+不要把 CodeGraph 直接混入现有 RAG 主流程，先分开记结果：
+
+```
+industrial-cpp-kb-lab/
+├── notes/
+│   ├── smoothieware_rg_findings.md
+│   ├── smoothieware_codegraph_findings.md
+│   └── comparison.md
+└── eval/
+    └── eval_questions.json
+```
+
+- [ ] `smoothieware_rg_findings.md`：记录 `rg` / BM25 找到的文件、符号、证据
+- [ ] `smoothieware_codegraph_findings.md`：记录 CodeGraph 找到的 symbols、callers、callees、依赖关系
+- [ ] `comparison.md`：比较哪个问题 CodeGraph 更强，哪个问题普通搜索更强，是否值得迁移到 wire bonder
+
+### B.6 示例流程（待确认具体工具 README）
+如果选择的是 `@colbymchenry/codegraph` 这类本地工具，先确认官方 README 和版本，再做最小试验：
+
+```powershell
+cd C:\Users\14390\Desktop\Code\Smoothiewarerag\industrial-cpp-kb-lab\repos\Smoothieware
+npm install -g @colbymchenry/codegraph
+codegraph init
+```
+
+然后让 Agent 只问结构问题，例如：
+
+```text
+Use CodeGraph to identify the main G-code processing entry points in this repository.
+Return files, symbols, and call relationships. Do not guess.
+```
+
+```text
+Use CodeGraph to trace halt/error/stop related symbols.
+Return the most relevant functions and their callers/callees. Do not guess.
+```
+
+### B.7 Plan B 验收
+- [ ] 对 5 个 Smoothieware 结构问题完成 A/B 对比
+- [ ] `comparison.md` 明确列出：CodeGraph 强项、弱项、误报/漏报案例
+- [ ] 能回答「是否值得在 wire bonder 代码上做小模块试验」
+- [ ] 未证明价值前，不接入主 `app.py`，不把主线改成知识图谱系统
+
+---
+
 ## Phase 7 — 迁移到公司 wire bonder 代码
 
 **目标：把验证过的 lab 直接套到真实设备代码上。**
 
 ### 7.1 替换素材
 - [ ] 公司 SVN checkout 出代码目录
-- [ ] 把 `repos/Smoothieware/` 替换为公司代码目录
-- [ ] 重跑 Phase 2~5 全流程
+- [ ] 不需要物理替换 `repos/Smoothieware/`；通过 `--repo-root` / `--src-root` 指向公司代码目录
+- [ ] 重跑 Phase 2~5 全流程，输出到独立 data/index 目录或按项目名分目录
 
 ### 7.2 适配 wire bonder 模块体系
 - [ ] 把模块分区从 CNC 改成设备真实分类：
@@ -233,6 +329,7 @@
 
 ## 当前进度落点
 
-你现在的实际任务是完成 **Phase 0 + Phase 1**。
-做完 1.3 的 ripgrep 探索后，把每条命令输出里**出现最频繁、最核心的文件名**贴出来，
-下一步就可以进入 Phase 2，设计 `01_scan_files.py` / `02_extract_symbols.py`。
+当前已完成 **Phase 0、Phase 1、Phase 2**。
+`file_manifest.json` 与 `symbol_index.json` 已生成，下一步进入 **Phase 3：分块 + 检索**。
+优先完成 `03_build_chunks.py`、`03_search.py` 和 `eval/eval_questions.json` 的 Recall@K 验收。
+Plan B 的 CodeGraph 实验可以在 Phase 3 基础检索跑通后并行做，不阻塞主线 demo。

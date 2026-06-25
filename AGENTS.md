@@ -1,4 +1,4 @@
-# CLAUDE.md — industrial-cpp-kb-lab
+# AGENTS.md — industrial-cpp-kb-lab
 
 ## 项目一句话定位
 
@@ -11,7 +11,7 @@
 ```
 Smoothiewarerag/
 ├── PLAN.md                          # 主计划（Phase 0–7，含验收标准）
-├── CLAUDE.md                        # 本文件
+├── AGENTS.md                        # 本文件
 ├── architecture.md                  # 系统架构说明
 ├── docs/
 │   └── history.md                   # 进度日志
