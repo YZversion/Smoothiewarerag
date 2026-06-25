@@ -28,28 +28,28 @@
 **目标：lab 目录建好、工具装好、Smoothieware clone 下来且能搜。**
 
 ### 0.2 安装基础工具（PowerShell）
-- [ ] `winget install Git.Git`
-- [ ] `winget install Python.Python.3.11`
-- [ ] `winget install BurntSushi.ripgrep.MSVC`
-- [ ] `winget install UniversalCtags.Ctags`
-- [ ] `winget install Graphviz.Graphviz`（可选）
-- [ ] Cursor 或 VS Code（手动安装）
+- [x] `winget install Git.Git`
+- [x] `winget install Python.Python.3.11`
+- [x] `winget install BurntSushi.ripgrep.MSVC`
+- [x] `winget install UniversalCtags.Ctags`
+- [x] `winget install Graphviz.Graphviz`（可选）
+- [x] Cursor 或 VS Code（手动安装）
 - [ ] Doxygen（可选，留到 Phase 6）
 
 ### 0.3 验证工具
-- [ ] `git --version`
-- [ ] `python --version`
-- [ ] `rg --version`
-- [ ] `ctags --version`
-- [ ] `dot -V`
+- [x] `git --version`
+- [x] `python --version`
+- [x] `rg --version`
+- [x] `ctags --version`
+- [x] `dot -V`
 
 ### 0.4 Clone 仓库
-- [ ] `git clone https://github.com/Smoothieware/Smoothieware.git`
+- [x] `git clone https://github.com/Smoothieware/Smoothieware.git`
 
 **✅ Phase 0 验收**
-- [ ] 目录结构齐全
-- [ ] 五个工具命令都能正常输出版本号
-- [ ] `repos/Smoothieware/` 已存在且可被 `rg` 搜索
+- [x] 目录结构齐全
+- [x] 五个工具命令都能正常输出版本号
+- [x] `repos/Smoothieware/` 已存在且可被 `rg` 搜索
 
 ---
 
@@ -58,45 +58,45 @@
 **目标：不写复杂程序，靠 rg 人工形成一张代码地图，并选出 10 个重点文件。**
 
 ### 1.1 只读 3 个文档（不要全读）
-- [ ] **README**：搞清楚是什么项目、什么语言、面向什么硬件
+- [x] **README**：搞清楚是什么项目、什么语言、面向什么硬件
   - 记住：G-code interpreter + CNC controller，OOP C++，目标硬件 LPC17xx / Cortex-M3
-- [ ] **Module Example**：理解「everything is a module」，模块靠 event calls / event handlers 连接
-- [ ] **Motion Control**：理解 G-code → 运动转换，及 acceleration / junction deviation / step loss 等概念
+- [x] **Module Example**：理解「everything is a module」，模块靠 event calls / event handlers 连接
+- [x] **Motion Control**：理解 G-code → 运动转换，及 acceleration / junction deviation / step loss 等概念
 
 ### 1.2 固定 5 个练习问题（demo 第一版只围绕这 5 个）
-- [ ] Q1：G-code 从哪里进入系统？
-- [ ] Q2：G-code 如何变成运动命令？
-- [ ] Q3：Motion / Planner / Stepper 相关代码在哪里？
-- [ ] Q4：error / stop / halt / emergency 逻辑在哪里？
-- [ ] Q5：模块系统如何注册、触发、通信？
+- [x] Q1：G-code 从哪里进入系统？
+- [x] Q2：G-code 如何变成运动命令？
+- [x] Q3：Motion / Planner / Stepper 相关代码在哪里？
+- [x] Q4：error / stop / halt / emergency 逻辑在哪里？
+- [x] Q5：模块系统如何注册、触发、通信？
 
 ### 1.3 用 ripgrep 做第一次探索（记录高频文件）
-- [ ] `rg -n "class .*Module|public Module|on_module_loaded" .`
-- [ ] `rg -n "Gcode|GCode|gcode|M-code|MCode" .`
-- [ ] `rg -n "planner|Planner|motion|Motion|stepper|Stepper" .`
-- [ ] `rg -n "halt|stop|error|emergency|alarm|kill" .`
-- [ ] `rg -n "add_module|register_for_event|call_event|ON_|EVENT_" .`
-- [ ] 把每条命令里**出现频率最高、最核心的文件名**抄进笔记
+- [x] `rg -n "class .*Module|public Module|on_module_loaded" .`
+- [x] `rg -n "Gcode|GCode|gcode|M-code|MCode" .`
+- [x] `rg -n "planner|Planner|motion|Motion|stepper|Stepper" .`
+- [x] `rg -n "halt|stop|error|emergency|alarm|kill" .`
+- [x] `rg -n "add_module|register_for_event|call_event|ON_|EVENT_" .`
+- [x] 把每条命令里**出现频率最高、最核心的文件名**抄进笔记
 
 ### 1.4 写 `notes/smoothieware_code_map.md` 第一版
-- [ ] 项目定位（一句话）
-- [ ] 5 个核心问题列出
-- [ ] 按模块分区填「相关文件 + 作用」：
-  - [ ] Communication
-  - [ ] Robot / Motion
-  - [ ] G-code
-  - [ ] Kernel / Module System
-  - [ ] Error / Halt
+- [x] 项目定位（一句话）
+- [x] 5 个核心问题列出
+- [x] 按模块分区填「相关文件 + 作用」：
+  - [x] Communication
+  - [x] Robot / Motion
+  - [x] G-code
+  - [x] Kernel / Module System
+  - [x] Error / Halt
 
 ### 1.5 选出第一版知识库输入
-- [ ] 选定 10 个重点源码文件作为知识库第一批输入
+- [x] 选定 10 个重点源码文件作为知识库第一批输入
 
 **✅ Phase 1 验收（= 文档里的「第一天验收标准」）**
-- [ ] clone 成功
-- [ ] 能用 rg 搜到 gcode / motion / planner / halt 相关代码
-- [ ] `smoothieware_code_map.md` 第一版写出
-- [ ] 10 个重点文件选定
-- [ ] （今天不上 Web UI、不纠结 LangChain vs LlamaIndex、不试图完全读懂 Smoothieware）
+- [x] clone 成功
+- [x] 能用 rg 搜到 gcode / motion / planner / halt 相关代码
+- [x] `smoothieware_code_map.md` 第一版写出
+- [x] 10 个重点文件选定
+- [x] （今天不上 Web UI、不纠结 LangChain vs LlamaIndex、不试图完全读懂 Smoothieware）
 
 ---
 

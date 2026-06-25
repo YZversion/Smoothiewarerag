@@ -52,9 +52,59 @@
 
 ### 遗留
 
-- Phase 1.3：ripgrep 实际搜索，统计高频文件 ⬜
-- Phase 1.4：写 `notes/smoothieware_code_map.md` ⬜
-- Phase 1.5：选定 10 个重点文件 ⬜
+- Phase 1.3：ripgrep 实际搜索，统计高频文件 ✅
+- Phase 1.4：写 `notes/smoothieware_code_map.md` ✅
+- Phase 1.5：选定 10 个重点文件 ✅
+- Phase 2：`01_scan_files.py` / `02_extract_symbols.py` ⬜
+
+---
+
+## 2026-06-25 — Session 1（续）
+
+### Phase 1.3 ripgrep 探索结果
+
+运行4类搜索，统计每文件命中行数：
+
+**最高频文件（跨4个搜索总命中）：**
+
+| 文件 | 总命中 | 主要角色 |
+|------|:------:|---------|
+| `Robot.cpp` | 265 | 运动核心，Gcode解析 + 运动学 |
+| `Endstops.cpp` | 213 | 限位检测 + halt逻辑 |
+| `SimpleShell.cpp` | 102 | 命令行 shell，大量 Gcode/halt 命令 |
+| `GcodeDispatch.cpp` | 79 | G-code 解析分发入口 |
+| `ZProbe.cpp` | 89 | 探针，大量 Gcode 处理 |
+| `Extruder.cpp` | 98 | 挤出机（3D打印专用，运动相关） |
+| `Kernel.cpp` | 32 | 模块系统中枢 |
+| `KillButton.cpp` | 37 | 硬件急停按钮 |
+| `Player.cpp` | 64 | SD 卡 G-code 文件播放 |
+
+**关键发现：**
+- `Endstops.cpp` halt 命中 122 次，是整个系统 halt 逻辑最集中的文件（超过 KillButton）
+- `main.cpp` 模块命中 26 次，是所有模块注册的起点
+- `SimpleShell.cpp` 跨3个类别命中，是调试/命令行接口的枢纽
+
+### Phase 1.4 代码地图
+
+已写入 `industrial-cpp-kb-lab/notes/smoothieware_code_map.md`，含：
+- ripgrep 高频文件统计表
+- 按5个分区（Communication / Robot-Motion / Kernel / Error-Halt）的文件职责表
+- 10个第一批知识库输入文件
+
+### Phase 1.5 选定10个重点文件
+
+```
+1.  src/libs/Module.h
+2.  src/libs/Kernel.cpp
+3.  src/modules/communication/GcodeDispatch.cpp
+4.  src/modules/communication/SerialConsole.cpp
+5.  src/modules/robot/Robot.cpp
+6.  src/modules/robot/Planner.cpp
+7.  src/modules/robot/Conveyor.cpp
+8.  src/libs/StepTicker.cpp
+9.  src/modules/utils/killbutton/KillButton.cpp
+10. src/modules/robot/Endstops.cpp
+```
 
 ---
 
