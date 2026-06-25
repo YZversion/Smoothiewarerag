@@ -94,24 +94,38 @@
 
 ### chunks.jsonl — 分块策略
 
-优先按 **ctags 符号边界** 切分（来自 `symbol_index.json`）：
+采用分层 chunking，而不是简单用“当前 symbol 行到下一个 symbol 前一行”：
 
-1. 对同一个文件内的符号按 `line` 排序。
-2. 每个符号的 chunk 起点是 `symbol.line`，终点是下一个符号行号前一行。
-3. 超过 120 行的 chunk 再切成 120 行窗口，overlap 20 行。
-4. 没有符号的文件回退为 100 行窗口，overlap 20 行。
+1. `.cpp/.c` 优先按函数/方法实现切分：以 `kind == function` 为主。
+2. 函数结束行优先级：ctags end line（如可用）→ brace matching → 下一个 function symbol 前一行 → 固定窗口兜底。
+3. `.h/.hpp` 优先按 `class` / `struct` 定义切分，保留访问控制区、方法声明和成员变量。
+4. 每个源码文件生成一个 `file_overview` chunk，记录文件路径、top_dir、主要 class/function 列表和前若干 include。
+5. 过长函数或类 chunk 再切成 180 行窗口，overlap 40 行。
+6. 没有符号的文件回退为 100 行窗口，overlap 20 行。
 
 ```jsonc
 // 每条 chunk
 {
   "id": "planner_cpp_87_120",
+  "type": "function",
   "file": "src/modules/robot/Planner.cpp",
   "start_line": 87,
   "end_line": 120,
   "symbol": "Planner::append_block",
   "kind": "function",
+  "scope": "Planner",
   "text": "bool Planner::append_block(...) { ... }"
 }
+```
+
+每个 chunk 文本前加 context header：
+
+```cpp
+// file: src/modules/robot/Planner.cpp
+// symbol: Planner::append_block
+// kind: function
+// lines: 87-120
+// class/scope: Planner
 ```
 
 ---
@@ -148,10 +162,15 @@ query
         
 融合：按 chunk id 去重，按来源加权排序
      ctags符号命中 + rg精确命中 + bm25分数
-返回：Top-K chunks，每条带 file:line、命中来源、分数、snippet
+返回：Top-K chunks，每条带 file:line、chunk type、命中来源、分数、snippet
 ```
 
 检索质量用 `industrial-cpp-kb-lab/eval/eval_questions.json` 做回归评估，统计 Recall@5 / Recall@10。
+
+对 LLM 问答，检索结果会进一步组织为 context bundle：
+
+- 主 chunk：命中的函数实现或类定义
+- 辅助 chunk：对应 header class 定义、调用者/被调用者附近、同文件 `file_overview`
 
 ---
 

@@ -131,11 +131,15 @@
 **目标：建立可被关键词检索的 chunks，并实现 search.py（ripgrep + ctags + BM25 融合）。**
 
 ### 3.1 分块 → `data/chunks.jsonl`
-- [ ] 新增 `03_build_chunks.py`：读取 `file_manifest.json` + `symbol_index.json`
-- [ ] 优先按 ctags 符号边界切分：同文件内按行号排序，`symbol.line` 到下一个 symbol 前一行
-- [ ] 过长 chunk 再切为 120 行窗口，overlap 20 行；没有符号的文件回退为 100 行窗口，overlap 20 行
-- [ ] 每个 chunk 带元数据：`id`、文件路径、起止行号、所属符号、符号类型、文本
-- [ ] 输出 `chunks.jsonl`
+- [x] 新增 `03_build_chunks.py`：读取 `file_manifest.json` + `symbol_index.json`
+- [x] `.cpp/.c` 优先按函数/方法实现切分：以 `kind == function` 为主，避免被 `prototype`、`macro`、`typedef` 截断真实函数体
+- [x] 函数结束行优先级：ctags end line（如可用） → 简单 brace matching 找 `{...}` → 下一个 function symbol 前一行 → 固定窗口兜底
+- [x] `.h/.hpp` 优先按 `class` / `struct` 定义切分；保留 public/protected/private、方法声明、成员变量；不要把每个 prototype 切成过小 chunk
+- [x] 为每个源码文件生成一个 file overview chunk：文件路径、top_dir、主要 class/function 列表、前若干 include，用来回答”代码在哪里/模块结构是什么”
+- [x] 过长函数或类 chunk 再切为 180 行子窗口，overlap 40 行；没有符号的文件回退为 100 行窗口，overlap 20 行
+- [x] 每个 chunk 带元数据：`id`、`type`（function/class/file_overview/fallback）、文件路径、起止行号、所属符号、符号类型、scope/class、文本
+- [x] 每个 chunk 文本前加 context header：`file`、`symbol`、`kind`、`lines`、`class/scope`
+- [x] 输出 `chunks.jsonl`
 
 ### 3.2 `03_search.py`（融合检索）
 - [ ] 实现代码友好的 tokenizer：保留原始 token，同时拆 snake_case、camelCase、路径片段和 `::`/`->` 附近标识符
@@ -143,13 +147,15 @@
 - [ ] BM25 索引（如 `rank_bm25` 或轻量倒排）建在 chunks 上
 - [ ] 检索流程：关键词 → BM25 召回 chunk + ctags 精确符号定位 + ripgrep 兜底
 - [ ] 融合排序：符号精确命中、rg 精确命中、BM25 分数分别加权；按 chunk id 去重
-- [ ] 返回结果含「文件:行号」引用路径、命中来源、分数、snippet
+- [ ] 返回结果含「文件:行号」引用路径、chunk type、命中来源、分数、snippet
+- [ ] 检索结果组织为 context bundle：主 chunk（命中函数/类）+ 辅助 chunk（对应 header class 定义、调用者/被调用者附近、同文件 overview）
 - [ ] 用 `industrial-cpp-kb-lab/eval/eval_questions.json` 的 5 个问题逐一测试召回质量
 
 **✅ Phase 3 验收**
 - [ ] 输入模块名/函数名/G-code/error 关键词，能返回相关 chunk + 引用路径
 - [ ] `eval_questions.json` 的 5 个问题 Recall@5 ≥ 4/5，Recall@10 覆盖每题的核心 expected files
 - [ ] 对 Q2 这类跨链路问题，Top-10 至少覆盖 `Robot.cpp`、`Planner.cpp`、`Conveyor.cpp`、`StepTicker.cpp` 中的 3 个
+- [ ] 对至少 3 个函数类问题，返回 bundle 同时包含实现 chunk 和相关 class/header 或 file overview chunk
 
 ---
 
