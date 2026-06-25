@@ -1,0 +1,69 @@
+# industrial-cpp-kb-lab — 按 PLAN.md 各 phase 划分
+# 原则：只跟踪 lab 自有脚本/笔记/提示词；外部源码与生成物不入库
+
+# ── Phase 0 / 7：外部代码 checkout（Smoothieware、公司 SVN 等）──
+industrial-cpp-kb-lab/repos/**
+!industrial-cpp-kb-lab/repos/.gitkeep
+
+# ── Phase 2：扫描与符号提取产物 ──
+industrial-cpp-kb-lab/data/**
+!industrial-cpp-kb-lab/data/.gitkeep
+# 典型文件：file_manifest.json, symbol_index.json
+
+# ── Phase 3：分块与 BM25 索引 ──
+industrial-cpp-kb-lab/index/**
+!industrial-cpp-kb-lab/index/.gitkeep
+# 典型文件：chunks.jsonl（若在 data/ 则已被上面覆盖）
+
+# ── Phase 4：LLM 密钥与本地配置 ──
+.env
+.env.*
+!.env.example
+
+# ── Python 运行时 ──
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+ENV/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+dist/
+build/
+
+# ── Phase 6 可选：Doxygen / Graphviz 生成物 ──
+html/
+latex/
+doxygen/
+*.dot
+*.svg
+*.png
+!industrial-cpp-kb-lab/notes/**/*.png
+
+# ── ctags / ripgrep 临时输出 ──
+tags
+TAGS
+.ctags.d/
+
+# ── IDE / OS ──
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json.example
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── 日志与临时文件 ──
+*.log
+*.tmp
+*.bak
+.cache/
