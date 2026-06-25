@@ -20,8 +20,8 @@ Smoothiewarerag/
     ├── src/                         # 核心 Python 脚本（按 phase 编号）
     │   ├── 01_scan_files.py         # Phase 2：扫描源码文件
     │   ├── 02_extract_symbols.py    # Phase 2：ctags 符号提取
-    │   ├── 03_build_chunks.py       # Phase 3：源码分块（计划）
-    │   ├── 03_search.py             # Phase 3：BM25 + rg + ctags 融合检索
+    │   ├── 03_build_chunks.py       # Phase 3.1：源码分块（已完成）
+    │   ├── 03_search.py             # Phase 3.2：BM25 + rg + ctags 融合检索（待实现）
     │   ├── 04_answer.py             # Phase 4：检索 → LLM 问答
     │   └── app.py                   # Phase 5：一体化入口
     ├── data/                        # 生成物（不入库）
@@ -40,17 +40,15 @@ Smoothiewarerag/
 ## 当前进度
 
 - Phase 0 ✅ 工具已装（git / python / rg / ctags / dot）
-- Phase 1 ✅ 人工探索 + 第一版代码地图完成
-  - 1.1 ✅ README + Module + Motion Control 已读
-  - 1.2 ✅ 5 个练习问题已锁定
-  - 1.3 ✅ ripgrep 探索高频文件
-  - 1.4 ✅ 写 `notes/smoothieware_code_map.md`
-  - 1.5 ✅ 选定 10 个重点源码文件
-- Phase 2 ✅ 文件扫描 + ctags 符号提取完成
-  - `data/file_manifest.json` 已生成
-  - `data/symbol_index.json` 已生成
-- Phase 3 🔄 下一步：`03_build_chunks.py` + `03_search.py` + `eval/eval_questions.json` Recall@K 验收
-- Plan B 🔬 CodeGraph 结构图谱实验已加入 `PLAN.md`，等 Phase 3 基础检索跑通后并行做
+- Phase 1 ✅ 人工探索 + 代码地图 + 10 个重点文件选定
+- Phase 2 ✅ 文件扫描 + 符号提取完成
+  - `data/file_manifest.json`：269 个文件，36,409 行
+  - `data/symbol_index.json`：3,072 条符号，**含 `end_line`（100% 覆盖）**
+- Phase 3.1 ✅ 分块完成
+  - `data/chunks.jsonl`：1,569 个 chunk（function 1106 / file_overview 269 / class 190 / fallback 4）
+  - 函数边界由 **ctags `end_line`** 给出（主）；brace matching 退为极端兜底（当前触发 0 次）
+- Phase 3.2 🔄 下一步：`03_search.py`（BM25 + rg + ctags 融合检索）+ `eval/eval_questions.json` Recall@K 验收
+- Plan B 🔬 CodeGraph 结构图谱实验，等 Phase 3 主线跑通后并行做
 
 ## 核心约束（不要违反）
 
@@ -112,11 +110,17 @@ rg -n "on_gcode_received|GcodeDispatch|Gcode" industrial-cpp-kb-lab/repos/Smooth
 # 搜索 halt/stop
 rg -n "halt|emergency|kill|ON_HALT" industrial-cpp-kb-lab/repos/Smoothieware/src
 
-# Phase 2 扫描源码文件
+# Phase 2：扫描源码文件 → file_manifest.json
 python industrial-cpp-kb-lab/src/01_scan_files.py
 
-# Phase 2 提取符号索引
+# Phase 2：提取符号索引 → symbol_index.json（含 end_line）
 python industrial-cpp-kb-lab/src/02_extract_symbols.py
+
+# Phase 3.1：分块 → chunks.jsonl
+python industrial-cpp-kb-lab/src/03_build_chunks.py
+
+# 全流程一键重建（顺序执行）
+python industrial-cpp-kb-lab/src/01_scan_files.py && python industrial-cpp-kb-lab/src/02_extract_symbols.py && python industrial-cpp-kb-lab/src/03_build_chunks.py
 
 # 迁移到其他 C++ 代码库时传参
 python industrial-cpp-kb-lab/src/01_scan_files.py --repo-root path/to/repo --src-root path/to/repo/src

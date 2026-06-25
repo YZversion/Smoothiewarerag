@@ -75,7 +75,7 @@ def extract_symbols(ctags_bin: str, file_paths: list[str], repo_root: Path, outp
         ctags_bin,
         "--output-format=json",
         "--c++-kinds=+pfscetud",   # prototype/function/struct/class/enum/typedef/union/define
-        "--fields=+nKz",           # line number / kind / scope
+        "--fields=+nKze",          # line number / kind / scope / end line
         "--extras=-F",             # 不输出 file-scope 伪标签
         "-L", str(list_file),      # 从文件列表读取
         "-f", "-",                 # 输出到 stdout
@@ -107,11 +107,12 @@ def extract_symbols(ctags_bin: str, file_paths: list[str], repo_root: Path, outp
             rel_path = abs_path
 
         records.append({
-            "name":      tag["name"],
-            "kind":      tag["kind"],
-            "file":      str(rel_path).replace("\\", "/"),
-            "line":      tag.get("line", 0),
-            "class":     tag.get("scope", ""),       # 所属 class/namespace
+            "name":       tag["name"],
+            "kind":       tag["kind"],
+            "file":       str(rel_path).replace("\\", "/"),
+            "line":       tag.get("line", 0),
+            "end_line":   tag.get("end", 0),         # ctags end 字段（--fields=+e）
+            "class":      tag.get("scope", ""),      # 所属 class/namespace
             "scope_kind": tag.get("scopeKind", ""),
         })
 

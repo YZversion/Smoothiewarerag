@@ -80,15 +80,19 @@
 ```jsonc
 // 每条记录
 {
-  "name": "append_block",
-  "kind": "function",
-  "file": "src/modules/robot/Planner.cpp",
-  "line": 87,
-  "class": "Planner"
+  "name":       "append_block",
+  "kind":       "function",
+  "file":       "src/modules/robot/Planner.cpp",
+  "line":       52,
+  "end_line":   210,   // ctags --fields=+e 给出，100% 覆盖
+  "class":      "Planner",
+  "scope_kind": "class"
 }
 ```
 
-调用：`ctags -R --c++-kinds=+pfsc --fields=+nKz --output-format=json`
+调用：`ctags --output-format=json --c++-kinds=+pfscetud --fields=+nKze`
+
+`end_line` 由 ctags 语法解析器给出，正确处理字符串/注释/Lambda/条件编译中的 `{}`。
 
 ---
 
@@ -97,7 +101,9 @@
 采用分层 chunking，而不是简单用“当前 symbol 行到下一个 symbol 前一行”：
 
 1. `.cpp/.c` 优先按函数/方法实现切分：以 `kind == function` 为主。
-2. 函数结束行优先级：ctags end line（如可用）→ brace matching → 下一个 function symbol 前一行 → 固定窗口兜底。
+2. **函数结束行来源（已实装）**：
+   - **主**：ctags `end_line`（`--fields=+e`，C++ 语法解析，100% 覆盖，正确处理字符串/注释/Lambda/条件编译中的 `{}`）
+   - **极端兜底**：手写 brace matching（当前触发 0 次，为边缘情况保留）
 3. `.h/.hpp` 优先按 `class` / `struct` 定义切分，保留访问控制区、方法声明和成员变量。
 4. 每个源码文件生成一个 `file_overview` chunk，记录文件路径、top_dir、主要 class/function 列表和前若干 include。
 5. 过长函数或类 chunk 再切成 180 行窗口，overlap 40 行。
@@ -212,7 +218,7 @@ python app.py "G-code 从哪里进入系统"
 |------|------|------|
 | 检索方案 | BM25 + rg + ctags | 无需 GPU，本地可用，代码检索够用 |
 | 不用向量检索 | 等 Phase 6 评估后再决定 | 避免过早引入复杂依赖 |
-| chunk 边界 | 函数/类边界优先 | 保持语义完整性，避免截断函数体 |
+| chunk 边界 | ctags `end_line` 为主，brace matching 为极端兜底 | ctags 是 C++ 语法解析器，正确处理字符串/注释/Lambda/条件编译；手写 brace 在工业 C++ 里有已知漏洞 |
 | LLM 模型 | 通过 `LLM_PROVIDER` / `LLM_MODEL` 配置 | 保持 Claude / OpenAI / 本地模型可替换 |
 | 数据不入库 | `.gitignore` 排除 data/ index/ repos/ | 生成物可重建，源码太大 |
 

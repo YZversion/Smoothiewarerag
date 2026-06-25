@@ -47,14 +47,12 @@ def read_lines(path: Path) -> list[str]:
 
 def find_end_by_brace(lines: list[str], start_1idx: int) -> int:
     """
-    从 start_1idx（1-based）开始向下做 brace matching。
-    返回函数/类结束的行号（1-based, inclusive）。
-    找不到时返回 min(start + 100, len(lines))。
+    极端兜底：从 start_1idx（1-based）做 brace matching。
+    忽略字符串/注释/预处理器中的括号——仅当 ctags end 缺失时使用。
     """
     depth = 0
     found_open = False
     for i in range(start_1idx - 1, len(lines)):
-        # 简单扫描，忽略字符串/注释中的括号（够用于知识库场景）
         for ch in lines[i]:
             if ch == '{':
                 depth += 1
@@ -64,6 +62,27 @@ def find_end_by_brace(lines: list[str], start_1idx: int) -> int:
                 if found_open and depth == 0:
                     return i + 1  # 1-based
     return min(start_1idx + 100, len(lines))
+
+
+def find_end(sym: dict, lines: list[str], next_sym_start: int | None = None) -> int:
+    """
+    结束行优先级：
+      1. ctags end_line（最可靠，由 C++ 语法解析器给出）
+      2. brace matching（极端兜底，处理 ctags 漏报的极少数情况）
+      3. 下一个同级符号前一行（brace matching 也失败时收尾）
+    """
+    # 1. ctags end 字段
+    end = sym.get("end_line", 0)
+    if end and end >= sym["line"]:
+        return min(end, len(lines))
+
+    # 2. brace matching
+    brace_end = find_end_by_brace(lines, sym["line"])
+
+    # 3. 下一个符号收尾（防止 brace matching 越界吃掉下一个函数）
+    if next_sym_start:
+        return min(brace_end, next_sym_start - 1)
+    return brace_end
 
 
 def make_context_header(file: str, symbol: str, kind: str,
@@ -137,14 +156,8 @@ def chunk_impl_file(file: str, lines: list[str],
 
     for i, sym in enumerate(funcs):
         start = sym["line"]
-        # 确定结束行
-        brace_end = find_end_by_brace(lines, start)
-        if i + 1 < len(funcs):
-            next_start = funcs[i + 1]["line"]
-            end = min(brace_end, next_start - 1)
-        else:
-            end = brace_end
-        end = min(end, len(lines))
+        next_start = funcs[i + 1]["line"] if i + 1 < len(funcs) else None
+        end = find_end(sym, lines, next_start)
 
         length = end - start + 1
         if length <= MAX_CHUNK_LINES:
@@ -174,13 +187,8 @@ def chunk_header_file(file: str, lines: list[str],
 
     for i, sym in enumerate(classes):
         start = sym["line"]
-        brace_end = find_end_by_brace(lines, start)
-        if i + 1 < len(classes):
-            next_start = classes[i + 1]["line"]
-            end = min(brace_end, next_start - 1)
-        else:
-            end = brace_end
-        end = min(end, len(lines))
+        next_start = classes[i + 1]["line"] if i + 1 < len(classes) else None
+        end = find_end(sym, lines, next_start)
 
         length = end - start + 1
         if length <= MAX_CHUNK_LINES:

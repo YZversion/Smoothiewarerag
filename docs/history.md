@@ -151,4 +151,38 @@
 
 ---
 
+## 2026-06-25 — Session 3
+
+### Phase 3.1 完成：`03_build_chunks.py` → `chunks.jsonl`
+
+**实现细节：**
+- 分层切分策略：`.cpp/.c` 按 function 边界，`.h/.hpp` 按 class/struct 边界，无符号文件 100 行固定窗口
+- 每文件生成 `file_overview` chunk（头 40 行 + include 列表 + 符号摘要）
+- 过长 chunk（>180 行）自动拆子窗口（180 行 / overlap 40 行）
+- 每个 chunk 前加 context header（file / symbol / kind / lines / class）
+
+**产出：** 1,569 个 chunk（function 1106 / file_overview 269 / class 190 / fallback 4）
+
+### ctags end_line 修复（关键设计改进）
+
+**问题：** 原版 `03_build_chunks.py` 用手写 brace matching 确定函数结束行，在工业 C++ 中存在已知漏洞：
+- 字符串字面量中的 `{}`（如 `"{ depth=0 }"`）
+- 注释中的 `{}`
+- Lambda 嵌套（`auto cb = [this]() { ... }`）
+- 初始化列表（`MyClass() : buf_{0} {}`）
+- `#ifdef` 条件编译中不对称的 `{}`
+
+**修复：** 给 ctags 加 `--fields=+e`，直接使用 C++ 语法解析器给出的 `end_line`：
+- `02_extract_symbols.py`：`--fields=+nKz` → `--fields=+nKze`，symbol 记录新增 `end_line` 字段
+- `03_build_chunks.py`：新增 `find_end()` 函数，ctags end_line 为主，brace matching 退为极端兜底
+- 验证：1,410 个 function 符号 `end_line` 覆盖率 100%，当前 brace fallback 触发 0 次
+
+### 文档更新
+
+- `CLAUDE.md`：进度更新至 Phase 3.1，补充 03_build_chunks.py 命令和一键重建命令
+- `architecture.md`：symbol_index.json schema 加 `end_line` 字段，chunk 边界设计决策更新
+- `README.md`：新建，项目整体介绍 + 快速上手
+
+---
+
 <!-- 新 Session 在此追加，格式：## YYYY-MM-DD — Session N -->
