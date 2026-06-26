@@ -227,6 +227,7 @@ def hit_from_chunk(chunk: dict, score: float, source: str,
         "score": round(score, 2),
         "source": source,
         "chunk_id": chunk["id"],
+        "line_end": chunk["end_line"],
     }
 
 
@@ -351,8 +352,63 @@ def diversify(hits: list[dict], top_k: int, per_file: int = 2) -> list[dict]:
     return out
 
 
+def header_path_for_impl(file: str) -> str | None:
+    p = Path(file)
+    if p.suffix not in {".cpp", ".c"}:
+        return None
+    for ext in (".h", ".hpp"):
+        candidate = str(p.with_suffix(ext)).replace("\\", "/")
+        if candidate in _CHUNKS_BY_FILE:
+            return candidate
+    return None
+
+
+def overview_chunk(file: str) -> dict | None:
+    for c in _CHUNKS_BY_FILE.get(file, []):
+        if c["type"] == "file_overview":
+            return c
+    return None
+
+
+def class_chunk(file: str, class_name: str) -> dict | None:
+    for c in _CHUNKS_BY_FILE.get(file, []):
+        if c["type"] == "class" and c.get("symbol") == class_name:
+            return c
+    return None
+
+
+def expand_bundle(primary_hits: list[dict]) -> list[dict]:
+    """主命中 + 同文件 overview + 配对 .h class（Phase 3.3）。"""
+    seen: set[str] = set()
+    bundle: list[dict] = []
+
+    def add(hit: dict, role: str) -> None:
+        cid = hit["chunk_id"]
+        if cid in seen:
+            return
+        seen.add(cid)
+        entry = dict(hit)
+        entry["bundle_role"] = role
+        bundle.append(entry)
+
+    for h in primary_hits:
+        add(h, "primary")
+        chunk = _CHUNK_BY_ID[h["chunk_id"]]
+        ov = overview_chunk(chunk["file"])
+        if ov:
+            add(hit_from_chunk(ov, round(h["score"] * 0.3, 2), "bundle"), "overview")
+        hdr_file = header_path_for_impl(chunk["file"])
+        cls = chunk.get("class") or ""
+        if hdr_file and cls and chunk["type"] == "function":
+            hdr = class_chunk(hdr_file, cls)
+            if hdr:
+                add(hit_from_chunk(hdr, round(h["score"] * 0.5, 2), "bundle"), "header")
+    return bundle
+
+
 def search(query: str, top_k: int = 10, src_root: Path | None = None,
-           repo_root: Path | None = None, rg_bin: str | None = None) -> list[dict]:
+           repo_root: Path | None = None, rg_bin: str | None = None,
+           bundle: bool = False) -> list[dict]:
     if not _CHUNKS:
         raise RuntimeError("索引未加载，请先调用 load_index()")
     src = src_root or SRC_ROOT
@@ -379,7 +435,34 @@ def search(query: str, top_k: int = 10, src_root: Path | None = None,
         hits.append(h)
 
     hits.sort(key=lambda x: (-x["score"], x["file"], x["line_start"]))
-    return diversify(hits, top_k)
+    primary = diversify(hits, top_k)
+    if bundle:
+        return expand_bundle(primary)
+    return primary
+
+
+def eval_summary(eval_path: Path = EVAL_PATH) -> dict:
+    """返回 Recall 统计，供回归脚本调用。"""
+    data = json.loads(eval_path.read_text(encoding="utf-8"))
+    questions = data["questions"]
+    pass5 = pass10 = 0
+    details = []
+    for q in questions:
+        ok5, hit5, miss5 = eval_recall(q, 5)
+        ok10, hit10, miss10 = eval_recall(q, 10)
+        if ok5:
+            pass5 += 1
+        if ok10:
+            pass10 += 1
+        details.append({
+            "id": q["id"], "ok5": ok5, "ok10": ok10,
+            "hit5": hit5, "miss5": miss5,
+        })
+    total = len(questions)
+    return {
+        "pass5": pass5, "pass10": pass10, "total": total,
+        "recall5_ok": pass5 >= 4, "details": details,
+    }
 
 
 def load_index(chunks_path: Path = CHUNKS_PATH, symbols_path: Path = SYMBOLS_PATH,

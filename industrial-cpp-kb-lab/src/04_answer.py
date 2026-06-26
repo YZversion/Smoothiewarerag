@@ -17,6 +17,7 @@ import argparse
 import importlib.util
 import json
 import os
+import re
 import sys
 from pathlib import Path
 
@@ -39,6 +40,47 @@ DEFAULT_MODEL = {
     "zhipu": "glm-4-flash",
     "openai": "gpt-4o-mini",
 }
+
+CITE_RE = re.compile(
+    r"`((?:src/)?[\w./-]+\.(?:cpp|h|hpp|c)):(\d+)(?:-\d+)?`",
+    re.IGNORECASE,
+)
+
+
+def normalize_cite_path(path: str) -> str:
+    p = path.replace("\\", "/")
+    return p if p.startswith("src/") else f"src/{p.lstrip('/')}"
+
+
+def citation_in_hits(file: str, line: int, hits: list[dict],
+                     chunk_by_id: dict) -> bool:
+    for h in hits:
+        if h["file"] != file:
+            continue
+        chunk = chunk_by_id.get(h["chunk_id"])
+        if chunk and chunk["start_line"] <= line <= chunk["end_line"]:
+            return True
+    return False
+
+
+def validate_citations(answer: str, hits: list[dict],
+                       chunk_by_id: dict) -> dict:
+    """检查回答中的 `file:line` 是否落在检索 bundle 的 chunk 行范围内。"""
+    valid: list[str] = []
+    invalid: list[str] = []
+    for m in CITE_RE.finditer(answer):
+        cite = m.group(0)
+        file = normalize_cite_path(m.group(1))
+        line = int(m.group(2))
+        if citation_in_hits(file, line, hits, chunk_by_id):
+            valid.append(cite)
+        else:
+            invalid.append(cite)
+    return {
+        "valid": valid,
+        "invalid": invalid,
+        "ok": len(invalid) == 0 or (len(valid) > 0 and len(invalid) <= len(valid)),
+    }
 
 
 def load_dotenv(path: Path) -> None:
@@ -78,8 +120,9 @@ def format_context_chunks(hits: list[dict]) -> str:
         cite = f"{h['file']}:{h['line_start']}"
         sym = h.get("symbol") or ""
         sym_part = f" symbol={sym}" if sym else ""
+        role = h.get("bundle_role", "primary")
         blocks.append(
-            f"#### [{i}] `{cite}`  type={h['type']}{sym_part}  "
+            f"#### [{i}] `{cite}`  role={role}  type={h['type']}{sym_part}  "
             f"score={h['score']}  source={h.get('source', '')}\n"
             f"```cpp\n{h['snippet']}\n```"
         )
@@ -131,11 +174,12 @@ def answer(question: str, top_k: int = 5, search_mod=None) -> dict:
     if not kb._CHUNKS:
         kb.load_index()
 
-    hits = kb.search(question, top_k=top_k)
+    hits = kb.search(question, top_k=top_k, bundle=True)
     template = load_prompt_template()
     prompt = build_prompt(template, question, hits)
     provider, api_key, model, base_url = llm_config()
     text = call_llm(prompt, provider, api_key, model, base_url)
+    cites = validate_citations(text, hits, kb._CHUNK_BY_ID)
 
     return {
         "question": question,
@@ -144,6 +188,7 @@ def answer(question: str, top_k: int = 5, search_mod=None) -> dict:
         "answer": text,
         "provider": provider,
         "model": model,
+        "citations": cites,
     }
 
 
@@ -165,8 +210,17 @@ def print_result(result: dict, show_context: bool = False) -> None:
     if show_context:
         print("\n--- context ---")
         for h in result["hits"]:
+            role = h.get("bundle_role", "primary")
             print(f"  {h['file']}:{h['line_start']}  {h.get('symbol', '')}  "
-                  f"[{h['score']}]")
+                  f"role={role}  [{h['score']}]")
+    cites = result.get("citations")
+    if cites:
+        mark = "OK" if cites["ok"] else "WARN"
+        print(f"\n--- 引用校验 [{mark}] ---")
+        if cites["valid"]:
+            print(f"  valid: {cites['valid'][:5]}")
+        if cites["invalid"]:
+            print(f"  invalid: {cites['invalid'][:5]}")
     print("\n--- answer ---\n")
     print(result["answer"])
     print()
@@ -191,9 +245,10 @@ def main() -> None:
     result = answer(args.question, top_k=args.top_k, search_mod=kb)
     if args.json:
         out = {k: v for k, v in result.items() if k != "hits"}
-        out["citations"] = [
+        out["context_citations"] = [
             {"file": h["file"], "line_start": h["line_start"],
-             "symbol": h.get("symbol", ""), "score": h["score"]}
+             "symbol": h.get("symbol", ""), "bundle_role": h.get("bundle_role"),
+             "score": h["score"]}
             for h in result["hits"]
         ]
         print(json.dumps(out, ensure_ascii=False, indent=2))

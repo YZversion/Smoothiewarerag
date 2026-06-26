@@ -5,7 +5,7 @@ Phase 5 — 知识库一体化 CLI
     python src/app.py "G-code 从哪里进入系统？"
     python src/app.py "Planner append_block" --search-only
     python src/app.py --demo
-    python src/app.py "halt" --json
+    python src/app.py --test              # Recall + bundle 回归（跳过 LLM）
 
 子命令等价：
     --search-only  → 仅 03_search（不调 LLM）
@@ -70,6 +70,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--top-k", type=int, default=5, help="检索 chunk 数（默认 5）")
     p.add_argument("--search-only", action="store_true", help="仅检索，不调 LLM")
     p.add_argument("--demo", action="store_true", help="运行 eval Q1–Q5")
+    p.add_argument("--test", action="store_true", help="运行 run_regression.py 回归")
     p.add_argument("--json", action="store_true", help="JSON 输出")
     p.add_argument("--show-context", action="store_true", help="回答时打印引用摘要")
     return p.parse_args()
@@ -77,6 +78,9 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
+    if args.test:
+        reg = load_module("run_regression.py")
+        sys.exit(reg.main(skip_llm=True))
     search = load_module("03_search.py")
     answer_mod = load_module("04_answer.py")
     search.load_index()

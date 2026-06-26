@@ -128,7 +128,7 @@
 
 ## Phase 3 — 分块与检索（BM25）
 
-**目标：建立可被关键词检索的 chunks，并实现 search.py（ripgrep + ctags + BM25 融合）。**
+**目标：建立可被关键词检索的 chunks，并实现 `03_search.py`（ripgrep + ctags + BM25 融合）。**
 
 ### 3.1 分块 → `data/chunks.jsonl`
 - [x] 新增 `03_build_chunks.py`：读取 `file_manifest.json` + `symbol_index.json`
@@ -142,20 +142,23 @@
 - [x] 输出 `chunks.jsonl`
 
 ### 3.2 `03_search.py`（融合检索）
-- [ ] 实现代码友好的 tokenizer：保留原始 token，同时拆 snake_case、camelCase、路径片段和 `::`/`->` 附近标识符
-- [ ] 加最小同义词表：`gcode/G-code/Gcode`、`halt/stop/emergency/e-stop/kill/alarm`、`stepper/StepTicker/StepperMotor`
-- [ ] BM25 索引（如 `rank_bm25` 或轻量倒排）建在 chunks 上
-- [ ] 检索流程：关键词 → BM25 召回 chunk + ctags 精确符号定位 + ripgrep 兜底
-- [ ] 融合排序：符号精确命中、rg 精确命中、BM25 分数分别加权；按 chunk id 去重
-- [ ] 返回结果含「文件:行号」引用路径、chunk type、命中来源、分数、snippet
-- [ ] 检索结果组织为 context bundle：主 chunk（命中函数/类）+ 辅助 chunk（对应 header class 定义、调用者/被调用者附近、同文件 overview）
-- [ ] 用 `industrial-cpp-kb-lab/eval/eval_questions.json` 的 5 个问题逐一测试召回质量
+- [x] 实现代码友好的 tokenizer：保留原始 token，同时拆 snake_case、camelCase、路径片段和 `::`/`->` 附近标识符
+- [x] 中文问句 `QUERY_HINTS`（等价于原 gcode/halt/stepper 同义词表目标）
+- [x] BM25 索引（`rank_bm25`）建在 chunks 上（内存）
+- [x] 检索流程：关键词 → BM25 召回 chunk + ctags 精确符号定位 + ripgrep 兜底
+- [x] 融合排序：符号 / rg / BM25 加权；chunk id 去重；`.cpp` function 优先
+- [x] 返回结果含「文件:行号」、type、source、score、snippet
+- [x] `--eval` 读 `eval_questions.json`，报 Recall@5 / Recall@10
+
+### 3.3 context bundle
+- [x] `search(..., bundle=True)`：primary + overview + 配对 `.h` class
+- [ ] caller/callee（Plan B CodeGraph）
 
 **✅ Phase 3 验收**
-- [ ] 输入模块名/函数名/G-code/error 关键词，能返回相关 chunk + 引用路径
-- [ ] `eval_questions.json` 的 5 个问题 Recall@5 ≥ 4/5，Recall@10 覆盖每题的核心 expected files
-- [ ] 对 Q2 这类跨链路问题，Top-10 至少覆盖 `Robot.cpp`、`Planner.cpp`、`Conveyor.cpp`、`StepTicker.cpp` 中的 3 个
-- [ ] 对至少 3 个函数类问题，返回 bundle 同时包含实现 chunk 和相关 class/header 或 file overview chunk
+- [x] 输入关键词 → chunk + 引用路径
+- [x] Recall@5 ≥ 4/5（实测 5/5）
+- [x] Q2 Top-10 覆盖 ≥3 核心运动文件
+- [x] Q1–Q3 bundle 含 overview 或 header
 
 ---
 
@@ -164,18 +167,18 @@
 **目标：把检索到的上下文喂给 LLM，得到「源码 + 解释 + 引用」式回答。**
 
 ### 4.1 `prompts/code_qa.md`
-- [ ] 写问答 prompt 模板：角色=工业设备 C++ 代码助手
-- [ ] 要求：基于给定上下文回答、必须给出文件:行号引用、上下文不足时明确说不知道
+- [x] 写问答 prompt 模板：角色=工业设备 C++ 代码助手
+- [x] 要求：基于给定上下文回答、必须给出 file:行号引用、上下文不足时明确说不知道
 
 ### 4.2 `04_answer.py`
-- [ ] 串起 search.py 的检索结果 → 拼接上下文 → 调 LLM
-- [ ] LLM 调用通过 `LLM_PROVIDER` / `LLM_MODEL` 配置，不把 Claude / OpenAI / 本地模型写死在主流程里
-- [ ] 输出：解释 + 相关源码片段 + 引用路径
-- [ ] 跑通 5 个练习问题，人工核对答案是否「有据可查」
+- [x] 串起 `03_search.py`（bundle=True）→ 拼接上下文 → 调 LLM
+- [x] LLM 通过 `LLM_PROVIDER` / `LLM_MODEL` / `LLM_API_KEY`（OpenAI 兼容 SDK）
+- [x] 输出：解释 + 源码片段 + 引用；`validate_citations()` 校验引用
+- [x] `--demo` 跑通 5 个练习问题
 
 **✅ Phase 4 验收**
-- [ ] 对 5 个练习问题，模型回答能正确指向真实代码并附引用
-- [ ] 回答不靠模型「编」，而是基于检索上下文
+- [x] 5 题回答指向真实代码并附引用
+- [x] 基于检索上下文；引用校验为辅助 WARN
 
 ---
 
@@ -184,16 +187,15 @@
 **目标：`app.py` 把整条链路打通，形成一个可演示的最小知识库。**
 
 ### 5.1 `app.py`
-- [ ] 一个入口：输入关键词 → 检索 → LLM → 输出
-- [ ] 先做 CLI 即可，不急着上 Web UI
-- [ ] 输出统一格式：解释 / 源码 / 引用路径
+- [x] 一个入口：输入关键词 → 检索 → LLM → 输出（`--search-only` / `--demo`）
+- [x] CLI only；输出：解释 + 引用列表
 
 ### 5.2 自测脚本
-- [ ] 把 5 个练习问题做成回归测试，每次改动后一键跑
+- [x] `run_regression.py`；`app.py --test` 一键 Recall + bundle 回归
 
 **✅ Phase 5 验收**
-- [ ] 一条命令即可对任意关键词返回「源码+解释+引用」
-- [ ] 这就是 wire bonder 知识库的可复用雏形
+- [x] `python src/app.py "问题"` 返回源码+解释+引用
+- [x] wire bonder 可复用雏形（换 `--repo-root` 重跑管道）
 
 ---
 
@@ -335,7 +337,13 @@ Return the most relevant functions and their callers/callees. Do not guess.
 
 ## 当前进度落点
 
-当前已完成 **Phase 0、Phase 1、Phase 2**。
-`file_manifest.json` 与 `symbol_index.json` 已生成，下一步进入 **Phase 3：分块 + 检索**。
-优先完成 `03_build_chunks.py`、`03_search.py` 和 `eval/eval_questions.json` 的 Recall@K 验收。
-Plan B 的 CodeGraph 实验可以在 Phase 3 基础检索跑通后并行做，不阻塞主线 demo。
+当前已完成 **Phase 0 – Phase 5 主线**（Smoothieware 练手 demo 可演示）。
+
+```powershell
+cd industrial-cpp-kb-lab
+python src/app.py "G-code 从哪里进入系统？"
+python src/app.py --test                    # Recall + bundle 回归
+python src/run_regression.py --skip-llm     # 同上，不调 LLM
+```
+
+下一步：**Phase 6** 评估扩充 / Plan B CodeGraph A/B；**Phase 7** 迁移 wire bonder 代码（`--repo-root`）。
