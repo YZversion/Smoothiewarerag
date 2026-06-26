@@ -18,9 +18,9 @@ Smoothiewarerag/
 ├── .cursor/rules/industrial-kb.mdc  # Cursor：写 src/*.py 时的极简纪律
 └── industrial-cpp-kb-lab/
     ├── repos/Smoothieware/          # clone 源码（.gitignore，只读）
-    ├── src/                         # 01_ 扫描 → 02_ 符号 → 03_ 分块/检索 → 04_ 问答 → app.py
-    ├── data/                        # file_manifest / symbol_index / chunks.jsonl（生成物）
-    ├── eval/eval_questions.json     # Recall@K golden set（5 题）
+    ├── src/                         # 01–04 管道 + kb_cli/（Typer CLI + Textual TUI）
+    ├── data/                        # file_manifest / symbol_index / chunks.jsonl / call_graph.json
+    ├── eval/eval_questions.json     # Recall@K golden set（30 题：5 tune + 25 holdout）
     ├── notes/smoothieware_code_map.md
     ├── prompts/code_qa.md
     └── requirements.txt             # rank-bm25, openai, rich
@@ -34,18 +34,20 @@ Smoothiewarerag/
 | 1 | ✅ | 代码地图、5 个练习问题、10 个重点文件种子 |
 | 2 | ✅ | `file_manifest.json`（269 文件）、`symbol_index.json`（3072 符号，含 end_line） |
 | 3.1 | ✅ | `chunks.jsonl`（1569 chunk）；`symbol_start` + `chunk_lines` header |
-| 3.2 | ✅ | `03_search.py`；Recall@5=5/5；`QUERY_HINTS`（按意图触发） |
+| 3.2 | ✅ | `03_search.py`；Recall@5=5/5；`HINT_GROUPS`（具名触发函数，按意图触发） |
 | 3.3 | ✅ | `search(bundle=True)`：overview + 配对 header |
+| 3.4 | ✅ | `03_build_callgraph.py`：mention graph（986 chunks / 5719 edges）；`search_graph()` 对 flow_intent 查询追加 ≤3 新文件 |
 | 4 | ✅ | `04_answer.py` + streaming + `validate_citations` + `trim_context_hits` |
-| 5 | ✅ | `app.py` REPL + Rich + `run_regression.py`（`--test`） |
-| 6 | ✅ | 检索冻结；验收清单 `kb_acceptance.md`；6.2 暂缓 |
-| Plan B | ✅ | CodeGraph A/B 完成；见 `notes/comparison.md`，不接入主 `app.py` |
+| 5 | ✅ | `kb_cli` 包（Typer）；`.\kb tui` Textual Search Cockpit Milestone A+B；`app.py` 旧入口保留 |
+| 6 | ✅ | 30 题（5 tune + 25 holdout）；mean_cov@5 = **87% PASS**；H4 @5 缺口已知、已冻结 |
+| Plan B | ✅ | A/B 对比完成；`comparison.md`；CodeGraph 补结构查询，暂不接入 `app.py` |
 
 ## 检索设计原则（可迁移，勿 per-question 硬编码）
 
-- **QUERY_HINTS 按问题意图触发**（短语/共现，非裸子串；例：`入口`  alone 不触发 entry 组）
+- **HINT_GROUPS 按问题意图触发**（短语/共现具名函数，非裸子串；`入口` alone 不触发 entry 组）
 - **事件驱动加权**：`context_coherence_adjustment()` 按 query/hints 模块名区分同名 `on_*`
 - **入口 chunk 优先**：`start_line == symbol_start` 高于子窗口
+- **call graph 扩展**（Phase 3.4）：`flow_intent_query` 为 True 时追加 ≤3 条新文件 mention graph 命中；事件总线动态分发无法通过 mention 捕获（已知限制）
 - **禁止**把 expected_files 文件名硬编码进检索器——Phase 7 wire bonder 没有 golden set 可抄
 - **检索已冻结**（2026-06-25）：gate = 全体 **mean cov@5 ≥ 70%**；不为 holdout @5 缺口写规则（H4）
 
@@ -82,9 +84,9 @@ SerialConsole/Player → GcodeDispatch::on_console_line_received
 |----|------|
 | 关键词 | ripgrep |
 | 符号 | Universal Ctags（`--fields=+e`） |
-| 检索 | BM25（`rank_bm25`）+ 符号融合 + `QUERY_HINTS` |
+| 检索 | BM25（`rank_bm25`）+ 符号融合 + `HINT_GROUPS` + mention graph（`call_graph.json`） |
 | LLM | `LLM_PROVIDER` / `LLM_MODEL` / `LLM_API_KEY`（OpenAI 兼容 SDK） |
-| CLI | Rich REPL + streaming（`app.py`） |
+| CLI | `kb_cli`（Typer）+ Textual TUI；`app.py` 旧入口保留 |
 | 胶水 | Python 3.11 |
 
 ## 常用命令
@@ -93,25 +95,25 @@ SerialConsole/Player → GcodeDispatch::on_console_line_received
 cd industrial-cpp-kb-lab
 pip install -r requirements.txt
 
-# 重建索引管道
+# 重建索引管道（顺序执行）
 python src/01_scan_files.py
 python src/02_extract_symbols.py
 python src/03_build_chunks.py
+python src/03_build_callgraph.py        # Phase 3.4：mention graph
 
-# Fancy CLI（须在 industrial-cpp-kb-lab 目录下）
-.\kb.cmd repl                            # prompt_toolkit REPL（F1/F2/F3/F4/F5/F8）
-.\kb.cmd search "G-code 从哪里进入系统？" --top-k 5 --preview
-.\kb.cmd sources "halt error stop 调用链在哪里"
-.\kb.cmd symbol "Planner::append_block"
-.\kb.cmd eval                            # Recall dashboard
-.\kb.cmd export answer.md                # 导出最近一次 session
-.\kb.cmd tui                             # Textual 可选全屏 TUI
+# 新 CLI（须在 industrial-cpp-kb-lab 目录下）
+.\kb tui                                 # Textual TUI（j/k 导航，? 帮助）
+.\kb search "G-code 从哪里进入系统？" --top-k 5 --preview
+.\kb ask "halt emergency 逻辑在哪里"
+.\kb sources "halt error stop 调用链在哪里"
+.\kb symbol "Planner::append_block"
+.\kb eval                                # Recall dashboard
+.\kb repl                                # REPL 模式
+# 若 kb 不在 PATH，用：python -m kb_cli <subcmd>
 
 # 旧入口仍兼容
 python src/app.py "G-code 从哪里进入系统？"
-python src/app.py --search-only "关键词"
-python src/app.py --demo
-python src/app.py --test                 # Recall dashboard
+python src/app.py --test                 # Recall 回归
 
 python src/run_regression.py --skip-llm
 python src/03_search.py --eval          # Recall + coverage@K（tune/holdout 分项）
@@ -127,7 +129,7 @@ python src/03_search.py --eval          # Recall + coverage@K（tune/holdout 分
 | [`architecture.md`](architecture.md) | 数据流、检索规则、LLM 约束 |
 | [`industrial-kb.mdc`](.cursor/rules/industrial-kb.mdc) | 写 `src/*.py` 时的极简纪律 |
 | [`docs/history.md`](docs/history.md) | Session 进度日志 |
-| [`eval/eval_questions.json`](industrial-cpp-kb-lab/eval/eval_questions.json) | 检索回归集（15 题，tune/holdout） |
+| [`eval/eval_questions.json`](industrial-cpp-kb-lab/eval/eval_questions.json) | 检索回归集（30 题：5 tune + 25 holdout） |
 | [`notes/kb_acceptance.md`](industrial-cpp-kb-lab/notes/kb_acceptance.md) | **知识库验收清单**（自动化 + 人工抽测） |
 | [`notes/phase6_conclusion.md`](industrial-cpp-kb-lab/notes/phase6_conclusion.md) | Phase 6 检索 vs LLM 结论 |
 | [`notes/eval_failures.md`](industrial-cpp-kb-lab/notes/eval_failures.md) | 检索失败根因（已修复/open） |

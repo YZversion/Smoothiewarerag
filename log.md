@@ -76,4 +76,58 @@ python src/eval_answer_layer.py
 ## 仍需注意
 
 - 30 题中 H4 在 `Recall@5` 仍失败，但 `Recall@10` 通过；这是之前冻结时保留的真实缺口。
-- `eval_answer_layer.py` 的符号覆盖率只有 50%，说明“文件能找对”和“具体符号能进入 trimmed LLM context”仍是两层问题，后续可以单独优化。
+- `eval_answer_layer.py` 的符号覆盖率只有 50%，说明”文件能找对”和”具体符号能进入 trimmed LLM context”仍是两层问题，后续可以单独优化。
+
+---
+
+# 修改日志（续）
+
+日期：2026-06-26（Session 5）
+
+## Phase 3.4 — 轻量 Mention Graph
+
+1. 新建 `src/03_build_callgraph.py`
+   - 扫描所有 function/class chunk 文本，提取已知符号名（来自 symbol_index.json），自引用过滤
+   - 输出 `data/call_graph.json`：`{mentioned_by: {sym: [chunk_id,...]}, mentions: {chunk_id: [sym,...]}}`
+   - 规模：986 chunks / 827 symbols / 5719 edges
+
+2. `03_search.py` 新增
+   - `W_GRAPH = 25.0`、`CALL_GRAPH_PATH`、`_CALL_GRAPH` 全局
+   - `load_call_graph()`：文件不存在时 no-op
+   - `search_graph(primary_hits)`：对 primary hit symbols 查 `mentioned_by`，返回 ≤3 新文件 hit
+   - `search()` 末尾：`flow_intent_query()` 为 True 时追加 graph_extras
+
+3. eval 对比
+   - Q5 cov@5：50% → 67%（+17pp，Module.h 通过 graph 补入）
+   - all mean_cov@5：86% → 87%；tune：68% → 71%
+   - Q2/Q3/Q4 无变化（事件总线盲区，mentor graph 无法捕获）
+
+## Phase 5 — kb_cli 包 + Textual TUI Milestone B
+
+4. `src/kb_cli/__main__.py` 新建
+   - 支持 `python -m kb_cli <subcmd>` 调用方式
+
+5. `kb.cmd` 更新
+   - 从 `python src/app.py %*` 改为 `set PYTHONPATH=src && python -m kb_cli %*`
+   - 支持 `.\kb tui`、`.\kb search`、`.\kb ask` 等所有子命令
+
+6. `src/kb_cli/tui.py` — Textual TUI Milestone B
+   - 新增 `_HELP_TEXT` 常量和 `HelpScreen(ModalScreen)` 浮层
+   - `on_data_table_row_highlighted`：光标移动时右侧 preview 实时刷新
+   - `action_table_down / action_table_up`：j/k 导航，自动 focus table
+   - `action_show_help` 改为 `push_screen(HelpScreen())`
+   - HelpScreen 绑定 Esc/q/? 关闭
+
+## 文档更新
+
+7. `AGENTS.md`、`README.md`、`architecture.md`、`docs/history.md` 全部同步至 Session 5 状态
+
+## 验证结果
+
+```powershell
+python src/03_build_callgraph.py      # 生成 call_graph.json
+python src/03_search.py --eval        # all mean_cov@5: 87% PASS
+python -c “import py_compile; py_compile.compile('src/kb_cli/tui.py', doraise=True); print('OK')”
+.\kb --help                           # Typer CLI 正常启动
+.\kb eval                             # 30 题 eval 输出正常
+```

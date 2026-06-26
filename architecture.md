@@ -15,15 +15,17 @@
 │    → 01_scan_files.py      → file_manifest.json         │
 │    → 02_extract_symbols.py → symbol_index.json (+end_line)│
 │    → 03_build_chunks.py    → chunks.jsonl               │
+│    → 03_build_callgraph.py → call_graph.json            │
 └─────────────────────────────────────────────────────────┘
                           │
                           ▼
 ┌─────────────────────────────────────────────────────────┐
 │                      在线检索阶段                         │
-│  query → tokenize + QUERY_HINTS（按意图扩展）             │
+│  query → tokenize + HINT_GROUPS（按意图扩展）             │
 │    ├─ symbol_index 精确命中（含 on_* 事件加权规则）        │
 │    ├─ ripgrep 兜底                                       │
-│    └─ BM25 on chunks.jsonl                              │
+│    ├─ BM25 on chunks.jsonl                              │
+│    └─ search_graph()（flow_intent 时追加 ≤3 新文件）      │
 │         → merge + diversify + optional bundle             │
 │         → Top-K hits（file:line, snippet, score）         │
 └─────────────────────────────────────────────────────────┘
@@ -122,12 +124,23 @@
 
 ### Bundle（Phase 3.3）
 
-`search(..., bundle=True)`：primary + 同文件 `file_overview` + 配对 `.h` class。caller/callee 留 Plan B。
+`search(..., bundle=True)`：primary + 同文件 `file_overview` + 配对 `.h` class。
+
+### Mention Graph 扩展（Phase 3.4）
+
+`03_build_callgraph.py` 扫描每个 function/class chunk 文本，记录其中出现的已知符号名，输出：
+```
+call_graph.json: {mentioned_by: {sym: [chunk_id,...]}, mentions: {chunk_id: [sym,...]}}
+```
+- 986 chunks with mentions，5719 edges（Smoothieware 当前值）
+- `search_graph(primary_hits)`：对 primary hits 的 symbol 查 `mentioned_by`，追加 ≤3 新文件 hit
+- 仅当 `flow_intent_query()` 为 True 时触发；文件不存在时 no-op
+- **已知限制**：事件总线（`call_event(ON_XXX, ...)`）的动态分发边无法通过文本 mention 捕获
 
 ### 评估
 
-`eval/eval_questions.json` → Recall@5 / coverage@K / Recall@10。  
-**Gate（检索已冻结）：** 全体 **mean coverage@5 ≥ 70%**。holdout 只报告，不为 H4 等 @5 缺口写规则。
+`eval/eval_questions.json`（30 题：5 tune + 25 holdout）→ Recall@5 / coverage@K / Recall@10。  
+**Gate（检索已冻结）：** 全体 **mean coverage@5 ≥ 70%**（当前 87%）。holdout 只报告，不为 H4 等 @5 缺口写规则。
 
 ---
 
@@ -146,14 +159,32 @@
 
 ---
 
-## app.py — CLI
+## CLI
+
+### kb_cli（新，推荐）
+
+`src/kb_cli/`：Typer 子命令 + Textual TUI。
 
 | 命令 | 行为 |
 |------|------|
-| `python src/app.py` | REPL（`/search`, `/demo`, `/eval`, `/quit`） |
+| `.\kb tui` | Textual TUI（5 区布局；j/k 导航；? help；q 退出） |
+| `.\kb search "query"` | 检索表格 + preview |
+| `.\kb ask "question"` | 检索 + LLM 流式回答 |
+| `.\kb sources "query"` | 仅显示来源 |
+| `.\kb symbol "Cls::fn"` | 符号定位 |
+| `.\kb eval` | Recall + coverage dashboard |
+| `.\kb repl` | 交互 REPL |
+
+若 `.\kb` 不在 PATH：`python -m kb_cli <subcmd>`（需在 `industrial-cpp-kb-lab/` 下运行）。
+
+### app.py（旧，仍兼容）
+
+| 命令 | 行为 |
+|------|------|
+| `python src/app.py` | Rich REPL |
 | `python src/app.py "问题"` | Streaming + Rich + Sources 表 |
 | `--search-only` | 仅检索 |
-| `--json` | 纯 JSON（管道用，无 Rich） |
+| `--json` | 纯 JSON（管道用） |
 | `--test` | `run_regression.py` |
 
 默认 `--top-k 8`。
@@ -167,7 +198,8 @@
 | 检索 | BM25 + rg + ctags | 无 GPU，可迁移 |
 | 不用向量库 | Phase 6 再评估 | 避免过早复杂化 |
 | chunk 边界 | ctags `end_line` | 工业 C++ 可靠 |
-| Hint 策略 | 按意图触发 | 避免 Q1/Q2 互污染 |
+| Hint 策略 | `HINT_GROUPS` 具名触发函数 | 避免 Q1/Q2 互污染；可测试 |
+| Mention graph | text-scan，不引入新工具 | 补直接调用；事件总线盲区已知 |
 | 不加文件名白名单 | 泛化规则 only | Phase 7 无 golden set |
 | LLM | OpenAI 兼容 SDK | 智谱/OpenAI 可换 |
 | eval 规模 | 5 题 | 易过拟合；Phase 6 扩 hold-out |

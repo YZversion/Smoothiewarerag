@@ -12,12 +12,19 @@
 cd industrial-cpp-kb-lab
 pip install -r requirements.txt
 
-# 一键重建索引（Smoothieware 已 clone 时）
+# 重建索引管道
 python src/01_scan_files.py
 python src/02_extract_symbols.py
 python src/03_build_chunks.py
+python src/03_build_callgraph.py        # mention graph（Phase 3.4）
 
-# 问答（注意：须在 industrial-cpp-kb-lab 目录执行）
+# 新 CLI（推荐）
+.\kb tui                                 # Textual TUI 全屏检索台
+.\kb search "G-code 从哪里进入系统？"
+.\kb ask "halt emergency 在哪里处理？"
+.\kb eval                                # Recall@5 / coverage@K 报告
+
+# 旧入口仍兼容
 python src/app.py                        # Rich REPL
 python src/app.py "G-code 从哪里进入系统？"
 python src/app.py --test                 # 检索回归
@@ -58,11 +65,13 @@ Smoothiewarerag/
     │   ├── 01_scan_files.py
     │   ├── 02_extract_symbols.py
     │   ├── 03_build_chunks.py
-    │   ├── 03_search.py       # BM25 + symbol + rg 融合
-    │   ├── 04_answer.py       # 检索 + LLM + streaming
-    │   ├── app.py               # REPL / Rich CLI
-    │   └── run_regression.py
-    ├── data/                    # 生成物（.gitignore）
+    │   ├── 03_build_callgraph.py  # Phase 3.4：mention graph
+    │   ├── 03_search.py           # BM25 + symbol + rg + graph 融合
+    │   ├── 04_answer.py           # 检索 + LLM + streaming
+    │   ├── app.py                 # 旧 REPL / Rich CLI
+    │   ├── run_regression.py
+    │   └── kb_cli/                # 新 Typer CLI + Textual TUI
+    ├── data/                      # 生成物（chunks.jsonl / call_graph.json 等）
     ├── eval/eval_questions.json
     ├── prompts/code_qa.md
     ├── notes/smoothieware_code_map.md
@@ -76,13 +85,15 @@ Smoothiewarerag/
 | Phase | 内容 | 状态 |
 |-------|------|------|
 | 0–2 | 环境 / 探索 / 扫描符号 | ✅ |
-| 3 | 分块 + 融合检索 + bundle | ✅ |
+| 3.1–3.3 | 分块 + 融合检索 + bundle | ✅ |
+| 3.4 | mention graph（`03_build_callgraph.py`）+ `search_graph()` | ✅ |
 | 4 | LLM 问答 + 引用校验 | ✅ |
-| 5 | REPL + Rich + 回归脚本 | ✅ |
-| 6 | eval + LLM 分层评估；检索冻结 | ✅ gate mean cov@5≥70% |
+| 5 | `kb_cli` Typer CLI + Textual TUI（j/k / help / search） | ✅ |
+| 6 | 30 题 eval；mean cov@5=87% PASS；检索冻结 | ✅ |
+| Plan B | rg/BM25 vs CodeGraph A/B 对比完成 | ✅ |
 | 7 | 迁移 wire bonder | ⬜ |
 
-检索回归：`python src/03_search.py --eval` → mean cov@5 **73% PASS**（gate：≥70%）。检索层已冻结，见 `notes/phase6_conclusion.md`。
+检索回归：`.\kb eval` 或 `python src/03_search.py --eval` → mean cov@5 **87% PASS**（gate ≥70%）。
 
 ---
 

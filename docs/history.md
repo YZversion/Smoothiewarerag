@@ -234,4 +234,61 @@
 
 ---
 
+---
+
+## 2026-06-26 — Session 5
+
+### Phase 6 eval 扩充到 30 题
+
+- `eval_questions.json` 从 15 题扩展到 30 题（5 tune + 25 holdout H1–H25）
+- 新增 holdout 覆盖：Config / FileConfigSource / SlowTicker / Adc / Watchdog / Extruder / Laser / Switch / FilamentDetector / ZProbe / DeltaGridStrategy / CartGridStrategy / PID_Autotuner / Thermistor / CurrentControl
+- 基线结果（加图前）：Recall@5 = 29/30，mean_cov@5 = 86%，gate PASS
+
+### Phase 3.4 — 轻量 Mention Graph
+
+**实现：**
+- `src/03_build_callgraph.py`（新建）：扫描每个 function/class chunk 文本，提取已知符号名（来自 symbol_index.json），自引用过滤，输出 `data/call_graph.json`
+- `03_search.py` 新增：`W_GRAPH=25`、`_CALL_GRAPH` 全局、`load_call_graph()`、`search_graph(primary_hits)` 函数、`flow_intent_query` 触发条件追加 ≤3 新文件
+- 图规模：986 chunks with mentions，827 unique symbols，5719 edges
+
+**eval 对比（加图后）：**
+
+| 指标 | 加图前 | 加图后 |
+|---|---|---|
+| all mean_cov@5 | 86% | **87%** |
+| tune mean_cov@5 | 68% | **71%** |
+| Q5 cov@5 | 50% (3/6) | **67% (4/6)** |
+| Q2/Q3/Q4 | 无变化 | 无变化 |
+
+**已知限制：**
+- Smoothieware 事件总线（`call_event(ON_GCODE_RECEIVED, ...)`）为动态分发，文本 mention 扫描无法捕获。Q2 缺 GcodeDispatch 的问题是事件总线盲区，不是 mention graph 能解决的。
+- Q3 的 primary Planner hit 可能命中 class/overview chunk（symbol 为空），无法通过 `mentioned_by["append_block"]` 找到 Robot.cpp。
+
+### Phase 5 升级 — kb_cli 包 + Textual TUI
+
+**kb_cli 包（`src/kb_cli/`）：**
+- Typer 子命令：`search`, `ask`, `sources`, `symbol`, `eval`, `demo`, `history`, `export`, `tui`, `repl`
+- `__main__.py` 支持 `python -m kb_cli`
+- `kb.cmd` 更新：设 PYTHONPATH=src，调 `python -m kb_cli`
+- 所有子命令与旧 `app.py` 功能对等，旧入口保留
+
+**Textual TUI Milestone A+B（`src/kb_cli/tui.py`）：**
+- 五区布局：顶部 Input / 左侧 ListView / 中间 DataTable / 右侧 Source Preview / 底部 Footer
+- Milestone A：搜索 → DataTable 显示 20 hits → 右侧 preview 显示 top hit 真实源码
+- Milestone B：`on_data_table_row_highlighted` 实时刷新 preview；j/k 导航；`HelpScreen(ModalScreen)` 浮层（`?` 打开，Esc/q/? 关闭）；q 干净退出
+- 工具版本：Textual 8.2.7
+
+### Plan B A/B 对比完成
+
+- `notes/smoothieware_rg_findings.md`：rg/BM25 对 5 个结构问题的表现记录
+- `notes/comparison.md`：A/B 总表 + CodeGraph 强弱项 + 误报/漏报案例 + wire bonder 建议
+- **结论**：CodeGraph 在 caller/callee/impact radius 上明显更强；对事件总线动态分发和命令号分发同样无能为力；暂不接入 `app.py`
+- Plan B 状态从 🔬 更新为 ✅
+
+### 关键发现与结论
+
+1. **检索层事件总线盲区是结构性限制**：无论 BM25、mention graph 还是 CodeGraph，都无法静态解析 `THEKERNEL->call_event(ON_XXX, ...)` 的动态分发关系。未来需要 Plan C：命令/事件/报警分发索引。
+2. **mention graph 对直接函数调用有效**，对事件总线无效：补上 Q5 Module.h，但 Q2/Q3 改善有限。
+3. **TUI 工程量小、体验提升明显**：Textual 8.x 的 ModalScreen + DataTable.RowHighlighted 足够实现流畅的 j/k preview 联动。
+
 <!-- 新 Session 在此追加，格式：## YYYY-MM-DD — Session N -->
