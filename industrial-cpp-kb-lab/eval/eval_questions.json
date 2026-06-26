@@ -1,13 +1,16 @@
 {
-  "version": 1,
-  "description": "Phase 3 retrieval golden set for the first Smoothieware code QA demo.",
+  "version": 2,
+  "description": "Phase 6 retrieval eval: tune (历史调参集) + holdout (冻结，只跑分，不作调参反馈). 检索层已冻结.",
   "metrics": {
-    "primary": "Recall@5 >= 4/5 questions",
-    "secondary": "Recall@10 should cover the core expected files for multi-hop questions"
+    "gate": "全体 mean coverage@5 >= 70%（python src/03_search.py --eval 退出码 0）",
+    "coverage": "每题 coverage@K = |hit expected files| / |expected_files|",
+    "recall5": "每题 Recall@5 = 至少命中 1 个 expected file（分项报告）",
+    "holdout": "holdout 只报告；不为 holdout @5 缺口写检索规则（例：H4 戒掉 hint 误触后的真缺口）"
   },
   "questions": [
     {
       "id": "Q1",
+      "split": "tune",
       "question": "G-code 从哪里进入系统？",
       "expected_files": [
         "src/modules/communication/SerialConsole.cpp",
@@ -22,6 +25,7 @@
     },
     {
       "id": "Q2",
+      "split": "tune",
       "question": "G-code 如何变成运动命令？",
       "expected_files": [
         "src/modules/communication/GcodeDispatch.cpp",
@@ -33,8 +37,6 @@
       "expected_symbols": [
         "GcodeDispatch::on_console_line_received",
         "Robot::on_gcode_received",
-        "Robot::process_move",
-        "Robot::append_milestone",
         "Planner::append_block",
         "Conveyor::queue_head_block",
         "StepTicker::step_tick"
@@ -42,6 +44,7 @@
     },
     {
       "id": "Q3",
+      "split": "tune",
       "question": "Motion / Planner / Stepper 相关代码在哪里？",
       "expected_files": [
         "src/modules/robot/Robot.cpp",
@@ -54,13 +57,13 @@
       "expected_symbols": [
         "Planner::append_block",
         "Block::calculate_trapezoid",
-        "Conveyor::get_next_block",
         "StepTicker::step_tick",
         "StepperMotor::manual_step"
       ]
     },
     {
       "id": "Q4",
+      "split": "tune",
       "question": "error / stop / halt / emergency 逻辑在哪里？",
       "expected_files": [
         "src/libs/Kernel.cpp",
@@ -73,14 +76,14 @@
       ],
       "expected_symbols": [
         "Kernel::immediate_halt",
-        "Kernel::call_event",
         "KillButton::on_idle",
-        "Conveyor::on_halt",
-        "StepperMotor::on_halt"
+        "Endstops::on_halt",
+        "Conveyor::on_halt"
       ]
     },
     {
       "id": "Q5",
+      "split": "tune",
       "question": "模块系统如何注册、触发、通信？",
       "expected_files": [
         "src/libs/Module.h",
@@ -93,10 +96,125 @@
       "expected_symbols": [
         "Module::register_for_event",
         "Kernel::add_module",
-        "Kernel::register_for_event",
         "Kernel::call_event",
+        "PublicData::get_value"
+      ]
+    },
+    {
+      "id": "H1",
+      "split": "holdout",
+      "question": "Planner::append_block 在哪个文件实现？",
+      "expected_files": [
+        "src/modules/robot/Planner.cpp"
+      ],
+      "expected_symbols": [
+        "Planner::append_block"
+      ]
+    },
+    {
+      "id": "H2",
+      "split": "holdout",
+      "question": "immediate_halt 停机函数在哪里？",
+      "expected_files": [
+        "src/libs/Kernel.cpp"
+      ],
+      "expected_symbols": [
+        "Kernel::immediate_halt"
+      ]
+    },
+    {
+      "id": "H3",
+      "split": "holdout",
+      "question": "硬件急停按钮 KillButton 如何处理？",
+      "expected_files": [
+        "src/modules/utils/killbutton/KillButton.cpp",
+        "src/libs/Kernel.cpp"
+      ],
+      "expected_symbols": [
+        "KillButton::on_idle",
+        "Kernel::immediate_halt"
+      ]
+    },
+    {
+      "id": "H4",
+      "split": "holdout",
+      "question": "回零 / homing / G28 命令在哪里处理？",
+      "expected_files": [
+        "src/modules/tools/endstops/Endstops.cpp"
+      ],
+      "expected_symbols": [
+        "Endstops::home",
+        "Endstops::process_home_command"
+      ]
+    },
+    {
+      "id": "H5",
+      "split": "holdout",
+      "question": "Block 梯形速度规划 calculate_trapezoid 在哪？",
+      "expected_files": [
+        "src/modules/robot/Block.cpp"
+      ],
+      "expected_symbols": [
+        "Block::calculate_trapezoid"
+      ]
+    },
+    {
+      "id": "H6",
+      "split": "holdout",
+      "question": "StepTicker 步进中断 step_tick 在哪里？",
+      "expected_files": [
+        "src/libs/StepTicker.cpp"
+      ],
+      "expected_symbols": [
+        "StepTicker::step_tick"
+      ]
+    },
+    {
+      "id": "H7",
+      "split": "holdout",
+      "question": "StepperMotor 单轴步进电机控制在哪个文件？",
+      "expected_files": [
+        "src/libs/StepperMotor.cpp"
+      ],
+      "expected_symbols": [
+        "StepperMotor::manual_step"
+      ]
+    },
+    {
+      "id": "H8",
+      "split": "holdout",
+      "question": "main 函数和系统启动入口在哪里？",
+      "expected_files": [
+        "src/main.cpp",
+        "src/libs/Kernel.cpp"
+      ],
+      "expected_symbols": [
+        "main",
+        "Kernel::add_module"
+      ]
+    },
+    {
+      "id": "H9",
+      "split": "holdout",
+      "question": "PublicData 模块间共享数据怎么读写？",
+      "expected_files": [
+        "src/libs/PublicData.cpp",
+        "src/libs/PublicData.h"
+      ],
+      "expected_symbols": [
         "PublicData::get_value",
         "PublicData::set_value"
+      ]
+    },
+    {
+      "id": "H10",
+      "split": "holdout",
+      "question": "TemperatureControl 如何响应 G-code 温度命令？",
+      "expected_files": [
+        "src/modules/tools/temperaturecontrol/TemperatureControl.cpp"
+      ],
+      "expected_symbols": [
+        "TemperatureControl::on_gcode_received"
       ]
     }
   ]

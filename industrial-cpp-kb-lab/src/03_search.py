@@ -31,25 +31,52 @@ SYMBOLS_PATH = LAB_ROOT / "data" / "symbol_index.json"
 EVAL_PATH = LAB_ROOT / "eval" / "eval_questions.json"
 SRC_ROOT = DEFAULT_REPO_ROOT / "src"
 
-# 中文问句 → 英文代码种子 token（eval 驱动，仅扩展 query）
-QUERY_HINTS: list[tuple[tuple[str, ...], list[str]]] = [
-    (("进入", "入口"), [
+# 中文问句 → 英文代码种子 token（短语/共现触发，避免裸子串误伤）
+def _hint_entry(query: str, ql: str) -> bool:
+    phrases = ("从哪里进入", "从哪进入", "进入系统", "gcode进入", "g-code进入")
+    if any(p in query or p in ql for p in phrases):
+        return True
+    return "进入" in query and "gcode" in ql
+
+
+def _hint_motion_chain(query: str, ql: str) -> bool:
+    if "变成" in query:
+        return True
+    return "运动" in query and "命令" in query
+
+
+def _hint_motion_structure(query: str, ql: str) -> bool:
+    return any(k in ql for k in ("motion", "planner", "stepper"))
+
+
+def _hint_halt(query: str, ql: str) -> bool:
+    keys = ("halt", "stop", "emergency", "error", "停止", "报警")
+    return any(k in ql or k in query for k in keys)
+
+
+def _hint_module(query: str, ql: str) -> bool:
+    keys = ("模块", "注册", "通信", "触发")
+    return any(k in query for k in keys)
+
+
+HINT_GROUPS: list[tuple[str, object, list[str]]] = [
+    ("entry", _hint_entry, [
         "gcode", "GcodeDispatch", "SerialConsole", "Player",
         "on_console_line_received", "ON_CONSOLE_LINE_RECEIVED",
         "on_main_loop", "call_event", "console_line",
     ]),
-    (("运动", "变成", "命令"), [
+    ("motion_chain", _hint_motion_chain, [
         "Robot", "Planner", "Conveyor", "StepTicker",
         "on_gcode_received", "append_block", "process_move",
         "queue_head_block", "step_tick", "GcodeDispatch",
     ]),
-    (("motion", "planner", "stepper"), [
+    ("motion_structure", _hint_motion_structure, [
         "Planner", "StepTicker", "StepperMotor", "Robot", "Block", "Conveyor",
     ]),
-    (("halt", "stop", "emergency", "error", "停止", "报警"), [
+    ("halt", _hint_halt, [
         "halt", "ON_HALT", "KillButton", "immediate_halt", "Endstops", "on_halt",
     ]),
-    (("模块", "注册", "通信", "触发"), [
+    ("module", _hint_module, [
         "Module", "Kernel", "register_for_event", "call_event", "PublicData",
     ]),
 ]
@@ -59,20 +86,25 @@ FLOW_INTENT_KEYS = (
     "触发", "注册", "通信",
     "halt", "stop", "emergency", "停止", "报警",
 )
-ON_HANDLER_ENTRY_BOOST = 5.0
-# 几乎每个 Module 都有的钩子；流程题里不应与 on_gcode_received 等抢前排
 GENERIC_EVENT_HANDLERS = frozenset({
     "on_main_loop", "on_idle", "on_second_tick", "on_module_loaded",
     "on_enable", "on_get_public_data", "on_set_public_data",
 })
 
-# ── 融合权重 ──────────────────────────────────────────────
+EVAL_COV5_GATE = 0.70  # 全体 mean coverage@5 门槛（检索层已冻结，不再用 tune Recall@5）
 W_SYMBOL = 100.0
 W_RG = 50.0
 W_BM25 = 10.0
 TYPE_BONUS = {"function": 3.0, "class": 2.0, "file_overview": 1.0, "fallback": 0.0}
 
-DISTINCT_HANDLER_MAX_FREQ = 20
+# 符号-上下文一致加权（可单独开关 / 调参验证）
+ENABLE_CONTEXT_COHERENCE_BONUS = True
+CONTEXT_COHERENCE_BONUS = 8.0
+CONTEXT_INCOHERENCE_PENALTY = 5.0
+CONTEXT_COHERENCE_MIN_TOKEN_LEN = 4
+
+# 入口 chunk（start_line == symbol_start）优先于子窗口
+ENTRY_CHUNK_BONUS = 6.0
 
 # ── 全局索引（load 后填充）────────────────────────────────
 _CHUNKS: list[dict] = []
@@ -97,12 +129,21 @@ def find_rg(preferred: str | None = None) -> str:
     sys.exit("rg 未找到，请确认已安装 ripgrep")
 
 
+def _query_lower(query: str) -> str:
+    return query.lower().replace("g-code", "gcode").replace("G-Code", "gcode")
+
+
+def matched_hint_groups(query: str) -> list[str]:
+    ql = _query_lower(query)
+    return [name for name, trigger, _ in HINT_GROUPS if trigger(query, ql)]
+
+
 def expand_query_tokens(query: str, tokens: list[str]) -> list[str]:
-    q_lower = query.lower()
+    ql = _query_lower(query)
     extra: list[str] = []
     seen = set(tokens)
-    for keys, hints in QUERY_HINTS:
-        if any(k in q_lower or k in query for k in keys):
+    for _name, trigger, hints in HINT_GROUPS:
+        if trigger(query, ql):
             for h in hints:
                 t = h.lower()
                 if t not in seen:
@@ -253,17 +294,9 @@ def flow_intent_query(query: str) -> bool:
     return any(k in q_lower or k in query for k in FLOW_INTENT_KEYS)
 
 
-def is_distinct_event_handler(name: str) -> bool:
-    """跨模块罕见的 on_* 钩子才加权；on_gcode_received 等虚函数实现不抬。"""
-    if name in GENERIC_EVENT_HANDLERS:
-        return False
-    if not name.startswith("on_"):
-        return False
-    return _SYMBOL_NAME_FREQ.get(name, 0) <= DISTINCT_HANDLER_MAX_FREQ
-
-
 def flow_entry_query(query: str) -> bool:
-    return any(k in query or k in query.lower() for k in ("进入", "入口"))
+    ql = _query_lower(query)
+    return _hint_entry(query, ql)
 
 
 def hint_coherent_symbol(sym: dict, tokens: list[str]) -> bool:
@@ -278,15 +311,15 @@ def hint_coherent_symbol(sym: dict, tokens: list[str]) -> bool:
 
 def symbol_match_weight(sym: dict, chunk: dict, query: str,
                         tokens: list[str]) -> float:
-    """事件驱动架构：流程题里优先与 hints 一致的罕见 on_* 处理函数。"""
+    """符号精确匹配基础分；流程入口 on_main_loop 小幅加成。"""
     weight = W_SYMBOL * 0.85
     name = sym["name"]
     if hint_coherent_symbol(sym, tokens):
-        if (flow_intent_query(query) and is_distinct_event_handler(name)):
-            weight = W_SYMBOL
-            if chunk["start_line"] == sym["line"]:
-                weight += ON_HANDLER_ENTRY_BOOST
-        elif flow_entry_query(query) and name == "on_main_loop":
+        if flow_entry_query(query) and name == "on_main_loop":
+            weight = max(weight, W_SYMBOL * 0.92)
+        elif (flow_intent_query(query) and name.startswith("on_")
+              and name not in GENERIC_EVENT_HANDLERS
+              and chunk["start_line"] == sym["line"]):
             weight = max(weight, W_SYMBOL * 0.92)
     return weight
 
@@ -399,6 +432,58 @@ def search_rg(tokens: list[str], src_root: Path, repo_root: Path,
     return scores
 
 
+def is_entry_chunk(chunk: dict) -> bool:
+    sym = chunk.get("symbol")
+    if not sym:
+        return False
+    sym_start = chunk.get("symbol_start", chunk["start_line"])
+    return chunk["start_line"] == sym_start
+
+
+def _chunk_module_stems() -> set[str]:
+    return {Path(f).stem.lower() for f in _CHUNKS_BY_FILE}
+
+
+def _query_module_tokens(tokens: list[str]) -> set[str]:
+    stems = _chunk_module_stems()
+    named: set[str] = set()
+    for t in tokens:
+        if len(t) < CONTEXT_COHERENCE_MIN_TOKEN_LEN:
+            continue
+        if t in stems:
+            named.add(t)
+            continue
+        for s in stems:
+            if len(t) >= 5 and t in s:
+                named.add(t)
+                break
+    return named
+
+
+def context_coherence_adjustment(chunk: dict, query_tokens: list[str]) -> float:
+    """用 query/hints 语境区分同名 handler：模块名一致加分，无关 on_* 减分。"""
+    if not ENABLE_CONTEXT_COHERENCE_BONUS:
+        return 0.0
+    stem = Path(chunk["file"]).stem.lower()
+    cls = (chunk.get("class") or "").lower()
+    sym = chunk.get("symbol") or ""
+    tok_set = set(query_tokens)
+    named = _query_module_tokens(query_tokens)
+
+    coherent = (
+        stem in tok_set
+        or cls in tok_set
+        or any(len(t) >= CONTEXT_COHERENCE_MIN_TOKEN_LEN and t in stem for t in tok_set)
+        or any(len(t) >= CONTEXT_COHERENCE_MIN_TOKEN_LEN and t in cls for t in tok_set)
+    )
+    if coherent:
+        return CONTEXT_COHERENCE_BONUS
+
+    if sym.startswith("on_") and sym not in GENERIC_EVENT_HANDLERS and named:
+        return -CONTEXT_INCOHERENCE_PENALTY
+    return 0.0
+
+
 def chunk_score_bonus(chunk: dict) -> float:
     bonus = TYPE_BONUS.get(chunk["type"], 0)
     if chunk["file"].endswith((".cpp", ".c")) and chunk["type"] == "function":
@@ -408,17 +493,29 @@ def chunk_score_bonus(chunk: dict) -> float:
     sym, cls = chunk.get("symbol") or "", chunk.get("class") or ""
     if sym and sym == cls:
         bonus -= 4.0
+    if is_entry_chunk(chunk):
+        bonus += ENTRY_CHUNK_BONUS
     return bonus
 
 
-def merge_scores(*score_maps: dict[str, float]) -> dict[str, float]:
+def merge_scores(*score_maps: dict[str, float],
+                 query_tokens: list[str] | None = None) -> dict[str, float]:
     merged: dict[str, float] = {}
     for sm in score_maps:
         for cid, sc in sm.items():
             merged[cid] = merged.get(cid, 0) + sc
     for cid in merged:
-        merged[cid] += chunk_score_bonus(_CHUNK_BY_ID[cid])
+        chunk = _CHUNK_BY_ID[cid]
+        merged[cid] += chunk_score_bonus(chunk)
+        if query_tokens is not None:
+            merged[cid] += context_coherence_adjustment(chunk, query_tokens)
     return merged
+
+
+def _hit_sort_key(h: dict) -> tuple:
+    chunk = _CHUNK_BY_ID[h["chunk_id"]]
+    entry_rank = 0 if is_entry_chunk(chunk) else 1
+    return (-h["score"], entry_rank, h["file"], h["line_start"])
 
 
 def diversify(hits: list[dict], top_k: int, per_file: int = 2) -> list[dict]:
@@ -502,7 +599,7 @@ def search(query: str, top_k: int = 10, src_root: Path | None = None,
     sym_scores = search_symbols(query, tokens)
     bm25_scores = search_bm25(tokens)
     rg_scores = search_rg(tokens, src, repo, rg)
-    merged = merge_scores(sym_scores, bm25_scores, rg_scores)
+    merged = merge_scores(sym_scores, bm25_scores, rg_scores, query_tokens=tokens)
 
     hits = []
     for cid, score in merged.items():
@@ -517,35 +614,148 @@ def search(query: str, top_k: int = 10, src_root: Path | None = None,
         h = hit_from_chunk(chunk, score, "+".join(sources))
         hits.append(h)
 
-    hits.sort(key=lambda x: (-x["score"], x["file"], x["line_start"]))
+    hits.sort(key=_hit_sort_key)
     primary = diversify(hits, top_k)
     if bundle:
         return expand_bundle(primary)
     return primary
 
 
+def eval_question(question: dict, k: int) -> dict:
+    """单题检索评估：pass（≥1 hit）、hit/miss、coverage@K。"""
+    results = search(question["question"], top_k=k)
+    result_files = {r["file"] for r in results}
+    expected = question["expected_files"]
+    hit = [f for f in expected if f in result_files]
+    miss = [f for f in expected if f not in result_files]
+    n = len(expected)
+    return {
+        "passed": len(hit) > 0,
+        "hit": hit,
+        "miss": miss,
+        "hit_n": len(hit),
+        "expected_n": n,
+        "coverage": len(hit) / n if n else 1.0,
+    }
+
+
+def eval_recall(question: dict, k: int) -> tuple[bool, list[str], list[str]]:
+    r = eval_question(question, k)
+    return r["passed"], r["hit"], r["miss"]
+
+
+def _split_stats(questions: list[dict], k: int) -> dict:
+    rows = []
+    for q in questions:
+        r = eval_question(q, k)
+        rows.append({
+            "id": q["id"],
+            "split": q.get("split", "tune"),
+            "question": q["question"],
+            **r,
+        })
+    return rows
+
+
+def _aggregate(rows: list[dict], split: str | None = None) -> dict:
+    subset = [r for r in rows if split is None or r["split"] == split]
+    if not subset:
+        return {"count": 0, "pass": 0, "mean_coverage": 0.0}
+    return {
+        "count": len(subset),
+        "pass": sum(1 for r in subset if r["passed"]),
+        "mean_coverage": sum(r["coverage"] for r in subset) / len(subset),
+    }
+
+
 def eval_summary(eval_path: Path = EVAL_PATH) -> dict:
-    """返回 Recall 统计，供回归脚本调用。"""
+    """返回 Recall + coverage 统计，供回归脚本调用。"""
     data = json.loads(eval_path.read_text(encoding="utf-8"))
     questions = data["questions"]
-    pass5 = pass10 = 0
+    rows5 = _split_stats(questions, 5)
+    rows10 = _split_stats(questions, 10)
+    by_id10 = {r["id"]: r for r in rows10}
+
     details = []
-    for q in questions:
-        ok5, hit5, miss5 = eval_recall(q, 5)
-        ok10, hit10, miss10 = eval_recall(q, 10)
-        if ok5:
-            pass5 += 1
-        if ok10:
-            pass10 += 1
+    for r5 in rows5:
+        r10 = by_id10[r5["id"]]
         details.append({
-            "id": q["id"], "ok5": ok5, "ok10": ok10,
-            "hit5": hit5, "miss5": miss5,
+            "id": r5["id"],
+            "split": r5["split"],
+            "ok5": r5["passed"],
+            "ok10": r10["passed"],
+            "cov5": r5["coverage"],
+            "cov10": r10["coverage"],
+            "hit5_n": r5["hit_n"],
+            "hit10_n": r10["hit_n"],
+            "exp_n": r5["expected_n"],
+            "hit5": r5["hit"],
+            "miss5": r5["miss"],
         })
-    total = len(questions)
+
+    tune5 = _aggregate(rows5, "tune")
+    hold5 = _aggregate(rows5, "holdout")
+    all5 = _aggregate(rows5)
     return {
-        "pass5": pass5, "pass10": pass10, "total": total,
-        "recall5_ok": pass5 >= 4, "details": details,
+        "total": len(questions),
+        "pass5": all5["pass"],
+        "pass10": sum(1 for r in rows10 if r["passed"]),
+        "mean_cov5": all5["mean_coverage"],
+        "gate_ok": all5["mean_coverage"] >= EVAL_COV5_GATE,
+        "recall5_ok": all5["mean_coverage"] >= EVAL_COV5_GATE,
+        "tune": {"pass5": tune5["pass"], "count": tune5["count"],
+                 "mean_cov5": tune5["mean_coverage"]},
+        "holdout": {"pass5": hold5["pass"], "count": hold5["count"],
+                    "mean_cov5": hold5["mean_coverage"]},
+        "details": details,
     }
+
+
+def _fmt_cov(hit_n: int, exp_n: int, cov: float) -> str:
+    pct = int(round(cov * 100))
+    return f"{hit_n}/{exp_n} ({pct}%)"
+
+
+def run_eval(eval_path: Path = EVAL_PATH) -> int:
+    data = json.loads(eval_path.read_text(encoding="utf-8"))
+    questions = data["questions"]
+    n_tune = sum(1 for q in questions if q.get("split", "tune") == "tune")
+    n_hold = sum(1 for q in questions if q.get("split") == "holdout")
+    print(f"eval: {eval_path.name} ({len(questions)} questions: "
+          f"{n_tune} tune + {n_hold} holdout)\n")
+
+    summary = eval_summary(eval_path)
+    current_split = None
+    for d in summary["details"]:
+        sp = d["split"]
+        if sp != current_split:
+            current_split = sp
+            print(f"--- {sp} ---")
+        mark5 = "PASS" if d["ok5"] else "FAIL"
+        mark10 = "PASS" if d["ok10"] else "FAIL"
+        q = next(x for x in questions if x["id"] == d["id"])
+        groups = matched_hint_groups(q["question"])
+        ghint = ",".join(groups) if groups else "(none)"
+        print(f"{d['id']} {mark5}@5 / {mark10}@10  "
+              f"cov@5={_fmt_cov(d['hit5_n'], d['exp_n'], d['cov5'])}  "
+              f"cov@10={_fmt_cov(d['hit10_n'], d['exp_n'], d['cov10'])}  "
+              f"hints=[{ghint}]")
+        print(f"  {q['question']}")
+        print(f"  hit@5:  {d['hit5'] or '(none)'}")
+        if d["miss5"]:
+            print(f"  miss@5: {d['miss5']}")
+        print()
+
+    print("=" * 50)
+    t, h = summary["tune"], summary["holdout"]
+    print(f"tune     Recall@5: {t['pass5']}/{t['count']}  "
+          f"mean_cov@5: {t['mean_cov5']:.0%}  (report only)")
+    print(f"holdout  Recall@5: {h['pass5']}/{h['count']}  "
+          f"mean_cov@5: {h['mean_cov5']:.0%}  (report only)")
+    print(f"all      Recall@5: {summary['pass5']}/{summary['total']}  "
+          f"mean_cov@5: {summary['mean_cov5']:.0%}  "
+          f"{'PASS' if summary['gate_ok'] else f'FAIL (need mean cov@5 >= {EVAL_COV5_GATE:.0%})'}")
+    return 0 if summary["gate_ok"] else 1
 
 
 def load_index(chunks_path: Path = CHUNKS_PATH, symbols_path: Path = SYMBOLS_PATH,
@@ -559,45 +769,6 @@ def load_index(chunks_path: Path = CHUNKS_PATH, symbols_path: Path = SYMBOLS_PAT
     load_chunks(chunks_path)
     load_symbols(symbols_path)
     build_bm25()
-
-
-def eval_recall(question: dict, k: int) -> tuple[bool, list[str], list[str]]:
-    results = search(question["question"], top_k=k)
-    result_files = {r["file"] for r in results}
-    expected = question["expected_files"]
-    hit = [f for f in expected if f in result_files]
-    miss = [f for f in expected if f not in result_files]
-    passed = len(hit) > 0
-    return passed, hit, miss
-
-
-def run_eval(eval_path: Path = EVAL_PATH) -> int:
-    data = json.loads(eval_path.read_text(encoding="utf-8"))
-    questions = data["questions"]
-    print(f"eval: {eval_path.name} ({len(questions)} questions)\n")
-
-    pass5 = pass10 = 0
-    for q in questions:
-        ok5, hit5, miss5 = eval_recall(q, 5)
-        ok10, hit10, miss10 = eval_recall(q, 10)
-        if ok5:
-            pass5 += 1
-        if ok10:
-            pass10 += 1
-        mark5 = "PASS" if ok5 else "FAIL"
-        mark10 = "PASS" if ok10 else "FAIL"
-        print(f"{q['id']} {mark5}@5 / {mark10}@10 — {q['question']}")
-        print(f"  hit@5:  {hit5 or '(none)'}")
-        print(f"  miss@5: {miss5}")
-        if not ok10:
-            print(f"  hit@10: {hit10}")
-        print()
-
-    total = len(questions)
-    print("=" * 50)
-    print(f"Recall@5:  {pass5}/{total}  {'PASS' if pass5 >= 4 else 'FAIL (need >= 4)'}")
-    print(f"Recall@10: {pass10}/{total}")
-    return 0 if pass5 >= 4 else 1
 
 
 def parse_args() -> argparse.Namespace:

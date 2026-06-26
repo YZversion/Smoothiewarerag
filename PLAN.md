@@ -206,19 +206,26 @@
 **目标：先量化效果，再决定要不要加重型组件。**
 
 ### 6.1 评估
-- [ ] 扩充练习问题到 15~20 个，含 **hold-out**（不参与调参）
-- [ ] 记录 BM25 检索的失败案例（漏召回、错召回）
-- [ ] 区分「检索 Recall」与「LLM 答案准确度」；Q2 等多跳题 expected files @5 可能不全
+- [x] 扩充练习问题到 15 题（5 `tune` + 10 `holdout`），见 `eval/eval_questions.json` v2
+- [x] `03_search.py --eval` 输出 **coverage@K**（`|hit|/|expected|`）与 tune/holdout 分项
+- [x] 记录失败案例到 `notes/eval_failures.md`（已修复 / open 对照表）
+- [x] 区分「检索 Recall」与「LLM 答案准确度」→ `notes/phase6_conclusion.md`、`src/eval_answer_layer.py`
+- [x] **检索层冻结**：gate = 全体 **mean cov@5 ≥ 70%**；不在 holdout 上微调（H4 等接受 open）
 
-### 6.2 可选升级（按需，不是必须）
-- [ ] 向量检索（仅当 BM25 明显不够时）
-- [ ] Doxygen 生成文档 + Graphviz 调用关系图
-- [ ] 调用链 / 模块依赖图
-- [ ] 简单 Web UI
+### 6.2 可选升级（按需，**不阻塞知识库验收**）
 
-**✅ Phase 6 验收**
-- [ ] 有一份「当前方案够不够用」的量化结论
-- [ ] 升级决策有数据支撑，而非拍脑袋
+> 决策见 `notes/phase6_conclusion.md`：当前方案够用，下列全部 **暂缓**。验收清单 → `notes/kb_acceptance.md`。
+
+- [ ] 向量检索（仅当 BM25 明显不够时）— **暂缓**
+- [ ] Doxygen 生成文档 + Graphviz 调用关系图 — **未做**
+- [ ] 调用链 / 模块依赖图 — **Plan B CodeGraph 可选**
+- [ ] 简单 Web UI — **未做**（REPL 已满足 demo）
+
+**✅ Phase 6 / 知识库验收**
+- [x] 有一份「当前方案够不够用」的量化结论（`notes/phase6_conclusion.md`）
+- [x] 升级决策有数据支撑：检索冻结；向量暂缓；CodeGraph 可选实验
+- [x] 验收清单与实测记录（`notes/kb_acceptance.md`）
+- [x] 自动化回归 PASS：`03_search.py --eval`（mean cov@5 73%）+ `run_regression.py --top-k 8`
 
 ---
 
@@ -340,7 +347,7 @@ Return the most relevant functions and their callers/callees. Do not guess.
 
 ## 当前进度落点
 
-当前已完成 **Phase 0 – Phase 5 主线**（Smoothieware demo：REPL + 检索 + LLM streaming）。
+当前已完成 **Phase 0 – Phase 6 知识库 MVP**（Smoothieware demo：REPL + 检索冻结 + LLM + 验收清单）。
 
 ```powershell
 cd industrial-cpp-kb-lab
@@ -351,10 +358,10 @@ python src/app.py "G-code 从哪里进入系统？"
 python src/app.py --search-only "Robot on_gcode_received"
 python src/app.py --demo
 python src/app.py --test                       # Recall + bundle 回归
-python src/run_regression.py --skip-llm
-python src/03_search.py --eval
+python src/run_regression.py --top-k 8         # 完整验收（含 LLM 引用）
+python src/03_search.py --eval                 # 检索 gate：mean cov@5 >= 70%
 ```
 
-**已知缺口（如实记录，勿用文件名特判刷绿）：** Q2 检索 @5 常仅命中 Robot+Conveyor，缺 GcodeDispatch/Planner/StepTicker；LLM 小模型易漏列 Sources、产生伪注释。
+验收文档：`notes/kb_acceptance.md`。已知限制见 `notes/eval_failures.md`、`notes/phase6_conclusion.md`。
 
-下一步：**Phase 6** 扩充 eval + hold-out；Plan B CodeGraph A/B；**Phase 7** wire bonder（`--repo-root`）。
+下一步：**Phase 7** wire bonder（`--repo-root`）；Plan B CodeGraph 可选并行。

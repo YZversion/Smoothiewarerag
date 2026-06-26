@@ -77,17 +77,28 @@ def main(skip_llm: bool | None = None) -> int:
     search.load_index()
 
     failed = False
-    print("=== [1/3] Recall@K (03_search) ===\n")
+    print("=== [1/3] Recall@K + coverage (03_search) ===\n")
     summary = search.eval_summary(EVAL_PATH)
+    current_split = None
     for d in summary["details"]:
+        sp = d["split"]
+        if sp != current_split:
+            current_split = sp
+            print(f"  --- {sp} ---")
         mark = "PASS" if d["ok5"] else "FAIL"
-        print(f"  {d['id']} {mark}@5  hit={d['hit5']}")
-    print(f"\nRecall@5: {summary['pass5']}/{summary['total']}")
-    if not summary["recall5_ok"]:
+        cov = int(round(d["cov5"] * 100))
+        print(f"  {d['id']} {mark}@5  cov@5={d['hit5_n']}/{d['exp_n']} ({cov}%)  "
+              f"hit={d['hit5']}")
+    t, h = summary["tune"], summary["holdout"]
+    print(f"\n  tune     Recall@5: {t['pass5']}/{t['count']}  "
+          f"mean_cov@5: {t['mean_cov5']:.0%}")
+    print(f"  holdout  Recall@5: {h['pass5']}/{h['count']}  "
+          f"mean_cov@5: {h['mean_cov5']:.0%}  (report only)")
+    if not summary["gate_ok"]:
         failed = True
-        print("FAIL: Recall@5 需要 >= 4/5")
+        print(f"  FAIL: mean cov@5 需要 >= {search.EVAL_COV5_GATE:.0%}")
     else:
-        print("PASS")
+        print(f"  PASS (gate: all mean cov@5 >= {search.EVAL_COV5_GATE:.0%})")
 
     print("\n=== [2/3] Bundle coverage (03_search --bundle) ===\n")
     data = json.loads(EVAL_PATH.read_text(encoding="utf-8"))
@@ -115,7 +126,10 @@ def main(skip_llm: bool | None = None) -> int:
         print("SKIP (无 LLM_API_KEY 或 --skip-llm)")
     else:
         cite_ok = 0
+        tune_ids = {d["id"] for d in summary["details"] if d["split"] == "tune"}
         for q in data["questions"]:
+            if q["id"] not in tune_ids:
+                continue
             result = answer_mod.answer(q["question"], top_k=top_k,
                                        search_mod=search)
             ok = result.get("citations", {}).get("ok", False)
@@ -124,7 +138,7 @@ def main(skip_llm: bool | None = None) -> int:
             print(f"  {q['id']} {mark}" + (f"  invalid={inv[:2]}" if inv else ""))
             if ok:
                 cite_ok += 1
-        print(f"\nCitation: {cite_ok}/{summary['total']}  ", end="")
+        print(f"\nCitation: {cite_ok}/{len(tune_ids)}  ", end="")
         if cite_ok >= 4:
             print("PASS")
         else:

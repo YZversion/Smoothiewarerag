@@ -35,10 +35,11 @@ LAB_ROOT = Path(__file__).parent.parent
 
 ## 检索增量纪律
 
-- `QUERY_HINTS`：**按意图触发**，不按关键词出现触发。
-- 符号加权：优先泛化规则（`on_*` 频率、hint 一致性），禁止 per-question 文件名 `+5`。
+- **检索层已冻结**（2026-06-25）：gate = mean cov@5 ≥ 70%；不再为 holdout @5 写规则。
+- `QUERY_HINTS`：**短语/共现触发**，禁止裸子串（`入口`、`命令` alone）。
+- 符号加权：`context_coherence_adjustment`；禁止 per-question 文件名 `+5`。
 - `trim_context_hits`：primary 先于 overview/header。
-- bundle / 权重：**Recall@5 < 4/5 时再加**，一次一项。
+- 新规则仅当 **换仓库后** eval 不达标，且一次只加一项。
 
 ## Phase 4–5
 

@@ -126,7 +126,8 @@
 
 ### 评估
 
-`eval/eval_questions.json` → Recall@5 / Recall@10。门槛 ≥4/5 题至少命中 1 个 expected file。
+`eval/eval_questions.json` → Recall@5 / coverage@K / Recall@10。  
+**Gate（检索已冻结）：** 全体 **mean coverage@5 ≥ 70%**。holdout 只报告，不为 H4 等 @5 缺口写规则。
 
 ---
 

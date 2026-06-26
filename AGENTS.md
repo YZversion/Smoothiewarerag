@@ -38,16 +38,16 @@ Smoothiewarerag/
 | 3.3 | ✅ | `search(bundle=True)`：overview + 配对 header |
 | 4 | ✅ | `04_answer.py` + streaming + `validate_citations` + `trim_context_hits` |
 | 5 | ✅ | `app.py` REPL + Rich + `run_regression.py`（`--test`） |
-| 6 | ⬜ | 扩充 eval / 量化 LLM 准确度；hold-out 题 |
+| 6 | ✅ | 检索冻结；验收清单 `kb_acceptance.md`；6.2 暂缓 |
 | Plan B | 🔬 | CodeGraph A/B（见 PLAN.md），不阻塞主线 |
 
 ## 检索设计原则（可迁移，勿 per-question 硬编码）
 
-- **QUERY_HINTS 按问题意图触发**，不按「关键词是否出现」触发（例：入口 hints 仅 `进入`/`入口`，避免 Q2 被 `gcode` 污染）
-- **事件驱动加权**：流程题对罕见 `on_*` 处理函数加权；泛滥实现（如 `on_gcode_received`）按符号频率抑噪
-- **hint 一致性**：handler 加权需模块名也在 query/hints tokens 中
+- **QUERY_HINTS 按问题意图触发**（短语/共现，非裸子串；例：`入口`  alone 不触发 entry 组）
+- **事件驱动加权**：`context_coherence_adjustment()` 按 query/hints 模块名区分同名 `on_*`
+- **入口 chunk 优先**：`start_line == symbol_start` 高于子窗口
 - **禁止**把 expected_files 文件名硬编码进检索器——Phase 7 wire bonder 没有 golden set 可抄
-- **eval 诊断**：Recall@5≥4/5 是门槛；Q2 等多跳题 expected files @5 仍可能不全，应如实记录
+- **检索已冻结**（2026-06-25）：gate = 全体 **mean cov@5 ≥ 70%**；不为 holdout @5 缺口写规则（H4）
 
 ## 核心约束
 
@@ -63,7 +63,7 @@ Smoothiewarerag/
 | # | 问题 | 关键路径 | 检索 @5 备注 |
 |---|------|----------|--------------|
 | Q1 | G-code 从哪里进入？ | `SerialConsole.cpp`, `GcodeDispatch.cpp`, `Player.cpp` | 3/3 expected |
-| Q2 | G-code → 运动命令？ | `Robot` → `Planner` → `Conveyor` → `StepTicker` | 门槛 PASS；expected 常仅 2/5 |
+| Q2 | G-code → 运动命令？ | `Robot` → `Planner` → `Conveyor` → `StepTicker` | cov@5 4/5（已冻结，缺 GcodeDispatch @5） |
 | Q3 | Motion / Planner / Stepper？ | `robot/`, `StepTicker`, `StepperMotor` | 结构题，不触发 flow_intent |
 | Q4 | halt / stop / emergency？ | `Kernel`, `KillButton`, `Endstops` | 部分 expected @5 |
 | Q5 | 模块注册与事件？ | `Module`, `Kernel`, `PublicData` | 门槛 PASS |
@@ -106,7 +106,7 @@ python src/app.py --demo
 python src/app.py --test                 # Recall + bundle 回归
 
 python src/run_regression.py --skip-llm
-python src/03_search.py --eval
+python src/03_search.py --eval          # Recall + coverage@K（tune/holdout 分项）
 ```
 
 环境变量见 `industrial-cpp-kb-lab/.env.example`（`LLM_API_KEY` 勿提交 git）。
@@ -119,4 +119,7 @@ python src/03_search.py --eval
 | [`architecture.md`](architecture.md) | 数据流、检索规则、LLM 约束 |
 | [`industrial-kb.mdc`](.cursor/rules/industrial-kb.mdc) | 写 `src/*.py` 时的极简纪律 |
 | [`docs/history.md`](docs/history.md) | Session 进度日志 |
-| [`eval/eval_questions.json`](industrial-cpp-kb-lab/eval/eval_questions.json) | 检索回归集 |
+| [`eval/eval_questions.json`](industrial-cpp-kb-lab/eval/eval_questions.json) | 检索回归集（15 题，tune/holdout） |
+| [`notes/kb_acceptance.md`](industrial-cpp-kb-lab/notes/kb_acceptance.md) | **知识库验收清单**（自动化 + 人工抽测） |
+| [`notes/phase6_conclusion.md`](industrial-cpp-kb-lab/notes/phase6_conclusion.md) | Phase 6 检索 vs LLM 结论 |
+| [`notes/eval_failures.md`](industrial-cpp-kb-lab/notes/eval_failures.md) | 检索失败根因（已修复/open） |

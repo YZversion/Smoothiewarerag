@@ -79,10 +79,10 @@ Smoothiewarerag/
 | 3 | 分块 + 融合检索 + bundle | ✅ |
 | 4 | LLM 问答 + 引用校验 | ✅ |
 | 5 | REPL + Rich + 回归脚本 | ✅ |
-| 6 | 扩充 eval、LLM 准确度量化 | ⬜ 下一步 |
+| 6 | eval + LLM 分层评估；检索冻结 | ✅ gate mean cov@5≥70% |
 | 7 | 迁移 wire bonder | ⬜ |
 
-检索回归：`python src/03_search.py --eval` → Recall@5 **5/5 PASS**（门槛：≥4/5）。
+检索回归：`python src/03_search.py --eval` → mean cov@5 **73% PASS**（gate：≥70%）。检索层已冻结，见 `notes/phase6_conclusion.md`。
 
 ---
 
