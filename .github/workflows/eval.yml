@@ -30,10 +30,10 @@ jobs:
           cache: pip
           cache-dependency-path: industrial-cpp-kb-lab/requirements.txt
 
-      - name: Install system tools (ctags; rg preinstalled on runner)
+      - name: Install system tools (ripgrep + ctags)
         run: |
           sudo apt-get update
-          sudo apt-get install -y universal-ctags
+          sudo apt-get install -y ripgrep universal-ctags
           rg --version
           ctags --version
 
