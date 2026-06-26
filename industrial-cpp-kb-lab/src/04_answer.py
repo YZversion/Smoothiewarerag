@@ -79,10 +79,12 @@ def validate_citations(answer: str, hits: list[dict],
             valid.append(cite)
         else:
             invalid.append(cite)
+    has_citations = bool(valid or invalid)
     return {
         "valid": valid,
         "invalid": invalid,
-        "ok": len(invalid) == 0 or (len(valid) > 0 and len(invalid) <= len(valid)),
+        "has_citations": has_citations,
+        "ok": has_citations and len(invalid) == 0,
     }
 
 

@@ -21,7 +21,7 @@
 - [ ] 不做嵌入式构建（ARM GCC / LPC1768 / 烧录都不是当前主线）
 - [ ] 每个 phase 有明确「验收标准」，没达标不进入下一个 phase
 - [ ] Phase 1 选出的 10 个重点文件只作为人工理解与评估种子；索引仍覆盖扫描到的全部源码文件
-- [ ] CodeGraph 只作为 Plan B 结构图谱实验：先做 Smoothieware 小规模 A/B 验证，不现在押注、不替代源码核查
+- [x] CodeGraph 只作为 Plan B 结构图谱实验：Smoothieware 小规模 A/B 已完成；不现在押注、不替代源码核查
 
 ---
 
@@ -153,7 +153,7 @@
 
 ### 3.3 context bundle
 - [x] `search(..., bundle=True)`：primary + overview + 配对 `.h` class
-- [ ] caller/callee（Plan B CodeGraph）
+- [ ] caller/callee 接入 context bundle（Plan B CodeGraph 已独立验证；暂不接入主线）
 
 **✅ Phase 3 验收**
 - [x] 输入关键词 → chunk + 引用路径
@@ -214,11 +214,12 @@
 
 ### 6.2 可选升级（按需，**不阻塞知识库验收**）
 
-> 决策见 `notes/phase6_conclusion.md`：当前方案够用，下列全部 **暂缓**。验收清单 → `notes/kb_acceptance.md`。
+> 决策见 `notes/phase6_conclusion.md`：当前方案够用；除 Plan B 笔记实验已完成外，下列主线增强 **暂缓**。验收清单 → `notes/kb_acceptance.md`。
 
 - [ ] 向量检索（仅当 BM25 明显不够时）— **暂缓**
 - [ ] Doxygen 生成文档 + Graphviz 调用关系图 — **未做**
-- [ ] 调用链 / 模块依赖图 — **Plan B CodeGraph 可选**
+- [x] 调用链 / 模块依赖图 — **Plan B CodeGraph 笔记实验已完成**（未接入主 `app.py`）
+- [ ] 命令号 / 事件码 → 处理器索引 — **Plan C 可选**（用于 H4 这类“谁处理 G28/报警码/事件码”的分发查找）
 - [ ] 简单 Web UI — **未做**（REPL 已满足 demo）
 
 **✅ Phase 6 / 知识库验收**
@@ -236,38 +237,40 @@
 这个 Plan B 不替代 Phase 3–5 主线。它是一个克制的小实验：先在 Smoothieware 上比较 **A. ripgrep/BM25** 和 **B. CodeGraph/代码图谱**，证明有价值后再考虑是否接入 wire bonder 知识库。
 
 ### B.1 为什么值得研究
-- [ ] 帮助理解大型 C++ 项目的模块结构
-- [ ] 帮 AI Agent 减少反复 `grep` / 读文件造成的上下文爆炸
-- [ ] 支持查询函数定义、调用者、被调用者、依赖关系和影响范围
-- [ ] 未来可作为 wire bonder 知识库的「代码结构层」
+- [x] 帮助理解大型 C++ 项目的模块结构
+- [x] 帮 AI Agent 减少反复 `grep` / 读文件造成的上下文爆炸
+- [x] 支持查询函数定义、调用者、被调用者、依赖关系和影响范围
+- [x] 未来可作为 wire bonder 知识库的「代码结构层」
 
 ### B.2 明确边界
-- [ ] CodeGraph 解决「代码结构怎么找」，不解决「设备业务怎么懂」
-- [ ] 它不能自动理解 wire bonding 工艺、报警排查、维修经验和现场日志
-- [ ] 对 C++ 宏、条件编译、函数指针、回调、MFC 消息映射、动态派发、跨 DLL 调用可能漏关系或错关系
-- [ ] 图谱结果只能作为候选线索，最终事实仍以源码、编译配置和工程师确认为准
-- [ ] 现在不研究全部功能，只做 5 个问题的 A/B 测试
+- [x] CodeGraph 解决「代码结构怎么找」，不解决「设备业务怎么懂」
+- [x] 它不能自动理解 wire bonding 工艺、报警排查、维修经验和现场日志
+- [x] 对 C++ 宏、条件编译、函数指针、回调、MFC 消息映射、动态派发、跨 DLL 调用可能漏关系或错关系
+- [x] 图谱结果只能作为候选线索，最终事实仍以源码、编译配置和工程师确认为准
+- [x] 现在不研究全部功能，只做 5 个问题的 A/B 测试
 
 ### B.3 候选工具判断标准
 选择 CodeGraph / code graph 工具时，只看 6 个指标：
 
-- [ ] 是否支持 C/C++
-- [ ] 是否本地运行
-- [ ] 是否不需要上传代码
-- [ ] 是否能输出函数 / 类 / 调用关系 / include 关系
-- [ ] 是否能被 Codex / Cursor / Claude Code 通过 MCP 或 CLI 调用
-- [ ] 是否能导出或查询结构化结果，而不只是漂亮图
+- [x] 是否支持 C/C++
+- [x] 是否本地运行
+- [x] 是否不需要上传代码
+- [x] 是否能输出函数 / 类 / 调用关系 / include 关系
+- [x] 是否能被 Codex / Cursor / Claude Code 通过 MCP 或 CLI 调用
+- [x] 是否能导出或查询结构化结果，而不只是漂亮图
 
 满足前 4 个，值得试；满足 6 个，才考虑深度集成。
+
+本次验证工具：`@colbymchenry/codegraph` v1.1.1。最小索引结果：546 files、7,440 nodes、16,690 edges；CLI 支持 `query` / `explore` / `callers` / `callees` / `impact` / `status`。注意：该工具默认在目标 repo 下创建 `.codegraph/`，本次只作临时实验索引，结束后清理。
 
 ### B.4 Smoothieware A/B 实验问题
 用同一组问题比较 `rg/BM25` 与 `CodeGraph`：
 
-- [ ] G-code 的入口文件在哪里？
-- [ ] `Gcode` 类 / 函数被哪些模块调用？
-- [ ] Motion planner 相关核心类有哪些？
-- [ ] halt / error / stop 的调用链在哪里？
-- [ ] 修改某个函数后可能影响哪些模块？
+- [x] G-code 的入口文件在哪里？
+- [x] `Gcode` 类 / 函数被哪些模块调用？
+- [x] Motion planner 相关核心类有哪些？
+- [x] halt / error / stop 的调用链在哪里？
+- [x] 修改某个函数后可能影响哪些模块？
 
 ### B.5 实验产物
 不要把 CodeGraph 直接混入现有 RAG 主流程，先分开记结果：
@@ -282,12 +285,12 @@ industrial-cpp-kb-lab/
     └── eval_questions.json
 ```
 
-- [ ] `smoothieware_rg_findings.md`：记录 `rg` / BM25 找到的文件、符号、证据
-- [ ] `smoothieware_codegraph_findings.md`：记录 CodeGraph 找到的 symbols、callers、callees、依赖关系
-- [ ] `comparison.md`：比较哪个问题 CodeGraph 更强，哪个问题普通搜索更强，是否值得迁移到 wire bonder
+- [x] `smoothieware_rg_findings.md`：记录 `rg` / BM25 找到的文件、符号、证据
+- [x] `smoothieware_codegraph_findings.md`：记录 CodeGraph 找到的 symbols、callers、callees、依赖关系
+- [x] `comparison.md`：比较哪个问题 CodeGraph 更强，哪个问题普通搜索更强，是否值得迁移到 wire bonder
 
-### B.6 示例流程（待确认具体工具 README）
-如果选择的是 `@colbymchenry/codegraph` 这类本地工具，先确认官方 README 和版本，再做最小试验：
+### B.6 示例流程（已确认 `@colbymchenry/codegraph` v1.1.1）
+本次已确认官方 README 和版本，并完成最小试验：
 
 ```powershell
 cd C:\Users\14390\Desktop\Code\Smoothiewarerag\industrial-cpp-kb-lab\repos\Smoothieware
@@ -308,10 +311,91 @@ Return the most relevant functions and their callers/callees. Do not guess.
 ```
 
 ### B.7 Plan B 验收
-- [ ] 对 5 个 Smoothieware 结构问题完成 A/B 对比
-- [ ] `comparison.md` 明确列出：CodeGraph 强项、弱项、误报/漏报案例
-- [ ] 能回答「是否值得在 wire bonder 代码上做小模块试验」
-- [ ] 未证明价值前，不接入主 `app.py`，不把主线改成知识图谱系统
+- [x] 对 5 个 Smoothieware 结构问题完成 A/B 对比
+- [x] `comparison.md` 明确列出：CodeGraph 强项、弱项、误报/漏报案例
+- [x] 能回答「是否值得在 wire bonder 代码上做小模块试验」
+- [x] 未证明价值前，不接入主 `app.py`，不把主线改成知识图谱系统
+
+结论：值得在 wire bonder 上做“小模块结构层试验”，尤其用于 caller / callee / impact radius；但不适合单独解决 `G28` / 报警码 / 事件码 → handler 这类分发查找，后者进入 Plan C。
+
+---
+
+## Plan C — 命令/事件分发索引实验
+
+**目标：解决 CodeGraph 和普通 BM25 都不擅长的“谁处理某个命令号 / 事件码 / 报警码”问题。**
+
+这个计划来自 H4 复盘：
+
+> 问题：`回零 / homing / G28 命令在哪里处理？`
+>
+> 根因：`回零` 被 tokenizer 丢掉；`homing` / `g28` 找不到同名符号；`Endstops` 的真实处理函数叫 `home` / `process_home_command`，判断藏在 `on_gcode_received` 函数体内部。CodeGraph 只能看到 `GcodeDispatch -> ON_GCODE_RECEIVED -> 多个模块` 的扇出，不能直接判断哪个模块处理 `G28`。
+
+### C.1 为什么不是加 homing hint group
+
+- [ ] 不把 `G28 -> Endstops` 写成 Smoothieware 专属 hint；这会提高 H4 分数，但不利于 wire bonder 迁移
+- [ ] 不把 expected_files 文件名反写进检索器
+- [ ] 把 H4 归类为“命令分发查找”问题，而不是“调用链追踪”问题
+
+### C.2 通用抽取目标
+
+产出一个结构化索引，例如：
+
+```json
+{
+  "command": "G28",
+  "kind": "gcode",
+  "handler_file": "src/modules/tools/endstops/Endstops.cpp",
+  "handler_symbol": "Endstops::on_gcode_received",
+  "target_symbol": "Endstops::process_home_command",
+  "line": 1042,
+  "evidence": "if (gcode->g == 28) ...",
+  "confidence": "static-pattern"
+}
+```
+
+未来 wire bonder 可迁移为：
+
+- [ ] 指令号 / 菜单命令 / recipe action → handler
+- [ ] 报警码 / error code → 抛出点与处理器
+- [ ] 事件名 / 消息 ID / Windows message / MFC command ID → handler
+- [ ] PLC / IO / station state code → 状态处理函数
+
+### C.3 Smoothieware 最小实验
+
+- [ ] 新增 `src/05_extract_dispatch_index.py`
+- [ ] 扫描所有 `on_gcode_received` / `on_console_line_received` / shell command handler 函数体
+- [ ] 提取常见模式：
+  - [ ] `gcode->g == 28`
+  - [ ] `gcode->m == 17`
+  - [ ] `switch(gcode->g)` / `case 28`
+  - [ ] `has_letter('G')` + `get_value('G')`
+  - [ ] shell 命令表 / 字符串命令分发表
+- [ ] 输出 `data/dispatch_index.json`
+- [ ] `03_search.py` 在 query 含 `G28` / `M17` / 命令号时，先查 dispatch index，再融合 BM25 / symbol / rg
+
+### C.4 验收问题
+
+- [ ] H4：`回零 / homing / G28 命令在哪里处理？` 在 Recall@5 命中 `Endstops.cpp`
+- [ ] 新增至少 5 个命令分发题，不靠文件名硬编码：
+  - [ ] `M17` / 电机使能
+  - [ ] 温度相关 `M104` / `M109`
+  - [ ] 激光相关 G/M 命令
+  - [ ] switch 模块自定义 G-code
+  - [ ] SimpleShell 字符串命令
+- [ ] 对每条命中返回证据行：条件判断 / case / 命令表位置
+- [ ] 如果静态模式抽不到，必须标记 `unknown`，不让 LLM 猜
+
+### C.5 与 Plan B 的边界
+
+| 能力 | Plan B CodeGraph | Plan C Dispatch Index |
+|------|------------------|-----------------------|
+| 函数定义 / 调用者 / 被调用者 | 强 | 弱 |
+| 调用链追踪 | 强 | 弱 |
+| 事件总线扇出 | 可显示候选 | 需要结合命令条件 |
+| `G28` / 报警码 / 命令 ID 谁处理 | 弱 | 强 |
+| wire bonder 迁移价值 | 代码结构层 | 命令/报警/事件分发层 |
+
+结论：Plan B 继续作为“代码结构层”实验；Plan C 作为“命令分发层”实验。两者互补，不互相替代。
 
 ---
 
@@ -364,4 +448,4 @@ python src/03_search.py --eval                 # 检索 gate：mean cov@5 >= 70%
 
 验收文档：`notes/kb_acceptance.md`。已知限制见 `notes/eval_failures.md`、`notes/phase6_conclusion.md`。
 
-下一步：**Phase 7** wire bonder（`--repo-root`）；Plan B CodeGraph 可选并行。
+下一步：**Phase 7** wire bonder（`--repo-root`）；Plan B CodeGraph 与 Plan C 命令/事件分发索引可选并行。

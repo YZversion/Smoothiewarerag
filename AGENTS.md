@@ -39,7 +39,7 @@ Smoothiewarerag/
 | 4 | ✅ | `04_answer.py` + streaming + `validate_citations` + `trim_context_hits` |
 | 5 | ✅ | `app.py` REPL + Rich + `run_regression.py`（`--test`） |
 | 6 | ✅ | 检索冻结；验收清单 `kb_acceptance.md`；6.2 暂缓 |
-| Plan B | 🔬 | CodeGraph A/B（见 PLAN.md），不阻塞主线 |
+| Plan B | ✅ | CodeGraph A/B 完成；见 `notes/comparison.md`，不接入主 `app.py` |
 
 ## 检索设计原则（可迁移，勿 per-question 硬编码）
 
@@ -98,12 +98,20 @@ python src/01_scan_files.py
 python src/02_extract_symbols.py
 python src/03_build_chunks.py
 
-# 问答（须在 industrial-cpp-kb-lab 目录下）
-python src/app.py                        # 交互 REPL
+# Fancy CLI（须在 industrial-cpp-kb-lab 目录下）
+.\kb.cmd repl                            # prompt_toolkit REPL（F1/F2/F3/F4/F5/F8）
+.\kb.cmd search "G-code 从哪里进入系统？" --top-k 5 --preview
+.\kb.cmd sources "halt error stop 调用链在哪里"
+.\kb.cmd symbol "Planner::append_block"
+.\kb.cmd eval                            # Recall dashboard
+.\kb.cmd export answer.md                # 导出最近一次 session
+.\kb.cmd tui                             # Textual 可选全屏 TUI
+
+# 旧入口仍兼容
 python src/app.py "G-code 从哪里进入系统？"
 python src/app.py --search-only "关键词"
 python src/app.py --demo
-python src/app.py --test                 # Recall + bundle 回归
+python src/app.py --test                 # Recall dashboard
 
 python src/run_regression.py --skip-llm
 python src/03_search.py --eval          # Recall + coverage@K（tune/holdout 分项）
@@ -123,3 +131,4 @@ python src/03_search.py --eval          # Recall + coverage@K（tune/holdout 分
 | [`notes/kb_acceptance.md`](industrial-cpp-kb-lab/notes/kb_acceptance.md) | **知识库验收清单**（自动化 + 人工抽测） |
 | [`notes/phase6_conclusion.md`](industrial-cpp-kb-lab/notes/phase6_conclusion.md) | Phase 6 检索 vs LLM 结论 |
 | [`notes/eval_failures.md`](industrial-cpp-kb-lab/notes/eval_failures.md) | 检索失败根因（已修复/open） |
+| [`notes/comparison.md`](industrial-cpp-kb-lab/notes/comparison.md) | Plan B：rg/BM25 vs CodeGraph A/B 结论 |

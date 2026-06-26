@@ -22,6 +22,8 @@ ENV_PATH = LAB_ROOT / ".env"
 def load_module(filename: str):
     path = Path(__file__).parent / filename
     spec = importlib.util.spec_from_file_location(f"_kb_{filename}", path)
+    if spec is None or spec.loader is None:
+        sys.exit(f"cannot load {path}")
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     return mod

@@ -216,6 +216,182 @@
       "expected_symbols": [
         "TemperatureControl::on_gcode_received"
       ]
+    },
+    {
+      "id": "H11",
+      "split": "holdout",
+      "question": "Config::value 配置读取和查找在哪里实现？",
+      "expected_files": [
+        "src/libs/Config.cpp"
+      ],
+      "expected_symbols": [
+        "Config::value"
+      ]
+    },
+    {
+      "id": "H12",
+      "split": "holdout",
+      "question": "FileConfigSource 如何读取配置文件？",
+      "expected_files": [
+        "src/libs/ConfigSources/FileConfigSource.cpp"
+      ],
+      "expected_symbols": [
+        "FileConfigSource::read",
+        "FileConfigSource::readLine"
+      ]
+    },
+    {
+      "id": "H13",
+      "split": "holdout",
+      "question": "SlowTicker 定时 tick 和 on_idle 逻辑在哪里？",
+      "expected_files": [
+        "src/libs/SlowTicker.cpp"
+      ],
+      "expected_symbols": [
+        "SlowTicker::tick",
+        "SlowTicker::on_idle"
+      ]
+    },
+    {
+      "id": "H14",
+      "split": "holdout",
+      "question": "Adc::read 和 ADC 采样代码在哪里？",
+      "expected_files": [
+        "src/libs/Adc.cpp"
+      ],
+      "expected_symbols": [
+        "Adc::read",
+        "Adc::new_sample"
+      ]
+    },
+    {
+      "id": "H15",
+      "split": "holdout",
+      "question": "Watchdog 喂狗 feed 和 on_idle 在哪里？",
+      "expected_files": [
+        "src/libs/Watchdog.cpp"
+      ],
+      "expected_symbols": [
+        "Watchdog::feed",
+        "Watchdog::on_idle"
+      ]
+    },
+    {
+      "id": "H16",
+      "split": "holdout",
+      "question": "Extruder 如何处理挤出相关 G-code？",
+      "expected_files": [
+        "src/modules/tools/extruder/Extruder.cpp"
+      ],
+      "expected_symbols": [
+        "Extruder::on_gcode_received"
+      ]
+    },
+    {
+      "id": "H17",
+      "split": "holdout",
+      "question": "Laser 激光功率和 G-code 控制在哪里？",
+      "expected_files": [
+        "src/modules/tools/laser/Laser.cpp"
+      ],
+      "expected_symbols": [
+        "Laser::on_gcode_received",
+        "Laser::set_laser_power"
+      ]
+    },
+    {
+      "id": "H18",
+      "split": "holdout",
+      "question": "Switch 模块如何响应 G-code 并切换输出？",
+      "expected_files": [
+        "src/modules/tools/switch/Switch.cpp"
+      ],
+      "expected_symbols": [
+        "Switch::on_gcode_received",
+        "Switch::flip"
+      ]
+    },
+    {
+      "id": "H19",
+      "split": "holdout",
+      "question": "FilamentDetector 断料检测和 main loop 在哪里？",
+      "expected_files": [
+        "src/modules/tools/filamentdetector/FilamentDetector.cpp"
+      ],
+      "expected_symbols": [
+        "FilamentDetector::on_main_loop",
+        "FilamentDetector::check_encoder"
+      ]
+    },
+    {
+      "id": "H20",
+      "split": "holdout",
+      "question": "ZProbe 探针 G-code 和 run_probe 在哪里？",
+      "expected_files": [
+        "src/modules/tools/zprobe/ZProbe.cpp"
+      ],
+      "expected_symbols": [
+        "ZProbe::on_gcode_received",
+        "ZProbe::run_probe"
+      ]
+    },
+    {
+      "id": "H21",
+      "split": "holdout",
+      "question": "DeltaGridStrategy 网格探测 probe_grid 在哪里？",
+      "expected_files": [
+        "src/modules/tools/zprobe/DeltaGridStrategy.cpp"
+      ],
+      "expected_symbols": [
+        "DeltaGridStrategy::probe_grid"
+      ]
+    },
+    {
+      "id": "H22",
+      "split": "holdout",
+      "question": "CartGridStrategy 网格保存、扫描和补偿在哪里？",
+      "expected_files": [
+        "src/modules/tools/zprobe/CartGridStrategy.cpp"
+      ],
+      "expected_symbols": [
+        "CartGridStrategy::scan_bed",
+        "CartGridStrategy::doCompensation"
+      ]
+    },
+    {
+      "id": "H23",
+      "split": "holdout",
+      "question": "PID_Autotuner 自动整定 G-code 和 tick 逻辑在哪里？",
+      "expected_files": [
+        "src/modules/tools/temperaturecontrol/PID_Autotuner.cpp"
+      ],
+      "expected_symbols": [
+        "PID_Autotuner::on_gcode_received",
+        "PID_Autotuner::on_tick"
+      ]
+    },
+    {
+      "id": "H24",
+      "split": "holdout",
+      "question": "Thermistor 温度换算 get_temperature 在哪里？",
+      "expected_files": [
+        "src/modules/tools/temperaturecontrol/Thermistor.cpp"
+      ],
+      "expected_symbols": [
+        "Thermistor::get_temperature",
+        "Thermistor::adc_value_to_temperature"
+      ]
+    },
+    {
+      "id": "H25",
+      "split": "holdout",
+      "question": "CurrentControl 电流控制 G-code 在哪里处理？",
+      "expected_files": [
+        "src/modules/utils/currentcontrol/CurrentControl.cpp"
+      ],
+      "expected_symbols": [
+        "CurrentControl::on_gcode_received"
+      ]
     }
   ]
 }

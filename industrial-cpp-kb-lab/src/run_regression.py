@@ -44,17 +44,21 @@ def load_dotenv(path: Path) -> None:
             os.environ[key] = val
 
 
-def check_bundle(search, question: str, top_k: int = 5) -> bool:
+def check_bundle(search, question: str, top_k: int = 5) -> tuple[bool, str]:
     hits = search.search(question, top_k=top_k, bundle=True)
     roles = {h.get("bundle_role") for h in hits}
     primaries = [h for h in hits if h.get("bundle_role") == "primary"]
+    if not primaries:
+        return False, "no primary hits"
     has_impl = any(
         h["type"] == "function" and h["file"].endswith((".cpp", ".c"))
         for h in primaries
     )
     if not has_impl:
-        return True
-    return "overview" in roles or "header" in roles
+        return False, "no primary implementation chunk"
+    if "overview" not in roles and "header" not in roles:
+        return False, "missing overview/header bundle context"
+    return True, "ok"
 
 
 def parse_args() -> argparse.Namespace:
@@ -106,19 +110,19 @@ def main(skip_llm: bool | None = None) -> int:
     for q in data["questions"]:
         if q["id"] not in BUNDLE_IDS:
             continue
-        ok = check_bundle(search, q["question"], top_k)
+        ok, reason = check_bundle(search, q["question"], top_k)
         mark = "PASS" if ok else "FAIL"
-        print(f"  {q['id']} {mark}")
+        print(f"  {q['id']} {mark}" + ("" if ok else f"  ({reason})"))
         if ok:
             bundle_pass += 1
         else:
             failed = True
     need = len(BUNDLE_IDS)
     print(f"\nBundle: {bundle_pass}/{need}  ", end="")
-    if bundle_pass >= 3:
+    if bundle_pass >= need:
         print("PASS")
     else:
-        print("FAIL (need >= 3)")
+        print(f"FAIL (need {need})")
         failed = True
 
     print("\n=== [3/3] Citation check (04_answer, optional) ===\n")
