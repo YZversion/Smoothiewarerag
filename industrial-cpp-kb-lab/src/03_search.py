@@ -33,9 +33,10 @@ SRC_ROOT = DEFAULT_REPO_ROOT / "src"
 
 # 中文问句 → 英文代码种子 token（eval 驱动，仅扩展 query）
 QUERY_HINTS: list[tuple[tuple[str, ...], list[str]]] = [
-    (("g-code", "gcode", "进入", "入口"), [
+    (("进入", "入口"), [
         "gcode", "GcodeDispatch", "SerialConsole", "Player",
-        "on_console_line_received", "on_main_loop",
+        "on_console_line_received", "ON_CONSOLE_LINE_RECEIVED",
+        "on_main_loop", "call_event", "console_line",
     ]),
     (("运动", "变成", "命令"), [
         "Robot", "Planner", "Conveyor", "StepTicker",
@@ -53,11 +54,25 @@ QUERY_HINTS: list[tuple[tuple[str, ...], list[str]]] = [
     ]),
 ]
 
+FLOW_INTENT_KEYS = (
+    "进入", "入口", "变成", "命令", "如何", "怎么", "怎样",
+    "触发", "注册", "通信",
+    "halt", "stop", "emergency", "停止", "报警",
+)
+ON_HANDLER_ENTRY_BOOST = 5.0
+# 几乎每个 Module 都有的钩子；流程题里不应与 on_gcode_received 等抢前排
+GENERIC_EVENT_HANDLERS = frozenset({
+    "on_main_loop", "on_idle", "on_second_tick", "on_module_loaded",
+    "on_enable", "on_get_public_data", "on_set_public_data",
+})
+
 # ── 融合权重 ──────────────────────────────────────────────
 W_SYMBOL = 100.0
 W_RG = 50.0
 W_BM25 = 10.0
 TYPE_BONUS = {"function": 3.0, "class": 2.0, "file_overview": 1.0, "fallback": 0.0}
+
+DISTINCT_HANDLER_MAX_FREQ = 20
 
 # ── 全局索引（load 后填充）────────────────────────────────
 _CHUNKS: list[dict] = []
@@ -65,6 +80,7 @@ _CHUNK_BY_ID: dict[str, dict] = {}
 _CHUNKS_BY_FILE: dict[str, list[dict]] = defaultdict(list)
 _SYMBOL_BY_QUAL: dict[str, list[dict]] = defaultdict(list)
 _SYMBOL_BY_NAME: dict[str, list[dict]] = defaultdict(list)
+_SYMBOL_NAME_FREQ: dict[str, int] = {}
 _BM25: BM25Okapi | None = None
 _BM25_CHUNK_IDS: list[str] = []
 _RG_BIN: str = ""
@@ -137,10 +153,16 @@ def load_chunks(path: Path) -> None:
 
 
 def load_symbols(path: Path) -> None:
-    global _SYMBOL_BY_QUAL, _SYMBOL_BY_NAME
+    global _SYMBOL_BY_QUAL, _SYMBOL_BY_NAME, _SYMBOL_NAME_FREQ
     _SYMBOL_BY_QUAL = defaultdict(list)
     _SYMBOL_BY_NAME = defaultdict(list)
     symbols = json.loads(path.read_text(encoding="utf-8"))
+    freq: dict[str, int] = {}
+    for s in symbols:
+        if s["kind"] not in ("function", "prototype", "class", "struct"):
+            continue
+        freq[s["name"]] = freq.get(s["name"], 0) + 1
+    _SYMBOL_NAME_FREQ = freq
     for s in symbols:
         if s["kind"] not in ("function", "prototype", "class", "struct"):
             continue
@@ -196,9 +218,14 @@ def chunks_for_symbol(sym: dict) -> list[dict]:
     return hits
 
 
+SNIPPET_DEFAULT_LINES = 10
+SNIPPET_EVENT_MARKERS = ("call_event", "THEKERNEL->call_event")
+SNIPPET_SCAN_LINES = 40
+SNIPPET_EVENT_CAP = 28
+
+
 def make_snippet(chunk: dict, focus_line: int | None = None) -> str:
     lines = chunk["text"].splitlines()
-    # 跳过 context header（以 // 开头的头部）
     body_start = 0
     for i, ln in enumerate(lines):
         if ln.startswith("//") or not ln.strip():
@@ -208,11 +235,60 @@ def make_snippet(chunk: dict, focus_line: int | None = None) -> str:
     if focus_line and chunk["file"]:
         rel = max(0, min(len(lines) - 1, focus_line - chunk["start_line"]))
         start = max(body_start, rel - 2)
-        end = min(len(lines), start + 5)
+        end = min(len(lines), start + SNIPPET_DEFAULT_LINES)
     else:
         start = body_start
-        end = min(len(lines), body_start + 5)
+        end = min(len(lines), body_start + SNIPPET_DEFAULT_LINES)
+    scan_end = min(len(lines), body_start + SNIPPET_SCAN_LINES)
+    for i in range(body_start, scan_end):
+        if any(m in lines[i] for m in SNIPPET_EVENT_MARKERS):
+            end = max(end, min(i + 2, body_start + SNIPPET_EVENT_CAP))
+            break
     return "\n".join(lines[start:end])
+
+
+def flow_intent_query(query: str) -> bool:
+    """流程/触发/入口类问句（非「文件在哪」类结构题）。"""
+    q_lower = query.lower()
+    return any(k in q_lower or k in query for k in FLOW_INTENT_KEYS)
+
+
+def is_distinct_event_handler(name: str) -> bool:
+    """跨模块罕见的 on_* 钩子才加权；on_gcode_received 等虚函数实现不抬。"""
+    if name in GENERIC_EVENT_HANDLERS:
+        return False
+    if not name.startswith("on_"):
+        return False
+    return _SYMBOL_NAME_FREQ.get(name, 0) <= DISTINCT_HANDLER_MAX_FREQ
+
+
+def flow_entry_query(query: str) -> bool:
+    return any(k in query or k in query.lower() for k in ("进入", "入口"))
+
+
+def hint_coherent_symbol(sym: dict, tokens: list[str]) -> bool:
+    """handler 加权需与 query/hints 中的模块名一致，避免同名钩子跨文件抬分。"""
+    stem = Path(sym["file"]).stem.lower()
+    cls = (sym.get("class") or "").lower()
+    tok_set = set(tokens)
+    if stem in tok_set or cls in tok_set:
+        return True
+    return any(len(t) >= 4 and t in stem for t in tok_set)
+
+
+def symbol_match_weight(sym: dict, chunk: dict, query: str,
+                        tokens: list[str]) -> float:
+    """事件驱动架构：流程题里优先与 hints 一致的罕见 on_* 处理函数。"""
+    weight = W_SYMBOL * 0.85
+    name = sym["name"]
+    if hint_coherent_symbol(sym, tokens):
+        if (flow_intent_query(query) and is_distinct_event_handler(name)):
+            weight = W_SYMBOL
+            if chunk["start_line"] == sym["line"]:
+                weight += ON_HANDLER_ENTRY_BOOST
+        elif flow_entry_query(query) and name == "on_main_loop":
+            weight = max(weight, W_SYMBOL * 0.92)
+    return weight
 
 
 def hit_from_chunk(chunk: dict, score: float, source: str,
@@ -221,6 +297,9 @@ def hit_from_chunk(chunk: dict, score: float, source: str,
     return {
         "file": chunk["file"],
         "line_start": line_start,
+        "chunk_line_start": chunk["start_line"],
+        "chunk_line_end": chunk["end_line"],
+        "symbol_start": chunk.get("symbol_start", chunk["start_line"]),
         "type": chunk["type"],
         "symbol": chunk.get("symbol") or "",
         "snippet": make_snippet(chunk, focus_line),
@@ -254,7 +333,8 @@ def search_symbols(query: str, tokens: list[str]) -> dict[str, float]:
                 continue
             seen_sym.add(key)
             for c in chunks_for_symbol(sym):
-                scores[c["id"]] = max(scores.get(c["id"], 0), W_SYMBOL * 0.85)
+                sc = symbol_match_weight(sym, c, query, tokens)
+                scores[c["id"]] = max(scores.get(c["id"], 0), sc)
 
     return scores
 
@@ -325,6 +405,9 @@ def chunk_score_bonus(chunk: dict) -> float:
         bonus += 4.0
     elif chunk["file"].endswith((".h", ".hpp")) and chunk["type"] == "class":
         bonus -= 3.0
+    sym, cls = chunk.get("symbol") or "", chunk.get("class") or ""
+    if sym and sym == cls:
+        bonus -= 4.0
     return bonus
 
 

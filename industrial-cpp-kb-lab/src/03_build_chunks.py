@@ -87,13 +87,18 @@ def find_end(sym: dict, lines: list[str], next_sym_start: int | None = None) -> 
 
 def make_context_header(file: str, symbol: str, kind: str,
                         start: int, end: int, cls: str,
+                        symbol_start: int | None = None,
                         sub_idx: int | None = None) -> str:
-    parts = [
-        f"// file: {file}",
-        f"// symbol: {symbol}",
-        f"// kind: {kind}",
-        f"// lines: {start}-{end}",
-    ]
+    parts = [f"// file: {file}"]
+    if symbol:
+        sym_start = symbol_start if symbol_start is not None else start
+        parts.append(f"// symbol: {symbol}")
+        parts.append(f"// symbol_start: {sym_start}")
+        parts.append(f"// chunk_lines: {start}-{end}")
+    else:
+        parts.append(f"// lines: {start}-{end}")
+    if kind:
+        parts.append(f"// kind: {kind}")
     if cls:
         parts.append(f"// class: {cls}")
     if sub_idx is not None:
@@ -124,8 +129,11 @@ def build_chunk(file: str, lines: list[str],
                 start: int, end: int,
                 chunk_type: str, symbol: str = "",
                 kind: str = "", cls: str = "",
+                symbol_start: int | None = None,
                 sub_idx: int | None = None) -> dict:
-    header = make_context_header(file, symbol, kind, start, end, cls, sub_idx)
+    sym_start = symbol_start if symbol_start is not None else start
+    header = make_context_header(file, symbol, kind, start, end, cls,
+                                 symbol_start=sym_start, sub_idx=sub_idx)
     body   = "\n".join(lines[start - 1: end])
     text   = header + "\n" + body
 
@@ -141,6 +149,8 @@ def build_chunk(file: str, lines: list[str],
         "class":      cls,
         "text":       text,
     }
+    if symbol:
+        chunk["symbol_start"] = sym_start
     if sub_idx is not None:
         chunk["sub_idx"] = sub_idx
     return chunk
@@ -166,7 +176,8 @@ def chunk_impl_file(file: str, lines: list[str],
             chunks.append(build_chunk(
                 file, lines, start, end,
                 chunk_type="function",
-                symbol=sym["name"], kind="function", cls=sym["class"]
+                symbol=sym["name"], kind="function", cls=sym["class"],
+                symbol_start=sym["line"],
             ))
         else:
             for sub_i, (ws, we) in enumerate(
@@ -175,6 +186,7 @@ def chunk_impl_file(file: str, lines: list[str],
                     file, lines, ws, we,
                     chunk_type="function",
                     symbol=sym["name"], kind="function", cls=sym["class"],
+                    symbol_start=sym["line"],
                     sub_idx=sub_i
                 ))
     return chunks
@@ -197,7 +209,8 @@ def chunk_header_file(file: str, lines: list[str],
             chunks.append(build_chunk(
                 file, lines, start, end,
                 chunk_type="class",
-                symbol=sym["name"], kind=sym["kind"], cls=sym["class"]
+                symbol=sym["name"], kind=sym["kind"], cls=sym["class"],
+                symbol_start=sym["line"],
             ))
         else:
             for sub_i, (ws, we) in enumerate(
@@ -206,6 +219,7 @@ def chunk_header_file(file: str, lines: list[str],
                     file, lines, ws, we,
                     chunk_type="class",
                     symbol=sym["name"], kind=sym["kind"], cls=sym["class"],
+                    symbol_start=sym["line"],
                     sub_idx=sub_i
                 ))
     return chunks

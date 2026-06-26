@@ -19,6 +19,7 @@ import json
 import os
 import re
 import sys
+from collections.abc import Iterator
 from pathlib import Path
 
 try:
@@ -31,6 +32,8 @@ LAB_ROOT = Path(__file__).parent.parent
 PROMPT_PATH = LAB_ROOT / "prompts" / "code_qa.md"
 ENV_PATH = LAB_ROOT / ".env"
 EVAL_PATH = LAB_ROOT / "eval" / "eval_questions.json"
+
+MAX_CONTEXT_CHUNKS = 8
 
 DEFAULT_BASE_URL = {
     "zhipu": "https://open.bigmodel.cn/api/paas/v4",
@@ -112,25 +115,41 @@ def load_prompt_template(path: Path = PROMPT_PATH) -> str:
     return path.read_text(encoding="utf-8")
 
 
+def trim_context_hits(hits: list[dict],
+                      max_chunks: int = MAX_CONTEXT_CHUNKS) -> list[dict]:
+    """截断 LLM 上下文：优先保留 primary，overview/header 不挤占实现 chunk。"""
+    if len(hits) <= max_chunks:
+        return hits
+    primaries = [h for h in hits if h.get("bundle_role") == "primary"]
+    others = [h for h in hits if h.get("bundle_role") != "primary"]
+    primaries.sort(key=lambda h: -h["score"])
+    others.sort(key=lambda h: -h["score"])
+    if len(primaries) >= max_chunks:
+        return primaries[:max_chunks]
+    return primaries + others[: max_chunks - len(primaries)]
+
+
 def format_context_chunks(hits: list[dict]) -> str:
     if not hits:
         return "（检索未返回任何 chunk）"
     blocks = []
     for i, h in enumerate(hits, 1):
-        cite = f"{h['file']}:{h['line_start']}"
         sym = h.get("symbol") or ""
-        sym_part = f" symbol={sym}" if sym else ""
+        sym_start = h.get("symbol_start") or h.get("chunk_line_start") or h["line_start"]
+        c_start = h.get("chunk_line_start", h["line_start"])
+        c_end = h.get("chunk_line_end", h.get("line_end", h["line_start"]))
         role = h.get("bundle_role", "primary")
         blocks.append(
-            f"#### [{i}] `{cite}`  role={role}  type={h['type']}{sym_part}  "
-            f"score={h['score']}  source={h.get('source', '')}\n"
+            f"#### [{i}] `{h['file']}:{sym_start}`  role={role}  type={h['type']}"
+            f"  symbol={sym}  symbol_start={sym_start}  chunk_lines={c_start}-{c_end}"
+            f"  score={h['score']}  source={h.get('source', '')}\n"
             f"```cpp\n{h['snippet']}\n```"
         )
     return "\n\n".join(blocks)
 
 
 def build_prompt(template: str, question: str, hits: list[dict]) -> str:
-    ctx = format_context_chunks(hits)
+    ctx = format_context_chunks(trim_context_hits(hits))
     return (
         template.replace("{{question}}", question.strip())
         .replace("{{context_chunks}}", ctx)
@@ -167,6 +186,35 @@ def call_llm(prompt: str, provider: str, api_key: str, model: str,
         temperature=0.2,
     )
     return (resp.choices[0].message.content or "").strip()
+
+
+def call_llm_stream(prompt: str, provider: str, api_key: str, model: str,
+                    base_url: str | None) -> Iterator[str]:
+    kwargs: dict = {"api_key": api_key}
+    if base_url:
+        kwargs["base_url"] = base_url
+    client = OpenAI(**kwargs)
+    stream = client.chat.completions.create(
+        model=model,
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0.2,
+        stream=True,
+    )
+    for chunk in stream:
+        yield chunk.choices[0].delta.content or ""
+
+
+def answer_stream(question: str, top_k: int = 5,
+                  search_mod=None) -> tuple[list[dict], Iterator[str]]:
+    kb = search_mod or import_search_module()
+    if not kb._CHUNKS:
+        kb.load_index()
+
+    hits = kb.search(question, top_k=top_k, bundle=True)
+    template = load_prompt_template()
+    prompt = build_prompt(template, question, hits)
+    provider, api_key, model, base_url = llm_config()
+    return hits, call_llm_stream(prompt, provider, api_key, model, base_url)
 
 
 def answer(question: str, top_k: int = 5, search_mod=None) -> dict:
