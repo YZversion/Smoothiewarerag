@@ -41,7 +41,8 @@ GcodeDispatch 订阅该事件并解析 G-code，再广播 ON_GCODE_RECEIVED。
 Smoothiewarerag/
 ├── README.md
 ├── PLAN.md                          # 主计划（Phase 0–7，含验收标准）
-├── CLAUDE.md                        # AI 协作速查（进度 / 约束 / 命令）
+├── AGENTS.md                        # AI 协作入口（进度 / 约束 / 命令）
+├── .cursor/rules/industrial-kb.mdc  # 写 src/*.py 时的 Cursor 纪律
 ├── architecture.md                  # 系统架构与设计决策
 ├── docs/
 │   └── history.md                   # 进度日志（每 session 记录）
@@ -157,6 +158,7 @@ python src/03_build_chunks.py
 
 - [PLAN.md](PLAN.md) — 完整执行计划（Phase 0–7，含验收标准）
 - [architecture.md](architecture.md) — 系统架构与设计决策
-- [CLAUDE.md](CLAUDE.md) — AI 协作速查手册
+- [AGENTS.md](AGENTS.md) — AI 协作入口（进度 / 约束 / 命令）
+- [.cursor/rules/industrial-kb.mdc](.cursor/rules/industrial-kb.mdc) — 写 lab 脚本时的 Cursor 规则
 - [docs/history.md](docs/history.md) — 每次工作的详细进度日志
 - [industrial-cpp-kb-lab/notes/smoothieware_code_map.md](industrial-cpp-kb-lab/notes/smoothieware_code_map.md) — Smoothieware 代码地图

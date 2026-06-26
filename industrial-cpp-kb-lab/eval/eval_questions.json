@@ -56,7 +56,7 @@
         "Block::calculate_trapezoid",
         "Conveyor::get_next_block",
         "StepTicker::step_tick",
-        "StepperMotor::step"
+        "StepperMotor::manual_step"
       ]
     },
     {
@@ -67,7 +67,7 @@
         "src/modules/communication/SerialConsole.cpp",
         "src/modules/communication/GcodeDispatch.cpp",
         "src/modules/utils/killbutton/KillButton.cpp",
-        "src/modules/robot/Endstops.cpp",
+        "src/modules/tools/endstops/Endstops.cpp",
         "src/modules/robot/Conveyor.cpp",
         "src/libs/StepperMotor.cpp"
       ],

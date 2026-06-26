@@ -86,7 +86,8 @@ def find_end(sym: dict, lines: list[str], next_sym_start: int | None = None) -> 
 
 
 def make_context_header(file: str, symbol: str, kind: str,
-                        start: int, end: int, cls: str) -> str:
+                        start: int, end: int, cls: str,
+                        sub_idx: int | None = None) -> str:
     parts = [
         f"// file: {file}",
         f"// symbol: {symbol}",
@@ -95,6 +96,8 @@ def make_context_header(file: str, symbol: str, kind: str,
     ]
     if cls:
         parts.append(f"// class: {cls}")
+    if sub_idx is not None:
+        parts.append(f"// sub_idx: {sub_idx}")
     return "\n".join(parts)
 
 
@@ -122,16 +125,12 @@ def build_chunk(file: str, lines: list[str],
                 chunk_type: str, symbol: str = "",
                 kind: str = "", cls: str = "",
                 sub_idx: int | None = None) -> dict:
-    header = make_context_header(file, symbol, kind, start, end, cls)
+    header = make_context_header(file, symbol, kind, start, end, cls, sub_idx)
     body   = "\n".join(lines[start - 1: end])
     text   = header + "\n" + body
 
-    sym_label = symbol if not cls else f"{cls}::{symbol}"
-    if sub_idx is not None:
-        sym_label += f"[{sub_idx}]"
-
     chunk_id = make_id(file, start, end)
-    return {
+    chunk = {
         "id":         chunk_id,
         "type":       chunk_type,
         "file":       file,
@@ -142,6 +141,9 @@ def build_chunk(file: str, lines: list[str],
         "class":      cls,
         "text":       text,
     }
+    if sub_idx is not None:
+        chunk["sub_idx"] = sub_idx
+    return chunk
 
 
 # ── 各类切分逻辑 ──────────────────────────────────────────
