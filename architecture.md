@@ -2,8 +2,7 @@
 
 ## 系统定位
 
-一个**纯本地优先、无向量数据库**的 C++ 代码问答系统。
-核心思路：用传统信息检索（关键词 + 符号 + BM25）召回上下文，再交给 LLM 生成解释。
+**纯本地优先、无向量数据库**的 C++ 代码问答系统：传统 IR（关键词 + 符号 + BM25）召回上下文，LLM 生成解释与引用。
 
 ---
 
@@ -12,203 +11,151 @@
 ```
 ┌─────────────────────────────────────────────────────────┐
 │                      离线索引阶段                         │
-│                                                         │
-│  C++ 源码目录                                            │
 │  repos/Smoothieware/src/                                │
-│         │                                               │
-│         ├── 01_scan_files.py ──→ file_manifest.json     │
-│         │   (遍历 .cpp/.h，记录路径/行数/目录)            │
-│         │                                               │
-│         ├── 02_extract_symbols.py ──→ symbol_index.json │
-│         │   (ctags 提取 class/function/macro/enum)       │
-│         │                                               │
-│         └── 03_build_chunks.py ──→ data/chunks.jsonl    │
-│             (按符号边界优先切分，带文件:行号元数据)           │
+│    → 01_scan_files.py      → file_manifest.json         │
+│    → 02_extract_symbols.py → symbol_index.json (+end_line)│
+│    → 03_build_chunks.py    → chunks.jsonl               │
 └─────────────────────────────────────────────────────────┘
                           │
                           ▼
 ┌─────────────────────────────────────────────────────────┐
-│                      在线查询阶段                         │
-│                                                         │
-│  用户输入 query                                          │
-│         │                                               │
-│         ├─→ ripgrep 精确搜索（关键词/函数名/G-code）      │
-│         │                                               │
-│         ├─→ ctags 符号定位（class/function → 文件:行号）  │
-│         │                                               │
-│         └─→ BM25 语义召回（chunks.jsonl 上的倒排索引）    │
-│                   │                                     │
-│              融合排序 + 去重                              │
-│                   │                                     │
-│              Top-K chunks（含文件:行号）                  │
+│                      在线检索阶段                         │
+│  query → tokenize + QUERY_HINTS（按意图扩展）             │
+│    ├─ symbol_index 精确命中（含 on_* 事件加权规则）        │
+│    ├─ ripgrep 兜底                                       │
+│    └─ BM25 on chunks.jsonl                              │
+│         → merge + diversify + optional bundle             │
+│         → Top-K hits（file:line, snippet, score）         │
 └─────────────────────────────────────────────────────────┘
                           │
                           ▼
 ┌─────────────────────────────────────────────────────────┐
 │                      LLM 生成阶段                         │
-│                                                         │
-│  prompt = system_prompt + 检索到的上下文 + 用户问题       │
-│         │                                               │
-│         └─→ LLM_PROVIDER / LLM_MODEL                    │
-│                   │                                     │
-│              输出：解释 + 相关源码片段 + 文件:行号引用     │
+│  trim_context_hits（primary 优先，最多 8 chunk）          │
+│    → prompts/code_qa.md + context + question            │
+│    → OpenAI 兼容 API（streaming）                         │
+│    → 解释 + 引用 + validate_citations()                  │
+└─────────────────────────────────────────────────────────┘
+                          │
+                          ▼
+┌─────────────────────────────────────────────────────────┐
+│                      CLI（app.py）                        │
+│  无参数 → REPL；带问题 → 一次性 streaming + Rich         │
+│  --search-only / --demo / --test / --json               │
 └─────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 模块说明
+## 索引产物
 
-### 01_scan_files.py → `data/file_manifest.json`
+### file_manifest.json
 
-```jsonc
-// 每条记录
-{
-  "path": "src/modules/robot/Planner.cpp",
-  "size_bytes": 12480,
-  "lines": 340,
-  "top_dir": "modules/robot"
-}
-```
+每文件：`path`, `size_bytes`, `lines`, `top_dir`。跳过 `build/`, `mbed/`, 二进制等。
 
-过滤规则：跳过 `build/`、`mbed/`、`FirmwareBin/`、`testframework/`、图片、二进制
-
----
-
-### 02_extract_symbols.py → `data/symbol_index.json`
+### symbol_index.json
 
 ```jsonc
-// 每条记录
 {
-  "name":       "append_block",
-  "kind":       "function",
-  "file":       "src/modules/robot/Planner.cpp",
-  "line":       52,
-  "end_line":   210,   // ctags --fields=+e 给出，100% 覆盖
-  "class":      "Planner",
-  "scope_kind": "class"
-}
-```
-
-调用：`ctags --output-format=json --c++-kinds=+pfscetud --fields=+nKze`
-
-`end_line` 由 ctags 语法解析器给出，正确处理字符串/注释/Lambda/条件编译中的 `{}`。
-
----
-
-### chunks.jsonl — 分块策略
-
-采用分层 chunking，而不是简单用“当前 symbol 行到下一个 symbol 前一行”：
-
-1. `.cpp/.c` 优先按函数/方法实现切分：以 `kind == function` 为主。
-2. **函数结束行来源（已实装）**：
-   - **主**：ctags `end_line`（`--fields=+e`，C++ 语法解析，100% 覆盖，正确处理字符串/注释/Lambda/条件编译中的 `{}`）
-   - **极端兜底**：手写 brace matching（当前触发 0 次，为边缘情况保留）
-3. `.h/.hpp` 优先按 `class` / `struct` 定义切分，保留访问控制区、方法声明和成员变量。
-4. 每个源码文件生成一个 `file_overview` chunk，记录文件路径、top_dir、主要 class/function 列表和前若干 include。
-5. 过长函数或类 chunk 再切成 180 行窗口，overlap 40 行。
-6. 没有符号的文件回退为 100 行窗口，overlap 20 行。
-
-```jsonc
-// 每条 chunk
-{
-  "id": "planner_cpp_87_120",
-  "type": "function",
-  "file": "src/modules/robot/Planner.cpp",
-  "start_line": 87,
-  "end_line": 120,
-  "symbol": "Planner::append_block",
+  "name": "on_console_line_received",
   "kind": "function",
-  "scope": "Planner",
-  "text": "bool Planner::append_block(...) { ... }"
+  "file": "src/modules/communication/GcodeDispatch.cpp",
+  "line": 56,
+  "end_line": 489,
+  "class": "GcodeDispatch"
 }
 ```
 
-每个 chunk 文本前加 context header：
+`ctags --fields=+nKze` 提供 `end_line`。
+
+### chunks.jsonl
+
+- `.cpp` 按 function；`.h` 按 class；每文件一个 `file_overview`
+- 过长函数子窗口 180 行 / overlap 40
+- Context header（子窗口区分函数起点与片段范围）：
 
 ```cpp
-// file: src/modules/robot/Planner.cpp
-// symbol: Planner::append_block
+// file: src/modules/robot/Robot.cpp
+// symbol: on_gcode_received
+// symbol_start: 488
+// chunk_lines: 908-1087
 // kind: function
-// lines: 87-120
-// class/scope: Planner
+// class: Robot
 ```
 
 ---
 
-### tokenizer — 代码友好分词
+## 03_search.py — 融合检索
 
-BM25 不直接用普通空格分词。第一版 tokenizer 需要：
+### 三路召回
 
-- 保留原始 token：`on_gcode_received`、`GcodeDispatch`、`THEKERNEL->call_event`
-- 拆 snake_case：`on`、`gcode`、`received`
-- 拆 camelCase / PascalCase：`Gcode`、`Dispatch`
-- 拆路径片段：`modules`、`robot`、`Planner.cpp`
-- 抽取 `::` / `->` 附近标识符：`Kernel`、`call_event`
-- 加最小同义词：`gcode/G-code/Gcode`、`halt/stop/emergency/e-stop/kill/alarm`、`stepper/StepTicker/StepperMotor`
+| 路径 | 权重思路 | 输出 |
+|------|----------|------|
+| Symbol | `W_SYMBOL`；流程题对罕见 `on_*` + 入口 chunk 加权 | chunk id |
+| BM25 | 归一化 × `W_BM25` | chunk id |
+| ripgrep | `W_RG` | chunk id → chunk_at_line |
 
----
+融合后加 `chunk_score_bonus`（`.cpp` function +4；构造函数 `symbol==class` −4）。
 
-### 03_search.py — 三路融合检索
+### QUERY_HINTS（意图驱动）
 
-```
-query
-  │
-  ├── rg_search(query)
-  │     rg -n --type cpp <query> src/
-  │     → [(file, line, snippet), ...]
-  │
-  ├── ctags_lookup(query)
-  │     symbol_index.json 精确匹配 name
-  │     → [(file, line, kind), ...]
-  │
-  └── bm25_search(query)
-        rank_bm25 在 chunks.jsonl 上检索
-        → [(chunk_id, score, text), ...]
-        
-融合：按 chunk id 去重，按来源加权排序
-     ctags符号命中 + rg精确命中 + bm25分数
-返回：Top-K chunks，每条带 file:line、chunk type、命中来源、分数、snippet
-```
+中文问句扩展英文代码种子。**触发词按意图分组**，避免「提到 gcode」就注入入口 token：
 
-检索质量用 `industrial-cpp-kb-lab/eval/eval_questions.json` 做回归评估，统计 Recall@5 / Recall@10。
+| 意图 | 触发词示例 | 种子示例 |
+|------|------------|----------|
+| 入口 | `进入`, `入口` | `GcodeDispatch`, `on_console_line_received`, `call_event` |
+| 运动链 | `运动`, `变成`, `命令` | `Robot`, `Planner`, `Conveyor`, `StepTicker` |
+| 结构 | `motion`, `planner`, `stepper` | `Planner`, `Block`, `StepperMotor` |
+| 停机 | `halt`, `stop`, `emergency` | `ON_HALT`, `Endstops`, `on_halt` |
+| 模块 | `模块`, `注册`, `触发` | `Module`, `Kernel`, `register_for_event` |
 
-对 LLM 问答，检索结果会进一步组织为 context bundle：
+### 可迁移的符号加权（非文件名硬编码）
 
-- 主 chunk：命中的函数实现或类定义
-- 辅助 chunk：对应 header class 定义、调用者/被调用者附近、同文件 `file_overview`
+1. **`flow_intent_query`**：问句含「如何/进入/变成/halt…」→ 流程题
+2. **`is_distinct_event_handler`**：`on_*` 且全库出现次数 ≤ 20（排除泛滥的 `on_gcode_received`）
+3. **`hint_coherent_symbol`**：handler 所在模块名须在 query/hints tokens 中
+4. **`flow_entry_query`**：入口题对与 hints 一致的 `on_main_loop` 轻度加权
 
----
+### Snippet 生成
 
-### 04_answer.py — LLM 问答
+默认 10 行；扫描至 `call_event` / `THEKERNEL->call_event`（上限 28 行），避免 SerialConsole 截断在 `reserve(20)` 处。
 
-```python
-context = "\n\n".join([
-    f"// {chunk['file']}:{chunk['start_line']}\n{chunk['text']}"
-    for chunk in top_chunks
-])
+### Bundle（Phase 3.3）
 
-messages = [
-    {"role": "system", "content": SYSTEM_PROMPT},   # prompts/code_qa.md
-    {"role": "user",   "content": f"上下文:\n{context}\n\n问题: {query}"}
-]
-# → LLM_PROVIDER / LLM_MODEL
-```
+`search(..., bundle=True)`：primary + 同文件 `file_overview` + 配对 `.h` class。caller/callee 留 Plan B。
 
-**Prompt 约束**（`prompts/code_qa.md`）：
-- 角色：工业设备 C++ 代码助手
-- 必须给出 `文件:行号` 引用
-- 上下文不足时明确说"无法确认，需要查看更多代码"
-- 不靠训练知识编造代码细节
+### 评估
+
+`eval/eval_questions.json` → Recall@5 / Recall@10。门槛 ≥4/5 题至少命中 1 个 expected file。
 
 ---
 
-### app.py — 一体化 CLI 入口
+## 04_answer.py — LLM 问答
 
-```bash
-python app.py "G-code 从哪里进入系统"
-# → 检索 → LLM → 输出解释 + 源码片段 + 引用路径
-```
+- `answer()` / `answer_stream()`：检索 bundle → `build_prompt()` → LLM
+- **`trim_context_hits`**：先保留全部 `primary`，再用 slot 填 overview/header（默认最多 8 chunk）
+- **`validate_citations()`**：检查回答中 `` `file:line` `` 是否落在 hit chunk 行范围
+- 环境变量：`LLM_PROVIDER`, `LLM_MODEL`, `LLM_API_KEY`, `LLM_BASE_URL`
+
+---
+
+## prompts/code_qa.md
+
+硬约束：原文引用代码、覆盖 context 相关文件、`symbol_start` vs `chunk_lines`、禁止 `// ...` 伪注释与错误 markdown 围栏。
+
+---
+
+## app.py — CLI
+
+| 命令 | 行为 |
+|------|------|
+| `python src/app.py` | REPL（`/search`, `/demo`, `/eval`, `/quit`） |
+| `python src/app.py "问题"` | Streaming + Rich + Sources 表 |
+| `--search-only` | 仅检索 |
+| `--json` | 纯 JSON（管道用，无 Rich） |
+| `--test` | `run_regression.py` |
+
+默认 `--top-k 8`。
 
 ---
 
@@ -216,55 +163,29 @@ python app.py "G-code 从哪里进入系统"
 
 | 决策 | 选择 | 原因 |
 |------|------|------|
-| 检索方案 | BM25 + rg + ctags | 无需 GPU，本地可用，代码检索够用 |
-| 不用向量检索 | 等 Phase 6 评估后再决定 | 避免过早引入复杂依赖 |
-| chunk 边界 | ctags `end_line` 为主，brace matching 为极端兜底 | ctags 是 C++ 语法解析器，正确处理字符串/注释/Lambda/条件编译；手写 brace 在工业 C++ 里有已知漏洞 |
-| LLM 模型 | 通过 `LLM_PROVIDER` / `LLM_MODEL` 配置 | 保持 Claude / OpenAI / 本地模型可替换 |
-| 数据不入库 | `.gitignore` 排除 data/ index/ repos/ | 生成物可重建，源码太大 |
+| 检索 | BM25 + rg + ctags | 无 GPU，可迁移 |
+| 不用向量库 | Phase 6 再评估 | 避免过早复杂化 |
+| chunk 边界 | ctags `end_line` | 工业 C++ 可靠 |
+| Hint 策略 | 按意图触发 | 避免 Q1/Q2 互污染 |
+| 不加文件名白名单 | 泛化规则 only | Phase 7 无 golden set |
+| LLM | OpenAI 兼容 SDK | 智谱/OpenAI 可换 |
+| eval 规模 | 5 题 | 易过拟合；Phase 6 扩 hold-out |
 
 ---
 
-## Plan B：代码结构图谱层
+## Plan B — CodeGraph
 
-CodeGraph / code graph 工具不进入当前主检索链路，先作为独立实验验证：
-
-```
-Smoothieware 源码
-  ├─→ 主线：rg + ctags + BM25 → chunks → LLM 解释
-  └─→ Plan B：CodeGraph → symbols/callers/callees/dependencies → A/B 对比报告
-```
-
-它主要验证未来 wire bonder 知识库的第一层「代码结构层」是否值得做：
-
-- 文件、类、函数、宏
-- 调用关系、被调用关系
-- include / 依赖关系
-- 继承关系和模块边界
-- 修改某函数可能影响的模块范围
-
-边界：CodeGraph 只提供候选结构线索，不理解设备业务语义，也不能替代源码、编译配置和工程师确认。对宏、条件编译、函数指针、MFC 消息映射、动态回调等工业 C++ 常见结构可能漏报或误报。
-
-实验产物放在 `industrial-cpp-kb-lab/notes/`：
-
-- `smoothieware_rg_findings.md`
-- `smoothieware_codegraph_findings.md`
-- `comparison.md`
-
-未完成 Smoothieware 5 问 A/B 验证前，不把 CodeGraph 接入 `app.py`。
+独立实验，不接入 `app.py`。产物在 `notes/*_findings.md`、`comparison.md`。
 
 ---
 
-## Phase 7 迁移指南
+## Phase 7 迁移
 
-替换素材不需要改源码路径常量，直接传参：
-
-```bash
-python industrial-cpp-kb-lab/src/01_scan_files.py \
-  --repo-root path/to/wire_bonder_svn_checkout \
-  --src-root path/to/wire_bonder_svn_checkout/src
-
-python industrial-cpp-kb-lab/src/02_extract_symbols.py \
-  --repo-root path/to/wire_bonder_svn_checkout
+```powershell
+python src/01_scan_files.py --repo-root path/to/wire_bonder --src-root path/to/wire_bonder/src
+python src/02_extract_symbols.py --repo-root path/to/wire_bonder
+python src/03_build_chunks.py
+python src/app.py "你的设备问题"
 ```
 
-然后重跑 Phase 2–5 全流程即可。模块分区改成设备分类（运动/视觉/IO/报警/配方/流程/UI），练习问题改成设备问题（定位/丢步/回零/限位/报警）。
+检索规则（意图 hints、`on_*` 频率抑噪、trim primary）应随事件驱动 C++ 架构迁移；Smoothieware 专属文件名调参不应迁移。

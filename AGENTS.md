@@ -13,15 +13,17 @@
 Smoothiewarerag/
 ├── PLAN.md                          # Phase 0–7 完整计划（细节查这里，勿在本文件重复）
 ├── AGENTS.md                        # 本文件：进度 / 约束 / 命令
+├── architecture.md                  # 系统设计
+├── docs/history.md                  # Session 进度日志
 ├── .cursor/rules/industrial-kb.mdc  # Cursor：写 src/*.py 时的极简纪律
 └── industrial-cpp-kb-lab/
     ├── repos/Smoothieware/          # clone 源码（.gitignore，只读）
     ├── src/                         # 01_ 扫描 → 02_ 符号 → 03_ 分块/检索 → 04_ 问答 → app.py
     ├── data/                        # file_manifest / symbol_index / chunks.jsonl（生成物）
-    ├── index/                       # BM25 索引（生成物）
-    ├── eval/eval_questions.json     # Recall@K golden set
+    ├── eval/eval_questions.json     # Recall@K golden set（5 题）
     ├── notes/smoothieware_code_map.md
-    └── prompts/code_qa.md
+    ├── prompts/code_qa.md
+    └── requirements.txt             # rank-bm25, openai, rich
 ```
 
 ## 当前进度
@@ -31,12 +33,21 @@ Smoothiewarerag/
 | 0 | ✅ | git / python / rg / ctags / dot；Smoothieware 已 clone |
 | 1 | ✅ | 代码地图、5 个练习问题、10 个重点文件种子 |
 | 2 | ✅ | `file_manifest.json`（269 文件）、`symbol_index.json`（3072 符号，含 end_line） |
-| 3.1 | ✅ | `chunks.jsonl`（1569 chunk）；`03_build_chunks.py` |
-| 3.2 | ✅ | `03_search.py`；Recall@5=5/5；`QUERY_HINTS` |
+| 3.1 | ✅ | `chunks.jsonl`（1569 chunk）；`symbol_start` + `chunk_lines` header |
+| 3.2 | ✅ | `03_search.py`；Recall@5=5/5；`QUERY_HINTS`（按意图触发） |
 | 3.3 | ✅ | `search(bundle=True)`：overview + 配对 header |
-| 4 | ✅ | `04_answer.py` + `code_qa.md` + `validate_citations` |
-| 5 | ✅ | `app.py` + `run_regression.py`（`--test`） |
+| 4 | ✅ | `04_answer.py` + streaming + `validate_citations` + `trim_context_hits` |
+| 5 | ✅ | `app.py` REPL + Rich + `run_regression.py`（`--test`） |
+| 6 | ⬜ | 扩充 eval / 量化 LLM 准确度；hold-out 题 |
 | Plan B | 🔬 | CodeGraph A/B（见 PLAN.md），不阻塞主线 |
+
+## 检索设计原则（可迁移，勿 per-question 硬编码）
+
+- **QUERY_HINTS 按问题意图触发**，不按「关键词是否出现」触发（例：入口 hints 仅 `进入`/`入口`，避免 Q2 被 `gcode` 污染）
+- **事件驱动加权**：流程题对罕见 `on_*` 处理函数加权；泛滥实现（如 `on_gcode_received`）按符号频率抑噪
+- **hint 一致性**：handler 加权需模块名也在 query/hints tokens 中
+- **禁止**把 expected_files 文件名硬编码进检索器——Phase 7 wire bonder 没有 golden set 可抄
+- **eval 诊断**：Recall@5≥4/5 是门槛；Q2 等多跳题 expected files @5 仍可能不全，应如实记录
 
 ## 核心约束
 
@@ -49,19 +60,20 @@ Smoothiewarerag/
 
 ## 5 个练习问题（eval golden set）
 
-| # | 问题 | 关键路径 |
-|---|------|----------|
-| Q1 | G-code 从哪里进入？ | `SerialConsole.cpp`, `GcodeDispatch.cpp`, `Player.cpp` |
-| Q2 | G-code → 运动命令？ | `Robot.cpp` → `Planner.cpp` → `Conveyor.cpp` → `StepTicker.cpp` |
-| Q3 | Motion / Planner / Stepper？ | `src/modules/robot/`, `StepTicker.cpp`, `StepperMotor.cpp` |
-| Q4 | halt / stop / emergency？ | `Kernel.cpp`, `KillButton.cpp`, `tools/endstops/Endstops.cpp` |
-| Q5 | 模块注册与事件？ | `Module.h`, `Kernel.cpp`, `PublicData.cpp` |
+| # | 问题 | 关键路径 | 检索 @5 备注 |
+|---|------|----------|--------------|
+| Q1 | G-code 从哪里进入？ | `SerialConsole.cpp`, `GcodeDispatch.cpp`, `Player.cpp` | 3/3 expected |
+| Q2 | G-code → 运动命令？ | `Robot` → `Planner` → `Conveyor` → `StepTicker` | 门槛 PASS；expected 常仅 2/5 |
+| Q3 | Motion / Planner / Stepper？ | `robot/`, `StepTicker`, `StepperMotor` | 结构题，不触发 flow_intent |
+| Q4 | halt / stop / emergency？ | `Kernel`, `KillButton`, `Endstops` | 部分 expected @5 |
+| Q5 | 模块注册与事件？ | `Module`, `Kernel`, `PublicData` | 门槛 PASS |
 
 ## 架构速记（G-code → 步进）
 
 ```
-SerialConsole/Player → GcodeDispatch → Robot → Planner → Conveyor → StepTicker → StepperMotor
-                              ↑ ON_GCODE_RECEIVED / ON_HALT 等 Kernel 事件总线
+SerialConsole/Player → GcodeDispatch::on_console_line_received
+    → ON_GCODE_RECEIVED → Robot::on_gcode_received
+    → Planner → Conveyor → StepTicker → StepperMotor
 ```
 
 ## 技术栈
@@ -69,37 +81,42 @@ SerialConsole/Player → GcodeDispatch → Robot → Planner → Conveyor → St
 | 层 | 选型 |
 |----|------|
 | 关键词 | ripgrep |
-| 符号 | Universal Ctags |
-| 检索 | BM25（`rank_bm25`） |
-| LLM | `LLM_PROVIDER` / `LLM_MODEL` 环境变量 |
+| 符号 | Universal Ctags（`--fields=+e`） |
+| 检索 | BM25（`rank_bm25`）+ 符号融合 + `QUERY_HINTS` |
+| LLM | `LLM_PROVIDER` / `LLM_MODEL` / `LLM_API_KEY`（OpenAI 兼容 SDK） |
+| CLI | Rich REPL + streaming（`app.py`） |
 | 胶水 | Python 3.11 |
 
 ## 常用命令
 
 ```powershell
 cd industrial-cpp-kb-lab
-
-# 探索 Smoothieware（只读）
-rg -n "on_gcode_received|ON_HALT|register_for_event" repos/Smoothieware/src
+pip install -r requirements.txt
 
 # 重建索引管道
 python src/01_scan_files.py
 python src/02_extract_symbols.py
 python src/03_build_chunks.py
 
-# 问答与回归
-python src/app.py "你的问题"
-python src/app.py --test
+# 问答（须在 industrial-cpp-kb-lab 目录下）
+python src/app.py                        # 交互 REPL
+python src/app.py "G-code 从哪里进入系统？"
+python src/app.py --search-only "关键词"
+python src/app.py --demo
+python src/app.py --test                 # Recall + bundle 回归
+
 python src/run_regression.py --skip-llm
 python src/03_search.py --eval
 ```
+
+环境变量见 `industrial-cpp-kb-lab/.env.example`（`LLM_API_KEY` 勿提交 git）。
 
 ## 文档索引
 
 | 文件 | 用途 |
 |------|------|
 | [`PLAN.md`](PLAN.md) | Phase 任务清单与验收标准 |
-| [`industrial-kb.mdc`](.cursor/rules/industrial-kb.mdc) | 写 `src/*.py` 时的极简纪律（Cursor glob 激活） |
-| [`architecture.md`](architecture.md) | 系统设计 |
+| [`architecture.md`](architecture.md) | 数据流、检索规则、LLM 约束 |
+| [`industrial-kb.mdc`](.cursor/rules/industrial-kb.mdc) | 写 `src/*.py` 时的极简纪律 |
 | [`docs/history.md`](docs/history.md) | Session 进度日志 |
 | [`eval/eval_questions.json`](industrial-cpp-kb-lab/eval/eval_questions.json) | 检索回归集 |

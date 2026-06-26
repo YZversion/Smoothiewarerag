@@ -1,6 +1,19 @@
 # Smoothieware 代码地图 v1
 
-> 由 Phase 1.3 ripgrep 探索生成，2026-06-25
+> Phase 1.3 ripgrep 探索 + Phase 3 索引验证，最后更新 2026-06-25
+
+### 关键入口行号（索引 / ctags 确认）
+
+| 文件 | 符号 | 行号 | 说明 |
+|------|------|------|------|
+| `SerialConsole.cpp` | `on_main_loop` | 249 | 串口收行；~271 `call_event(ON_CONSOLE_LINE_RECEIVED)` |
+| `GcodeDispatch.cpp` | `on_console_line_received` | **56** | G-code 行解析入口（非构造函数 :42） |
+| `Player.cpp` | `on_main_loop` | 422 | SD 卡播放主循环 |
+| `Robot.cpp` | `on_gcode_received` | **488** | 运动 G-code 处理入口 |
+| `Planner.cpp` | `Planner` / `append_block` | 36 / 52+ | 速度规划 |
+| `Conveyor.cpp` | `queue_head_block` | 159 | Block 入队 |
+| `StepTicker.cpp` | `step_tick` 等 | — | 步进定时中断 |
+| `Kernel.cpp` | `immediate_halt` | — | 全局停机 |
 
 ---
 

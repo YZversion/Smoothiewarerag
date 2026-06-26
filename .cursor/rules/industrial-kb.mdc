@@ -13,60 +13,45 @@ alwaysApply: false
 ## 决策梯（写任何代码前先停在这里）
 
 1. **要不要做？** 当前 phase 验收没过，不加下一层。
-2. **lab 里有没有？** 复用 `01_scan_files.py` / `02_extract_symbols.py` / `03_build_chunks.py` 的路径与 CLI 模式，不另起炉灶。
-3. **stdlib + 已有工具够不够？** `pathlib`、`json`、`subprocess` 调 `rg`/`ctags`；轻量 `rank_bm25` 允许，手写 BM25 不算更懒。
-4. **验收缺口驱动增量**：`eval/eval_questions.json` Recall@K 不够再加同义词表、bundle、融合权重——不要一次堆满 PLAN 3.2。
+2. **lab 里有没有？** 复用现有脚本的路径与 CLI 模式，不另起炉灶。
+3. **stdlib + 已有工具够不够？** `pathlib`、`json`、`subprocess`；允许 `rank_bm25`、`openai`、`rich`。
+4. **验收缺口驱动增量**：eval 不够再加一项（hints / bundle / 权重），每次只加一项并复跑 eval。
+5. **能迁移吗？** 换 wire bonder 代码库仍成立的规则才合并；禁止把 `eval_questions.json` 里的文件名硬编码进检索器。
 
 ## 硬边界（不谈判）
 
-- **禁止**：Milvus / Qdrant / LangChain / LlamaIndex / Agent 框架 / 知识图谱进主流程；Web UI；改 `repos/**` 上游代码；ARM 构建与烧录。
-- **产物只写**：`data/`、`index/`、`prompts/`；脚本只写 `src/`。
-- **CodeGraph** 仅 Plan B 笔记实验，不接入 `app.py` 主链路。
-- 换公司代码：用 `--repo-root` / `--src-root`，不物理替换目录。
+- **禁止**：Milvus / Qdrant / LangChain / LlamaIndex / Agent / 知识图谱进主流程；改 `repos/**`；ARM 构建。
+- **产物只写**：`data/`、`index/`、`prompts/`、`notes/`、`eval/`；脚本只写 `src/`。
+- **CodeGraph** 仅 Plan B，不接入 `app.py`。
+- 换公司代码：`--repo-root` / `--src-root`，不物理替换目录。
 
-## 脚本约定（对齐现有文件）
+## 脚本约定
 
 ```python
 LAB_ROOT = Path(__file__).parent.parent
-DEFAULT_REPO_ROOT = LAB_ROOT / "repos" / "Smoothieware"
-# 输出 → LAB_ROOT / "data" / "..." 或 LAB_ROOT / "index" / "..."
 ```
 
-- 编号管道：`01_` 扫描 → `02_` 符号 → `03_` 分块/检索 → `04_` 问答 → `app.py` CLI。
-- 每个脚本：模块 docstring 写用法与输出路径；支持 `argparse` 覆盖 repo 根目录。
-- 匹配 `01_scan_files.py` 风格：少抽象、直读直写、无多余 class 层。
+编号管道：`01_` 扫描 → `02_` 符号 → `03_build_chunks` + `03_search` → `04_answer` → `app.py`。
 
-## Phase 3 检索 v1 最小集
+## 检索增量纪律
 
-优先交付能跑 eval 的版本：
+- `QUERY_HINTS`：**按意图触发**，不按关键词出现触发。
+- 符号加权：优先泛化规则（`on_*` 频率、hint 一致性），禁止 per-question 文件名 `+5`。
+- `trim_context_hits`：primary 先于 overview/header。
+- bundle / 权重：**Recall@5 < 4/5 时再加**，一次一项。
 
-1. BM25 on `data/chunks.jsonl`
-2. `symbol_index.json` 精确符号命中
-3. `rg` 兜底（限 `repos/` 源码树）
-4. 返回：`file:行号`、chunk type、snippet、分数
+## Phase 4–5
 
-bundle / 同义词 / 多路加权：**Recall@5 < 4/5 时再加**，每次只加一项并复跑 eval。
-
-## Phase 4 LLM
-
-- Prompt 放 `prompts/code_qa.md`；逻辑放 `04_answer.py`。
-- `LLM_PROVIDER` / `LLM_MODEL` 环境变量配置——这是 PLAN 明确要求，不是过度设计。
-- 回答必须附引用；上下文不足时说不知道，不编。
-
-## Ponytail 纪律（lazy ≠ 偷懒）
-
-- 最短可用 diff；删重复逻辑优于加 helper。
-- 未请求的抽象、新依赖、多文件拆分 → 先质疑。
-- 有意简化用 `# ponytail: ...` 注明上限与升级路径。
-
-**不能砍**：eval 回归、`file:行号` 引用、chunk 元数据（`id`/`type`/`symbol`/`sub_idx`）、信任边界与数据路径校验。
+- Prompt → `prompts/code_qa.md`；逻辑 → `04_answer.py`。
+- `LLM_PROVIDER` / `LLM_MODEL` / `LLM_API_KEY` 环境变量。
+- `app.py`：`--json` 不用 Rich；默认 `top_k=8`。
 
 ## 完成前自检
 
 ```powershell
 cd industrial-cpp-kb-lab
-python src/03_build_chunks.py   # 或你改的脚本
-# 用 eval/eval_questions.json 查 Recall@5 / Recall@10
+python src/03_search.py --eval
+python src/run_regression.py --skip-llm
 ```
 
-未过当前 phase 验收标准，不进入下一 phase 功能。
+未过当前 phase 验收，不进入下一 phase 功能。

@@ -138,12 +138,13 @@
 - [x] 为每个源码文件生成一个 file overview chunk：文件路径、top_dir、主要 class/function 列表、前若干 include，用来回答”代码在哪里/模块结构是什么”
 - [x] 过长函数或类 chunk 再切为 180 行子窗口，overlap 40 行；没有符号的文件回退为 100 行窗口，overlap 20 行
 - [x] 每个 chunk 带元数据：`id`、`type`（function/class/file_overview/fallback）、文件路径、起止行号、所属符号、符号类型、scope/class、文本
-- [x] 每个 chunk 文本前加 context header：`file`、`symbol`、`kind`、`lines`、`class/scope`
+- [x] 每个 chunk 文本前加 context header：`symbol_start`（定义行）+ `chunk_lines`（本子窗口行范围）
 - [x] 输出 `chunks.jsonl`
 
 ### 3.2 `03_search.py`（融合检索）
 - [x] 实现代码友好的 tokenizer：保留原始 token，同时拆 snake_case、camelCase、路径片段和 `::`/`->` 附近标识符
-- [x] 中文问句 `QUERY_HINTS`（等价于原 gcode/halt/stepper 同义词表目标）
+- [x] 中文问句 `QUERY_HINTS`：**按问题意图触发**（入口组仅 `进入`/`入口`，避免与运动链题互污染）
+- [x] 流程题 `on_*` 事件处理函数泛化加权（符号频率抑噪 + hint 一致性；禁止 per-file 硬编码）
 - [x] BM25 索引（`rank_bm25`）建在 chunks 上（内存）
 - [x] 检索流程：关键词 → BM25 召回 chunk + ctags 精确符号定位 + ripgrep 兜底
 - [x] 融合排序：符号 / rg / BM25 加权；chunk id 去重；`.cpp` function 优先
@@ -188,7 +189,8 @@
 
 ### 5.1 `app.py`
 - [x] 一个入口：输入关键词 → 检索 → LLM → 输出（`--search-only` / `--demo`）
-- [x] CLI only；输出：解释 + 引用列表
+- [x] **Rich REPL**（无参数启动）；streaming 回答；`--json` 纯文本管道
+- [x] 默认 `--top-k 8`；CLI only；输出：解释 + Sources 表
 
 ### 5.2 自测脚本
 - [x] `run_regression.py`；`app.py --test` 一键 Recall + bundle 回归
@@ -204,8 +206,9 @@
 **目标：先量化效果，再决定要不要加重型组件。**
 
 ### 6.1 评估
-- [ ] 扩充练习问题到 15~20 个，统计命中率/可用性
+- [ ] 扩充练习问题到 15~20 个，含 **hold-out**（不参与调参）
 - [ ] 记录 BM25 检索的失败案例（漏召回、错召回）
+- [ ] 区分「检索 Recall」与「LLM 答案准确度」；Q2 等多跳题 expected files @5 可能不全
 
 ### 6.2 可选升级（按需，不是必须）
 - [ ] 向量检索（仅当 BM25 明显不够时）
@@ -337,13 +340,21 @@ Return the most relevant functions and their callers/callees. Do not guess.
 
 ## 当前进度落点
 
-当前已完成 **Phase 0 – Phase 5 主线**（Smoothieware 练手 demo 可演示）。
+当前已完成 **Phase 0 – Phase 5 主线**（Smoothieware demo：REPL + 检索 + LLM streaming）。
 
 ```powershell
 cd industrial-cpp-kb-lab
+pip install -r requirements.txt
+
+python src/app.py                              # REPL
 python src/app.py "G-code 从哪里进入系统？"
-python src/app.py --test                    # Recall + bundle 回归
-python src/run_regression.py --skip-llm     # 同上，不调 LLM
+python src/app.py --search-only "Robot on_gcode_received"
+python src/app.py --demo
+python src/app.py --test                       # Recall + bundle 回归
+python src/run_regression.py --skip-llm
+python src/03_search.py --eval
 ```
 
-下一步：**Phase 6** 评估扩充 / Plan B CodeGraph A/B；**Phase 7** 迁移 wire bonder 代码（`--repo-root`）。
+**已知缺口（如实记录，勿用文件名特判刷绿）：** Q2 检索 @5 常仅命中 Robot+Conveyor，缺 GcodeDispatch/Planner/StepTicker；LLM 小模型易漏列 Sources、产生伪注释。
+
+下一步：**Phase 6** 扩充 eval + hold-out；Plan B CodeGraph A/B；**Phase 7** wire bonder（`--repo-root`）。

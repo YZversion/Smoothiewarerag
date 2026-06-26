@@ -40,7 +40,6 @@
 | Q5 | 模块注册/触发/通信 | `Module.h`, `Kernel.h::hooks`, `PublicData.cpp` |
 
 **文档创建**
-- `CLAUDE.md` — 项目速查手册（结构/约束/架构/常用命令）
 - `architecture.md` — 系统架构（数据流/模块说明/设计决策）
 - `docs/history.md` — 本文件
 
@@ -140,7 +139,7 @@
   - `notes/smoothieware_codegraph_findings.md`
   - `notes/comparison.md`
 - `architecture.md` 已补充 Plan B 的结构图谱层说明
-- `AGENTS.md` / `CLAUDE.md` 已同步最新进度、约束和常用命令
+- `AGENTS.md` / `architecture.md` / `README.md` 已同步最新进度、约束和常用命令
 
 ### 下一步
 
@@ -179,9 +178,59 @@
 
 ### 文档更新
 
-- `CLAUDE.md`：进度更新至 Phase 3.1，补充 03_build_chunks.py 命令和一键重建命令
+- `AGENTS.md`：进度更新至 Phase 3.1，补充 03_build_chunks.py 命令和一键重建命令
 - `architecture.md`：symbol_index.json schema 加 `end_line` 字段，chunk 边界设计决策更新
 - `README.md`：新建，项目整体介绍 + 快速上手
+
+---
+
+## 2026-06-25 — Session 4
+
+### Phase 3.2–5 完成
+
+**检索 `03_search.py`**
+- BM25 + symbol + rg 融合；Recall@5 = 5/5（门槛 ≥4/5）
+- `QUERY_HINTS` 中文意图扩展；**入口组仅 `进入`/`入口` 触发**（修 Q1/Q2 互污染）
+- `search(bundle=True)`：primary + overview + 配对 header
+- 泛化符号加权：`flow_intent` + 罕见 `on_*` + `hint_coherent`（删除 GcodeDispatch 文件名特判）
+- snippet 扩展至 `call_event` 行；构造函数 `symbol==class` 降权
+
+**分块 `03_build_chunks.py`**
+- chunk header：`symbol_start` vs `chunk_lines`（修子窗口行号误导 LLM）
+
+**问答 `04_answer.py`**
+- OpenAI 兼容 LLM；`validate_citations()`；`answer_stream()`
+- `trim_context_hits`：primary 优先，最多 8 chunk 进 prompt
+
+**CLI `app.py`**
+- Rich REPL + streaming；`--demo` / `--test` / `--json`
+- `run_regression.py`：Recall + bundle + 可选引用校验
+- 依赖：`rich>=13.0`
+
+**Prompt `code_qa.md`**
+- 硬约束：原文引用、覆盖 context 文件、禁止伪注释；negative example
+
+### 准确度与 eval 诊断
+
+| 题 | 检索 @5 | LLM 备注 |
+|----|---------|----------|
+| Q1 | 3/3 expected | GcodeDispatch:56 + SerialConsole + Player |
+| Q2 | 门槛 PASS；expected 常 2/5 | Robot+Conveyor；缺 Planner/StepTicker 为排序问题 |
+| Q3 | 结构题，不触发 flow_intent | 未误伤 |
+| Q4–Q5 | 门槛 PASS | 部分 expected @5 未全中 |
+
+**原则确立：** 不把 expected_files 硬编码进检索器；Recall 刷绿不如如实记录缺口；Phase 6 需 hold-out 题防过拟合。
+
+### 文档同步
+
+- `AGENTS.md` / `README.md` / `architecture.md` / `PLAN.md` / `history.md` / `smoothieware_code_map.md` / `code_qa.md` 全部更新至当前实现
+- 删除 `CLAUDE.md`（不再使用 Claude Code 专用入口）
+
+### 下一步
+
+- Phase 6：扩充 eval 15–20 题 + hold-out；量化 LLM 准确度
+- diversify 抑噪（非文件名白名单）；可选换 `glm-4` 模型
+- Phase 7：wire bonder `--repo-root` 迁移
 
 ---
 
