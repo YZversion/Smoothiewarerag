@@ -41,7 +41,7 @@ Smoothiewarerag/
 | 5 | ✅ | `kb_cli` 包（Typer）；`.\kb tui` Textual Search Cockpit Milestone A+B；`app.py` 旧入口保留 |
 | 6 | ✅ | 30 题 eval；mean_cov@5≥70% gate；检索冻结 |
 | Plan B | ✅ | CodeGraph A/B；`comparison.md` |
-| 7 | 🔄 | CI：`.github/workflows/eval.yml` + `scripts/ci_build_and_eval.ps1` |
+| 7 | ✅ | GitHub Actions Eval 绿；`scripts/ci_build_and_eval.ps1` |
 | 8–11 | ⬜ | 符号对齐 → PageRank → LLM → wire bonder |
 
 ## 检索设计原则（可迁移，勿 per-question 硬编码）

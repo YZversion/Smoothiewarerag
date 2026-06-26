@@ -103,7 +103,8 @@ python src/eval_answer_layer.py --top-k 8 --llm
 - [x] 自动化回归 PASS（eval gate + regression）
 - [x] Phase 6 量化结论（`notes/phase6_conclusion.md`）
 - [x] 失败案例归档（`notes/eval_failures.md`）
+- [x] **Phase 7 CI 绿**（[Actions](https://github.com/YZversion/Smoothiewarerag/actions/workflows/eval.yml)）
 - [ ] 人工抽测 F1–F5（验收人本地执行）
-- [ ] LLM 数据合规确认（公司代码外发策略，Phase 7 前必做）
+- [ ] LLM 数据合规确认（公司代码外发策略，Phase 11 前必做）
 
 **签署：** 开发侧自动化项已完成；人工抽测与合规由验收人勾选。

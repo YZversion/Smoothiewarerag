@@ -93,7 +93,7 @@ Smoothiewarerag/
 | 5 | `kb_cli` Typer CLI + Textual TUI（j/k / help / search） | ✅ |
 | 6 | 30 题 eval；mean cov@5=87% PASS；检索冻结 | ✅ |
 | Plan B | rg/BM25 vs CodeGraph A/B 对比完成 | ✅ |
-| 7 | CI（GitHub Actions + 本地镜像脚本） | 🔄 push 后验 |
+| 7 | CI（GitHub Actions ✅ + 本地镜像脚本） | ✅ |
 | 8–11 | 符号对齐 → PageRank → LLM → wire bonder | ⬜ |
 
 检索回归：`.\kb eval` 或 `python src/03_search.py --eval` → mean cov@5 **≥70%** gate。  
