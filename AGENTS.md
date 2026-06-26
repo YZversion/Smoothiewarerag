@@ -32,8 +32,9 @@ Smoothiewarerag/
 | 1 | ✅ | 代码地图、5 个练习问题、10 个重点文件种子 |
 | 2 | ✅ | `file_manifest.json`（269 文件）、`symbol_index.json`（3072 符号，含 end_line） |
 | 3.1 | ✅ | `chunks.jsonl`（1569 chunk）；`03_build_chunks.py` |
-| 3.2 | 🔄 | **`03_search.py`** + `eval_questions.json` Recall@K 验收 |
-| 4–5 | ⏳ | `04_answer.py`、`app.py` CLI |
+| 3.2 | ✅ | `03_search.py`；三路融合（symbol+rg+BM25）；Recall@5=5/5 Recall@10=5/5 |
+| 4 | ✅ | `04_answer.py` + `prompts/code_qa.md`；智谱 glm-4-flash 跑通 Q1–Q5，均带 file:行号 引用 |
+| 5 | 🔄 | **`app.py`** CLI，打通全链路 + 5 题回归测试 |
 | Plan B | 🔬 | CodeGraph A/B（见 PLAN.md），不阻塞主线 |
 
 ## 核心约束
