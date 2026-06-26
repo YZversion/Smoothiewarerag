@@ -31,6 +31,10 @@ python src/03_search.py --eval
 python src/run_regression.py --top-k 8
 ```
 
+**CI（Phase 7）：** 每次 push/PR 到 `main` 自动跑相同 gate（无 `LLM_API_KEY` 时 regression 跳过 LLM 段）。  
+`data/` 与 `repos/` 不入库 → Actions 内 shallow clone Smoothieware 并重建索引。  
+本地镜像：`.\scripts\ci_build_and_eval.ps1`（Windows）或 `bash scripts/ci_build_and_eval.sh`。
+
 | 检查项 | 门槛 | 实测（2026-06-25） |
 |--------|------|-------------------|
 | 检索 gate | all **mean cov@5 ≥ 70%** | **73% PASS** |

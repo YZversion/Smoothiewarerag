@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "hooks": {
+    "afterFileEdit": [
+      {
+        "command": ".cursor/hooks/remind_eval.sh",
+        "matcher": "Write|TabWrite"
+      }
+    ]
+  }
+}

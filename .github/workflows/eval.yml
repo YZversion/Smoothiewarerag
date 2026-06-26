@@ -1,0 +1,59 @@
+# Phase 7 — 检索回归 CI
+# Gate: mean coverage@5 >= 70% (03_search.EVAL_COV5_GATE)
+# data/ 与 repos/ 不入库 → CI 内 shallow clone + 重建索引
+
+name: Eval
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+defaults:
+  run:
+    working-directory: industrial-cpp-kb-lab
+
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout lab
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: industrial-cpp-kb-lab/requirements.txt
+
+      - name: Install system tools (ctags; rg preinstalled on runner)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y universal-ctags
+          rg --version
+          ctags --version
+
+      - name: Clone Smoothieware (shallow)
+        run: |
+          mkdir -p repos
+          git clone --depth 1 https://github.com/Smoothieware/Smoothieware.git repos/Smoothieware
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Build index pipeline
+        run: |
+          python src/01_scan_files.py
+          python src/02_extract_symbols.py
+          python src/03_build_chunks.py
+          python src/03_build_callgraph.py
+
+      - name: Retrieval eval (fail if mean cov@5 < 70%)
+        run: python src/03_search.py --eval
+
+      - name: Regression (skip LLM — no API key in CI)
+        run: python src/run_regression.py --skip-llm --top-k 8

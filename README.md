@@ -1,5 +1,7 @@
 # Smoothiewarerag — industrial-cpp-kb-lab
 
+[![Eval](https://github.com/YZversion/Smoothiewarerag/actions/workflows/eval.yml/badge.svg)](https://github.com/YZversion/Smoothiewarerag/actions/workflows/eval.yml)
+
 工业设备 C++ 代码问答知识库：用 **ripgrep + ctags + BM25 + LLM** 实现「输入问题 → 返回源码 + 解释 + 文件:行号引用」。
 
 当前以 **Smoothieware**（LPC17xx OOP C++ G-code / CNC 控制器）练手，验证后通过 `--repo-root` 迁移到公司 wire bonder 代码库。
@@ -91,9 +93,11 @@ Smoothiewarerag/
 | 5 | `kb_cli` Typer CLI + Textual TUI（j/k / help / search） | ✅ |
 | 6 | 30 题 eval；mean cov@5=87% PASS；检索冻结 | ✅ |
 | Plan B | rg/BM25 vs CodeGraph A/B 对比完成 | ✅ |
-| 7 | 迁移 wire bonder | ⬜ |
+| 7 | CI（GitHub Actions + 本地镜像脚本） | 🔄 push 后验 |
+| 8–11 | 符号对齐 → PageRank → LLM → wire bonder | ⬜ |
 
-检索回归：`.\kb eval` 或 `python src/03_search.py --eval` → mean cov@5 **87% PASS**（gate ≥70%）。
+检索回归：`.\kb eval` 或 `python src/03_search.py --eval` → mean cov@5 **≥70%** gate。  
+CI：[![Eval](https://github.com/YZversion/Smoothiewarerag/actions/workflows/eval.yml/badge.svg)](https://github.com/YZversion/Smoothiewarerag/actions/workflows/eval.yml) — 每次 push/PR 自动 shallow clone + 重建索引 + eval。本地镜像：`.\scripts\ci_build_and_eval.ps1`。
 
 ---
 

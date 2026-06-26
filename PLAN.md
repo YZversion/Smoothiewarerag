@@ -206,7 +206,7 @@
 **目标：先量化效果，再决定要不要加重型组件。**
 
 ### 6.1 评估
-- [x] 扩充练习问题到 15 题（5 `tune` + 10 `holdout`），见 `eval/eval_questions.json` v2
+- [x] 扩充练习问题到 30 题（5 `tune` + 25 `holdout`），见 `eval/eval_questions.json` v2
 - [x] `03_search.py --eval` 输出 **coverage@K**（`|hit|/|expected|`）与 tune/holdout 分项
 - [x] 记录失败案例到 `notes/eval_failures.md`（已修复 / open 对照表）
 - [x] 区分「检索 Recall」与「LLM 答案准确度」→ `notes/phase6_conclusion.md`、`src/eval_answer_layer.py`
@@ -230,7 +230,199 @@
 
 ---
 
-## Plan B — CodeGraph 代码结构图谱实验
+## 下一阶段路线图（Phase 7–11）
+
+> **执行顺序：7 → 8 → 9 → 10 → 11**。每项做完跑全量 `--eval` 对账；tune 题不得回归，holdout 提升需区分真改进 vs 过拟合。  
+> 参考：`notes/phase6_conclusion.md`、外部评审 7.5/10（CI + 符号对齐 + PageRank）。
+
+| Phase | 主题 | 预估 | 阻塞关系 |
+|-------|------|------|----------|
+| **7** | CI & 回归纪律自动化 | 半天 | 无 |
+| **8** | 符号级检索对齐 + 命令分发索引 | 1–2 天 | 建议在 9 之前 |
+| **9** | Repomap PageRank（Aider 式图排序） | 2–3 天 | 依赖 8 的 chunk 质量 |
+| **10** | LLM 答案完整性 | 半天–1 天 | 可与 8 并行 |
+| **11** | Wire bonder 迁移 | 数天 | 7–10 不必全完，但 **7（CI）必须先做** |
+
+Plan B（CodeGraph）已完成笔记实验；Plan C 并入 **Phase 8.3**，不单独占 phase 号。
+
+---
+
+## Phase 7 — CI & 回归纪律自动化
+
+**目标：把已有 eval gate 变成「每次 push 强制执行」，纪律从抽屉里拿出来。**
+
+### 7.1 GitHub Actions
+- [x] 新增 `.github/workflows/eval.yml`
+- [x] 触发：`push` / `pull_request` → `main`（及 feature 分支）
+- [x] 步骤：CI 内 shallow clone Smoothieware + 重建索引（`data/` / `repos/` 不入库）
+- [x] 跑 `python src/03_search.py --eval`；**mean cov@5 < 0.70 → job fail**
+- [x] 跑 `python src/run_regression.py --skip-llm --top-k 8`（CI 无 `LLM_API_KEY` 时跳过 LLM 引用段）
+- [x] README 加 CI badge；本地镜像：`scripts/ci_build_and_eval.ps1`
+
+### 7.2 本地钩子（可选，与 Actions 互补）
+- [x] `.cursor/hooks.json` + `remind_eval.sh`：改检索/eval 相关文件后提示跑 `--eval`
+- [x] 本地 CI 镜像：`industrial-cpp-kb-lab/scripts/ci_build_and_eval.{ps1,sh}`
+
+### 7.3 产物纪律
+- [x] `.github/pull_request_template.md`：eval 变更须附 `--eval` 前后对比
+- [x] 禁止为通过 CI 而改 gate 阈值或 holdout 特判（文档 + PR 模板）
+
+**✅ Phase 7 验收**
+- [ ] 故意改坏一条 hint 触发器 → CI 红；修复 → CI 绿（push 后验证）
+- [x] fork 者 clone 后看 Actions 即知项目健康度（workflow + badge + 本地镜像脚本）
+
+---
+
+## Phase 8 — 符号级检索对齐
+
+**目标：治 phase6 真瓶颈——「文件到了、符号 chunk 没到」；context sym_cov 从 ~50% 提升。**
+
+### 8.1 Chunk / ctags 边界审计
+- [ ] 对 Q2/Q3/Q4/Q5 逐题列出：expected symbol → 对应 chunk id / 是否缺失
+- [ ] 检查 `02_extract_symbols.py` 的 `end_line` 是否传入 `03_build_chunks.py`
+- [ ] 修复：函数体被 prototype / 邻函数截断、class 声明与实现分离等切分 bug
+- [ ] 重建 `chunks.jsonl` 后跑 `--eval`；记录 sym_cov 前后（`eval_answer_layer.py`）
+
+### 8.2 确定性符号检索（AST-aware / search_method）
+- [ ] `03_search.py` 新增路径：query 含 `Class::method` 或 token 精确命中 symbol_index → **直接拉该符号 chunk**（不依赖 BM25 碰运气）
+- [ ] 支持 `kb symbol` / eval 中符号类问句（H1/H5/H6）稳定命中函数体
+- [ ] 权重：确定性符号命中 ≥ BM25 同名子窗口
+- [ ] 仍禁止 expected_files 文件名硬编码
+
+### 8.3 Plan C — 命令 / 事件分发索引（并入本 phase）
+- [ ] 新增 `src/05_extract_dispatch_index.py`（见下方 Plan C 细则）
+- [ ] 输出 `data/dispatch_index.json`
+- [ ] query 含 `G28` / `M104` / 命令号时先查 dispatch，再融合 BM25 / symbol / rg
+- [ ] H4 及新增 5 道分发题进入 eval holdout（不靠 homing hint）
+
+**✅ Phase 8 验收**
+- [ ] `eval_answer_layer.py`：mean sym_cov@trim **≥ 65%**（基线 ~50%）
+- [ ] H4 Recall@5 命中 `Endstops.cpp`（不靠文件名特判）
+- [ ] tune 5 题 Recall@5 仍为 5/5；mean cov@5 不低于冻结时基线
+
+---
+
+## Phase 9 — Repomap PageRank
+
+**目标：把 `call_graph` + `W_GRAPH` 从 flow-intent 一跳启发式，升级为 Aider 式 **personalized PageRank** 填 context 排序。**
+
+### 9.1 图构建升级
+- [ ] 研读 Aider `repomap.py` 思路（def/ref + 依赖边）
+- [ ] 扩展 `03_build_callgraph.py` 或新建 `03_build_repomap.py`：边权 = mention / include / 同文件
+- [ ] 输出 `data/repomap_scores.json` 或运行时 PageRank 缓存
+
+### 9.2 检索融合
+- [ ] query tokens + 已命中 primary → personalized PageRank 种子
+- [ ] 用排名替代/增强 `search_graph()` 的固定 `W_GRAPH` 加分
+- [ ] **token budget 意识**：与 `trim_context_hits(max=8)` 对齐，按 PageRank 序填充
+
+### 9.3 对账纪律
+- [ ] 改前记录 30 题（5 tune + 25 holdout）各 cov@5 / sym_cov
+- [ ] 改后：tune 不得挂；holdout 提升需排除「hint 作弊」类回归
+
+**✅ Phase 9 验收**
+- [ ] Q2 @5 cov **≥ 4/5** 且 GcodeDispatch 进 top-5（或文档说明仍 open 的原因）
+- [ ] 多文件流程题（Q2–Q5）mean cov@5 **≥ 基线 + 5pp**
+- [ ] 仍无向量库；图排序可 `--eval` 开关对比（`ENABLE_REPORANK`）
+
+---
+
+## Phase 10 — LLM 答案完整性
+
+**目标：治 phase6「15/15 引用合法，但仅 40% 列全期望文件」——改 prompt / pipeline，不加检索复杂度。**
+
+### 10.1 Prompt & 后处理
+- [ ] 参考 PaperQA2：强制「列全 context 中每个相关 primary 文件」清单段
+- [ ] `prompts/code_qa.md`：增加自检句——「是否遗漏 context 内模块」
+- [ ] 可选：`04_answer.py` 两阶段——先列文件清单，再写解释（低成本）
+
+### 10.2 度量
+- [ ] `eval_answer_layer.py` 报告 **files_in_ans / expected_files** 写入 CI artifact 或 notes
+- [ ] 目标：tune 5 题 **≥ 4/5 列全文件**；全体 **≥ 55%**
+
+### 10.3 引用与完整性分离
+- [ ] CI 继续分轨：检索 gate（Phase 7） vs LLM 引用（有 key 时 nightly）vs 完整性（报告项）
+
+**✅ Phase 10 验收**
+- [ ] `run_regression.py --top-k 8` tune citation 仍 5/5
+- [ ] `eval_answer_layer.py --llm`：all files cited **≥ 55%**（基线 40%）
+
+---
+
+## Phase 11 — 迁移到公司 wire bonder 代码
+
+**目标：把验证过的 lab 直接套到真实设备代码上。**
+
+### 11.1 替换素材
+- [ ] 公司 SVN checkout 出代码目录
+- [ ] 不需要物理替换 `repos/Smoothieware/`；通过 `--repo-root` / `--src-root` 指向公司代码目录
+- [ ] 重跑 Phase 2~5 全流程，输出到独立 `data/<project>/` 或按项目名分目录
+
+### 11.2 适配 wire bonder 模块体系
+- [ ] 把模块分区从 CNC 改成设备真实分类：
+  - [ ] 运动控制
+  - [ ] 视觉
+  - [ ] IO
+  - [ ] 报警
+  - [ ] 配方
+  - [ ] 流程
+  - [ ] UI
+- [ ] 针对设备重写 5~10 个核心练习问题（定位、丢步、回零、限位、报警等）
+- [ ] 新 eval：**5 tune + 10~25 holdout**，规则同 Smoothieware（coverage@K gate ≥70%）
+
+### 11.3 合规与安全
+- [ ] 确认公司代码可在本地/所选 LLM 环境处理（数据外发合规）
+- [ ] 必要时改用本地模型 / 内网部署
+- [ ] Phase 7 CI 对公司仓库 fork 或私有 runner 策略写一句
+
+**✅ Phase 11 验收**
+- [ ] 对公司代码，能用同一套 `kb ask` / `kb tui` 返回「源码+解释+引用」
+- [ ] 至少 5 个真实设备问题被正确回答
+- [ ] Smoothieware eval 仍绿（回归不回归）
+
+---
+
+## Cursor Skills / 插件与自动化建议
+
+> 不替代 Phase 7 GitHub Actions；skills 提升 **日常开发 + Agent 协作** 效率。
+
+### 强烈推荐（与本仓库直接相关）
+
+| Skill / 能力 | 用途 | 何时用 |
+|--------------|------|--------|
+| **[create-rule](.cursor/rules/industrial-kb.mdc)** / `create-rule` | 维护 `industrial-kb.mdc`：冻结检索、禁止文件名特判、eval 驱动 | 改 `03_search.py` / 加权重前 |
+| **`create-hook`** | 项目 hook：改 eval 集 / 检索权重后提醒跑 `--eval` | Phase 7.2 本地互补 |
+| **`babysit`** | PR 红 CI 时循环修 eval 回归 | 接好 Actions 之后 |
+| **`ci-investigator`** | 单条 CI fail 根因摘要 | Actions 首红调试 |
+| **`review-bugbot`** | 改检索/分块逻辑前的 diff 审查 | Phase 8–9 大改前 |
+| **`split-to-prs`** | 把 Phase 8/9 拆成「chunk 修复」「PageRank」独立 PR | 避免巨型 PR |
+
+### 按需使用
+
+| Skill | 用途 |
+|-------|------|
+| **`loop`** | 定时跑 `kb eval` / `run_regression.py`（本地 nightly） |
+| **`automate`** | Cursor Automations：push 后自动跑 eval 报告（与 Actions 二选一或并存） |
+| **`create-skill`** | 把「跑 eval + 解读 cov 表」固化成项目 skill |
+| **`canvas`** | eval 结果 dashboard、Phase 8 符号缺失矩阵可视化 |
+| **`sdk`** | 仅当要把 `kb ask` 接到外部 CI bot 时 |
+
+### VS Code / Cursor 扩展（非 skill，但实用）
+
+| 扩展 | 用途 |
+|------|------|
+| **Python** + **Pylance** | `kb_cli` / 管道脚本类型检查 |
+| **ripgrep**（内置/终端） | 与 `03_search` 行为对照 |
+| **GitHub Pull Requests** | 看 Actions 与 review |
+| **Error Lens** | 改 chunk 脚本时快速看语法问题 |
+
+### 不建议现在引入
+
+- LangChain / LlamaIndex 插件化 RAG 模板  
+- 向量库 MCP（与 phase6「暂缓向量」决策冲突）  
+- 通用「PDF RAG」类 Cursor 规则（与 C++ 代码库无关）
+
+---
 
 **目标：验证对 C++ 设备控制项目，图结构索引是否比普通 `rg` / BM25 RAG 更快找到模块、函数、调用关系和影响范围。**
 
@@ -395,57 +587,29 @@ Return the most relevant functions and their callers/callees. Do not guess.
 | `G28` / 报警码 / 命令 ID 谁处理 | 弱 | 强 |
 | wire bonder 迁移价值 | 代码结构层 | 命令/报警/事件分发层 |
 
-结论：Plan B 继续作为“代码结构层”实验；Plan C 作为“命令分发层”实验。两者互补，不互相替代。
+结论：Plan B 继续作为“代码结构层”实验；Plan C 作为“命令分发层”实验，**已并入 Phase 8.3**。两者互补，不互相替代。
 
 ---
 
-## Phase 7 — 迁移到公司 wire bonder 代码
+## Plan B — CodeGraph 代码结构图谱实验（已完成）
 
-**目标：把验证过的 lab 直接套到真实设备代码上。**
-
-### 7.1 替换素材
-- [ ] 公司 SVN checkout 出代码目录
-- [ ] 不需要物理替换 `repos/Smoothieware/`；通过 `--repo-root` / `--src-root` 指向公司代码目录
-- [ ] 重跑 Phase 2~5 全流程，输出到独立 data/index 目录或按项目名分目录
-
-### 7.2 适配 wire bonder 模块体系
-- [ ] 把模块分区从 CNC 改成设备真实分类：
-  - [ ] 运动控制
-  - [ ] 视觉
-  - [ ] IO
-  - [ ] 报警
-  - [ ] 配方
-  - [ ] 流程
-  - [ ] UI
-- [ ] 针对设备重写 5~10 个核心练习问题（定位、丢步、回零、限位、报警等）
-
-### 7.3 合规与安全
-- [ ] 确认公司代码可在本地/所选 LLM 环境处理（数据外发合规）
-- [ ] 必要时改用本地模型 / 内网部署
-
-**✅ Phase 7 验收**
-- [ ] 对公司代码，能用同一套 app.py 返回「源码+解释+引用」
-- [ ] 至少 5 个真实设备问题被正确回答
-
----
-
-## 当前进度落点
-
-当前已完成 **Phase 0 – Phase 6 知识库 MVP**（Smoothieware demo：REPL + 检索冻结 + LLM + 验收清单）。
+当前已完成 **Phase 0 – Phase 6 知识库 MVP** + **Plan B**；**下一步 Phase 7（CI）**。
 
 ```powershell
 cd industrial-cpp-kb-lab
 pip install -r requirements.txt
 
-python src/app.py                              # REPL
-python src/app.py "G-code 从哪里进入系统？"
-python src/app.py --search-only "Robot on_gcode_received"
-python src/app.py --demo
-python src/app.py --test                       # Recall + bundle 回归
-python src/run_regression.py --top-k 8         # 完整验收（含 LLM 引用）
-python src/03_search.py --eval                 # 检索 gate：mean cov@5 >= 70%
+.\kb tui                                 # Textual TUI（推荐）
+.\kb eval                                # Recall dashboard
+python src/run_regression.py --top-k 8   # 完整验收（含 LLM 引用）
+python src/03_search.py --eval           # gate：mean cov@5 >= 70%
 ```
 
-验收文档：`notes/kb_acceptance.md`。已知限制见 `notes/eval_failures.md`、`notes/phase6_conclusion.md`。
+| 文档 | 内容 |
+|------|------|
+| `notes/kb_acceptance.md` | Smoothieware MVP 验收 |
+| `notes/phase6_conclusion.md` | 检索 vs LLM 分层结论 |
+| `notes/eval_failures.md` | 失败根因（已修复/open） |
+| `PLAN.md` Phase 7–11 | **接下来要做的事** |
 
-下一步：**Phase 7** wire bonder（`--repo-root`）；Plan B CodeGraph 与 Plan C 命令/事件分发索引可选并行。
+**路线图顺序：** Phase 7 CI ✅（push 后验红绿）→ 8 符号对齐 → 9 PageRank → 10 LLM 完整性 → 11 wire bonder。

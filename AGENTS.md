@@ -39,8 +39,10 @@ Smoothiewarerag/
 | 3.4 | ✅ | `03_build_callgraph.py`：mention graph（986 chunks / 5719 edges）；`search_graph()` 对 flow_intent 查询追加 ≤3 新文件 |
 | 4 | ✅ | `04_answer.py` + streaming + `validate_citations` + `trim_context_hits` |
 | 5 | ✅ | `kb_cli` 包（Typer）；`.\kb tui` Textual Search Cockpit Milestone A+B；`app.py` 旧入口保留 |
-| 6 | ✅ | 30 题（5 tune + 25 holdout）；mean_cov@5 = **87% PASS**；H4 @5 缺口已知、已冻结 |
-| Plan B | ✅ | A/B 对比完成；`comparison.md`；CodeGraph 补结构查询，暂不接入 `app.py` |
+| 6 | ✅ | 30 题 eval；mean_cov@5≥70% gate；检索冻结 |
+| Plan B | ✅ | CodeGraph A/B；`comparison.md` |
+| 7 | 🔄 | CI：`.github/workflows/eval.yml` + `scripts/ci_build_and_eval.ps1` |
+| 8–11 | ⬜ | 符号对齐 → PageRank → LLM → wire bonder |
 
 ## 检索设计原则（可迁移，勿 per-question 硬编码）
 
@@ -48,7 +50,7 @@ Smoothiewarerag/
 - **事件驱动加权**：`context_coherence_adjustment()` 按 query/hints 模块名区分同名 `on_*`
 - **入口 chunk 优先**：`start_line == symbol_start` 高于子窗口
 - **call graph 扩展**（Phase 3.4）：`flow_intent_query` 为 True 时追加 ≤3 条新文件 mention graph 命中；事件总线动态分发无法通过 mention 捕获（已知限制）
-- **禁止**把 expected_files 文件名硬编码进检索器——Phase 7 wire bonder 没有 golden set 可抄
+- **禁止**把 expected_files 文件名硬编码进检索器——Phase 11 wire bonder 没有 golden set 可抄
 - **检索已冻结**（2026-06-25）：gate = 全体 **mean cov@5 ≥ 70%**；不为 holdout @5 缺口写规则（H4）
 
 ## 核心约束
@@ -116,7 +118,10 @@ python src/app.py "G-code 从哪里进入系统？"
 python src/app.py --test                 # Recall 回归
 
 python src/run_regression.py --skip-llm
-python src/03_search.py --eval          # Recall + coverage@K（tune/holdout 分项）
+python src/03_search.py --eval          # Recall + coverage@K（gate mean cov@5≥70%）
+
+# CI 本地镜像（与 GitHub Actions 相同步骤）
+.\scripts\ci_build_and_eval.ps1
 ```
 
 环境变量见 `industrial-cpp-kb-lab/.env.example`（`LLM_API_KEY` 勿提交 git）。
