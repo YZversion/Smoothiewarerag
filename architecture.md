@@ -15,6 +15,7 @@
 │    → 01_scan_files.py      → file_manifest.json         │
 │    → 02_extract_symbols.py → symbol_index.json (+end_line)│
 │    → 03_build_chunks.py    → chunks.jsonl               │
+│    → 05_extract_dispatch_index.py → dispatch_index.json │
 │    → 03_build_callgraph.py → call_graph.json            │
 └─────────────────────────────────────────────────────────┘
                           │
@@ -22,6 +23,8 @@
 ┌─────────────────────────────────────────────────────────┐
 │                      在线检索阶段                         │
 │  query → tokenize + HINT_GROUPS（按意图扩展）             │
+│    ├─ search_method/search_class（AST-aware 确定性入口）  │
+│    ├─ search_dispatch（G/M-code / 命令号 → handler 证据） │
 │    ├─ symbol_index 精确命中（含 on_* 事件加权规则）        │
 │    ├─ ripgrep 兜底                                       │
 │    ├─ BM25 on chunks.jsonl                              │
@@ -85,19 +88,42 @@
 // class: Robot
 ```
 
+### dispatch_index.json
+
+Phase 8 产物，由 `05_extract_dispatch_index.py` 静态抽取命令 / 事件分发证据。每条记录包含：
+
+```jsonc
+{
+  "command": "G28",
+  "kind": "gcode",
+  "handler_file": "src/modules/tools/endstops/Endstops.cpp",
+  "handler_symbol": "Endstops::on_gcode_received",
+  "target_symbol": "Endstops::process_home_command",
+  "line": 1046,
+  "evidence": "if ( gcode->has_g && gcode->g == 28) {",
+  "confidence": "static-pattern",
+  "chunk_id": "src_modules_tools_endstops_Endstops_cpp::997-1176"
+}
+```
+
+抽取静态可证明模式：`gcode->g/m == N`、`switch + case`、配置默认 M-code、SimpleShell 命令表。动态 `has_letter() + get_value()` 无法确定具体编号时标记 `unknown`，不让 LLM 猜。
+
 ---
 
 ## 03_search.py — 融合检索
 
-### 三路召回
+### 多路召回
 
 | 路径 | 权重思路 | 输出 |
 |------|----------|------|
+| Method | `W_METHOD`；`Class::method` / `Class.method` / 唯一实现符号直达实现 chunk | chunk id |
+| Class | `W_CLASS_METHOD`；类名命中时优先实现方法 chunk，压低构造函数 / header class | chunk id |
+| Dispatch | `W_DISPATCH`；`G28/M104/...` 先查 `dispatch_index.json`，snippet 对准 evidence line | chunk id |
 | Symbol | `W_SYMBOL`；流程题对罕见 `on_*` + 入口 chunk 加权 | chunk id |
 | BM25 | 归一化 × `W_BM25` | chunk id |
 | ripgrep | `W_RG` | chunk id → chunk_at_line |
 
-融合后加 `chunk_score_bonus`（`.cpp` function +4；构造函数 `symbol==class` −4）。
+融合后加 `chunk_score_bonus`（`.cpp` function +4；构造函数 `symbol==class` −18）。确定性 method / class / dispatch 命中只参与排序和 evidence 定位，不替代源码事实。
 
 ### QUERY_HINTS（意图驱动）
 
@@ -107,9 +133,9 @@
 |------|------------|----------|
 | 入口 | `进入`, `入口` | `GcodeDispatch`, `on_console_line_received`, `call_event` |
 | 运动链 | `运动`, `变成`, `命令` | `Robot`, `Planner`, `Conveyor`, `StepTicker` |
-| 结构 | `motion`, `planner`, `stepper` | `Planner`, `Block`, `StepperMotor` |
+| 结构 | `motion`, `planner`, `stepper` | `Planner`, `Block`, `StepperMotor`, `append_block`, `calculate_trapezoid`, `step_tick` |
 | 停机 | `halt`, `stop`, `emergency` | `ON_HALT`, `Endstops`, `on_halt` |
-| 模块 | `模块`, `注册`, `触发` | `Module`, `Kernel`, `register_for_event` |
+| 模块 | `模块系统`, `注册`, `触发` | `Module`, `Kernel`, `register_for_event`, `call_event`, `PublicData` |
 
 ### 可迁移的符号加权（非文件名硬编码）
 
@@ -137,10 +163,14 @@ call_graph.json: {mentioned_by: {sym: [chunk_id,...]}, mentions: {chunk_id: [sym
 - 仅当 `flow_intent_query()` 为 True 时触发；文件不存在时 no-op
 - **已知限制**：事件总线（`call_event(ON_XXX, ...)`）的动态分发边无法通过文本 mention 捕获
 
+### Dispatch Index（Phase 8）
+
+`search_dispatch()` 解析 query 中的 `G28` / `M104` / `M109` / `M221` / `M907` 等命令号，先查 `dispatch_index.json`，再与 method / class / symbol / BM25 / rg 融合排序。命中结果会把 preview 对准条件判断、`case` 或命令表证据行，避免只靠 BM25 碰到同名文本。
+
 ### 评估
 
-`eval/eval_questions.json`（30 题：5 tune + 25 holdout）→ Recall@5 / coverage@K / Recall@10。  
-**Gate（检索已冻结）：** 全体 **mean coverage@5 ≥ 70%**（当前 87%）。holdout 只报告，不为 H4 等 @5 缺口写规则。
+`eval/eval_questions.json`（35 题：5 tune + 30 holdout）→ Recall@5 / coverage@K / Recall@10。  
+**Gate：** 全体 **mean coverage@5 ≥ 70%**。Phase 8 当前：35/35 Recall@5，mean coverage@5 94%，`eval_answer_layer.py` mean sym_cov@trim 71%。
 
 ---
 

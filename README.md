@@ -18,6 +18,7 @@ pip install -r requirements.txt
 python src/01_scan_files.py
 python src/02_extract_symbols.py
 python src/03_build_chunks.py
+python src/05_extract_dispatch_index.py # dispatch index（Phase 8）
 python src/03_build_callgraph.py        # mention graph（Phase 3.4）
 
 # 新 CLI（推荐）
@@ -58,7 +59,7 @@ GcodeDispatch::on_console_line_received 解析并分发 G-code。
 ```
 Smoothiewarerag/
 ├── README.md              # 本文件
-├── PLAN.md                # Phase 0–7 计划与验收
+├── PLAN.md                # Phase 0–12 计划与验收
 ├── AGENTS.md              # AI 协作入口（进度 / 约束 / 命令）
 ├── architecture.md        # 系统架构
 ├── docs/history.md        # 进度日志
@@ -68,12 +69,13 @@ Smoothiewarerag/
     │   ├── 02_extract_symbols.py
     │   ├── 03_build_chunks.py
     │   ├── 03_build_callgraph.py  # Phase 3.4：mention graph
-    │   ├── 03_search.py           # BM25 + symbol + rg + graph 融合
+    │   ├── 03_search.py           # BM25 + symbol/method/class + rg + graph + dispatch 融合
     │   ├── 04_answer.py           # 检索 + LLM + streaming
+    │   ├── 05_extract_dispatch_index.py
     │   ├── app.py                 # 旧 REPL / Rich CLI
     │   ├── run_regression.py
     │   └── kb_cli/                # 新 Typer CLI + Textual TUI
-    ├── data/                      # 生成物（chunks.jsonl / call_graph.json 等）
+    ├── data/                      # 生成物（chunks.jsonl / call_graph.json / dispatch_index.json 等）
     ├── eval/eval_questions.json
     ├── prompts/code_qa.md
     ├── notes/smoothieware_code_map.md
@@ -94,7 +96,8 @@ Smoothiewarerag/
 | 6 | 30 题 eval；mean cov@5=87% PASS；检索冻结 | ✅ |
 | Plan B | rg/BM25 vs CodeGraph A/B 对比完成 | ✅ |
 | 7 | CI（GitHub Actions ✅ + 本地镜像脚本） | ✅ |
-| 8–11 | 符号对齐 → PageRank → LLM → wire bonder | ⬜ |
+| 8 | AST-aware 符号检索 + dispatch index；35 题 Recall@5=35/35，mean cov@5=94%，sym_cov@trim=71% | ✅ |
+| 9–12 | PageRank → LLM 完整性 → wire bonder → CLI 产品化 | ⬜ |
 
 检索回归：`.\kb eval` 或 `python src/03_search.py --eval` → mean cov@5 **≥70%** gate。  
 CI：[![Eval](https://github.com/YZversion/Smoothiewarerag/actions/workflows/eval.yml/badge.svg)](https://github.com/YZversion/Smoothiewarerag/actions/workflows/eval.yml) — 每次 push/PR 自动 shallow clone + 重建索引 + eval。本地镜像：`.\scripts\ci_build_and_eval.ps1`。
@@ -106,6 +109,8 @@ CI：[![Eval](https://github.com/YZversion/Smoothiewarerag/actions/workflows/eva
 - **无向量库 / 无 LangChain**：本地可跑，第一版够用再升级
 - **ctags `end_line` 定 chunk 边界**，子窗口标注 `symbol_start` vs `chunk_lines`
 - **QUERY_HINTS 按意图扩展**中文问句，避免关键词污染
+- **AST-aware 符号入口**：`search_method()` / `search_class()` 对精确方法、类与唯一 symbol 直拉实现 chunk
+- **dispatch index**：静态抽取 `G28/M104/... -> handler` 的条件判断 / case / 命令表证据行
 - **可迁移检索规则**：事件驱动 `on_*` 加权 + hint 一致性，不写死文件名
 
 ---

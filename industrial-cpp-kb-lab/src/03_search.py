@@ -55,7 +55,9 @@ def _hint_halt(query: str, ql: str) -> bool:
 
 
 def _hint_module(query: str, ql: str) -> bool:
-    keys = ("模块", "注册", "通信", "触发")
+    if "模块系统" in query:
+        return True
+    keys = ("注册", "通信", "触发")
     return any(k in query for k in keys)
 
 
@@ -72,12 +74,14 @@ HINT_GROUPS: list[tuple[str, object, list[str]]] = [
     ]),
     ("motion_structure", _hint_motion_structure, [
         "Planner", "StepTicker", "StepperMotor", "Robot", "Block", "Conveyor",
+        "append_block", "calculate_trapezoid", "step_tick", "manual_step",
     ]),
     ("halt", _hint_halt, [
         "halt", "ON_HALT", "KillButton", "immediate_halt", "Endstops", "on_halt",
     ]),
     ("module", _hint_module, [
         "Module", "Kernel", "register_for_event", "call_event", "PublicData",
+        "add_module", "get_value", "set_value",
     ]),
 ]
 
@@ -93,6 +97,9 @@ GENERIC_EVENT_HANDLERS = frozenset({
 
 EVAL_COV5_GATE = 0.70  # 全体 mean coverage@5 门槛（检索层已冻结，不再用 tune Recall@5）
 W_SYMBOL = 100.0
+W_METHOD = 125.0
+W_CLASS_METHOD = 108.0
+W_DISPATCH = 140.0
 W_RG = 50.0
 W_BM25 = 10.0
 W_GRAPH = 25.0        # 调用图 caller 发现权重
@@ -108,6 +115,7 @@ CONTEXT_COHERENCE_MIN_TOKEN_LEN = 4
 ENTRY_CHUNK_BONUS = 6.0
 
 CALL_GRAPH_PATH = LAB_ROOT / "data" / "call_graph.json"
+DISPATCH_INDEX_PATH = LAB_ROOT / "data" / "dispatch_index.json"
 
 # ── 全局索引（load 后填充）────────────────────────────────
 _CHUNKS: list[dict] = []
@@ -120,6 +128,7 @@ _BM25: BM25Okapi | None = None
 _BM25_CHUNK_IDS: list[str] = []
 _RG_BIN: str = ""
 _CALL_GRAPH: dict = {}
+_DISPATCH_INDEX: list[dict] = []
 
 
 def find_rg(preferred: str | None = None) -> str:
@@ -261,6 +270,96 @@ def chunks_for_symbol(sym: dict) -> list[dict]:
     type_rank = {"function": 0, "class": 1, "file_overview": 2, "fallback": 3}
     hits.sort(key=lambda c: (type_rank.get(c["type"], 9), c["start_line"]))
     return hits
+
+
+def _is_impl_function(chunk: dict) -> bool:
+    return chunk["type"] == "function" and chunk["file"].endswith((".cpp", ".c"))
+
+
+def _is_constructor_chunk(chunk: dict) -> bool:
+    sym = chunk.get("symbol") or ""
+    cls = chunk.get("class") or ""
+    return bool(sym and cls and sym == cls)
+
+
+def _symbol_key(sym: dict) -> str:
+    return f"{sym['file']}:{sym['name']}:{sym.get('class', '')}:{sym.get('line', 0)}"
+
+
+def implementation_chunks_for_symbol(sym: dict) -> list[dict]:
+    """符号 → 实现 chunk；优先 .cpp/.c function，保留 header 作为兜底。"""
+    chunks = chunks_for_symbol(sym)
+    impl = [c for c in chunks if _is_impl_function(c)]
+    return impl or chunks
+
+
+def _class_tokens(tokens: list[str]) -> set[str]:
+    classes = {s.get("class", "").lower() for values in _SYMBOL_BY_NAME.values()
+               for s in values if s.get("class")}
+    classes.update(
+        s["name"].lower()
+        for values in _SYMBOL_BY_NAME.values()
+        for s in values
+        if s.get("kind") in ("class", "struct")
+    )
+    return {t for t in tokens if t in classes}
+
+
+def search_method(query: str, tokens: list[str]) -> dict[str, float]:
+    """AST-aware method lookup：Class::method / Class.method / 唯一 method token."""
+    scores: dict[str, float] = {}
+    seen: set[str] = set()
+
+    qual_patterns = re.findall(
+        r"\b([A-Za-z_][\w]*)\s*(?:::|\.)\s*([A-Za-z_][\w]*)\b",
+        query,
+    )
+    for cls, name in qual_patterns:
+        for sym in _SYMBOL_BY_QUAL.get(f"{cls}::{name}".lower(), []):
+            key = _symbol_key(sym)
+            if key in seen:
+                continue
+            seen.add(key)
+            for chunk in implementation_chunks_for_symbol(sym):
+                scores[chunk["id"]] = max(scores.get(chunk["id"], 0), W_METHOD)
+
+    # 单一函数名在实现符号中唯一时，也按确定性 method 处理。
+    for tok in tokens:
+        if len(tok) < 4:
+            continue
+        impl_syms = [
+            s for s in _SYMBOL_BY_NAME.get(tok, [])
+            if s.get("kind") == "function" and s["file"].endswith((".cpp", ".c"))
+        ]
+        if len({_symbol_key(s) for s in impl_syms}) != 1:
+            continue
+        sym = impl_syms[0]
+        key = _symbol_key(sym)
+        if key in seen:
+            continue
+        seen.add(key)
+        for chunk in implementation_chunks_for_symbol(sym):
+            scores[chunk["id"]] = max(scores.get(chunk["id"], 0), W_METHOD)
+    return scores
+
+
+def search_class(query: str, tokens: list[str]) -> dict[str, float]:
+    """Class/module token → implementation method chunks, constructor/header 降优先。"""
+    scores: dict[str, float] = {}
+    for cls_l in _class_tokens(tokens):
+        for symbols in _SYMBOL_BY_NAME.values():
+            for sym in symbols:
+                if (sym.get("class") or "").lower() != cls_l:
+                    continue
+                if sym.get("kind") != "function":
+                    continue
+                for chunk in implementation_chunks_for_symbol(sym):
+                    if not _is_impl_function(chunk):
+                        continue
+                    if _is_constructor_chunk(chunk):
+                        continue
+                    scores[chunk["id"]] = max(scores.get(chunk["id"], 0), W_CLASS_METHOD)
+    return scores
 
 
 SNIPPET_DEFAULT_LINES = 10
@@ -437,6 +536,58 @@ def search_rg(tokens: list[str], src_root: Path, repo_root: Path,
     return scores
 
 
+COMMAND_RE = re.compile(r"\b([GM])\s*[-:]?\s*(\d+(?:\.\d+)?)\b", re.IGNORECASE)
+
+
+def _norm_command(letter: str, number: str) -> str:
+    num = number.rstrip("0").rstrip(".") if "." in number else number
+    return f"{letter.upper()}{num}"
+
+
+def commands_in_query(query: str) -> set[str]:
+    return {_norm_command(m.group(1), m.group(2)) for m in COMMAND_RE.finditer(query)}
+
+
+def load_dispatch_index(path: Path = DISPATCH_INDEX_PATH) -> None:
+    global _DISPATCH_INDEX
+    if not path.is_file():
+        _DISPATCH_INDEX = []
+        return
+    data = json.loads(path.read_text(encoding="utf-8"))
+    if isinstance(data, dict):
+        _DISPATCH_INDEX = data.get("entries", [])
+    elif isinstance(data, list):
+        _DISPATCH_INDEX = data
+    else:
+        _DISPATCH_INDEX = []
+
+
+def search_dispatch(query: str) -> tuple[dict[str, float], dict[str, int]]:
+    """命令/事件分发索引：G28/M104 这类 query 先定位 handler 证据行。"""
+    commands = commands_in_query(query)
+    if not commands or not _DISPATCH_INDEX:
+        return {}, {}
+    scores: dict[str, float] = {}
+    focus: dict[str, int] = {}
+    for entry in _DISPATCH_INDEX:
+        command = str(entry.get("command", "")).upper()
+        if command not in commands:
+            continue
+        file = entry.get("handler_file") or entry.get("file")
+        line = int(entry.get("line") or 0)
+        if not file or not line:
+            continue
+        chunk = chunk_at_line(file, line)
+        if not chunk:
+            continue
+        confidence = entry.get("confidence", "")
+        bonus = 8.0 if confidence == "static-pattern" else 4.0
+        cid = chunk["id"]
+        scores[cid] = max(scores.get(cid, 0), W_DISPATCH + bonus)
+        focus[cid] = line
+    return scores, focus
+
+
 def is_entry_chunk(chunk: dict) -> bool:
     sym = chunk.get("symbol")
     if not sym:
@@ -497,7 +648,7 @@ def chunk_score_bonus(chunk: dict) -> float:
         bonus -= 3.0
     sym, cls = chunk.get("symbol") or "", chunk.get("class") or ""
     if sym and sym == cls:
-        bonus -= 4.0
+        bonus -= 18.0
     if is_entry_chunk(chunk):
         bonus += ENTRY_CHUNK_BONUS
     return bonus
@@ -601,22 +752,33 @@ def search(query: str, top_k: int = 10, src_root: Path | None = None,
     rg = rg_bin or _RG_BIN or find_rg()
     tokens = expand_query_tokens(query, tokenize(query))
 
+    method_scores = search_method(query, tokens)
+    class_scores = search_class(query, tokens)
+    dispatch_scores, dispatch_focus = search_dispatch(query)
     sym_scores = search_symbols(query, tokens)
     bm25_scores = search_bm25(tokens)
     rg_scores = search_rg(tokens, src, repo, rg)
-    merged = merge_scores(sym_scores, bm25_scores, rg_scores, query_tokens=tokens)
+    merged = merge_scores(method_scores, class_scores, dispatch_scores,
+                          sym_scores, bm25_scores, rg_scores, query_tokens=tokens)
 
     hits = []
     for cid, score in merged.items():
         chunk = _CHUNK_BY_ID[cid]
         sources = []
+        if cid in method_scores:
+            sources.append("method")
+        if cid in class_scores:
+            sources.append("class")
+        if cid in dispatch_scores:
+            sources.append("dispatch")
         if cid in sym_scores:
             sources.append("symbol")
         if cid in bm25_scores:
             sources.append("bm25")
         if cid in rg_scores:
             sources.append("rg")
-        h = hit_from_chunk(chunk, score, "+".join(sources))
+        h = hit_from_chunk(chunk, score, "+".join(sources),
+                           focus_line=dispatch_focus.get(cid))
         hits.append(h)
 
     hits.sort(key=_hit_sort_key)
@@ -839,6 +1001,7 @@ def load_index(chunks_path: Path = CHUNKS_PATH, symbols_path: Path = SYMBOLS_PAT
     load_symbols(symbols_path)
     build_bm25()
     load_call_graph()
+    load_dispatch_index()
 
 
 def parse_args() -> argparse.Namespace:

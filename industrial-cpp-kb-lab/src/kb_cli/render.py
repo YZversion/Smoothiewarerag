@@ -24,8 +24,24 @@ def badge(text: str, style: str) -> Text:
 
 
 def source_badges(source: str) -> Text:
-    labels = {"symbol": "S", "bm25": "B", "rg": "R", "bundle": "ctx"}
-    colors = {"symbol": "cyan", "bm25": "magenta", "rg": "green", "bundle": "yellow"}
+    labels = {
+        "method": "M",
+        "class": "C",
+        "dispatch": "D",
+        "symbol": "S",
+        "bm25": "B",
+        "rg": "R",
+        "bundle": "ctx",
+    }
+    colors = {
+        "method": "bright_cyan",
+        "class": "blue",
+        "dispatch": "red",
+        "symbol": "cyan",
+        "bm25": "magenta",
+        "rg": "green",
+        "bundle": "yellow",
+    }
     out = Text()
     for part in (source or "unknown").split("+"):
         out.append(labels.get(part, part), style=f"bold {colors.get(part, 'white')}")
