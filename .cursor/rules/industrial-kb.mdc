@@ -35,15 +35,17 @@ LAB_ROOT = Path(__file__).parent.parent
 
 ## 检索增量纪律
 
-- **检索层已冻结**（2026-06-25）：gate = mean cov@5 ≥ 70%；不再为 holdout @5 写规则。
-- `QUERY_HINTS`：**短语/共现触发**，禁止裸子串（`入口`、`命令` alone）。
+- **Gate**：mean cov@5 ≥ 70%（当前 94%）。不为 holdout @5 写 per-question 规则。
+- `HINT_GROUPS`：**短语/共现触发**，禁止裸子串（`入口`、`命令` alone）。
+- 多文件结构题（`motion_structure` / `halt` / `module`）：`per_file=1` diversify；跳过 call_graph extras；`expand_bundle` 两阶段。
 - 符号加权：`context_coherence_adjustment`；禁止 per-question 文件名 `+5`。
 - `trim_context_hits`：primary 先于 overview/header。
-- 新规则仅当 **换仓库后** eval 不达标，且一次只加一项。
+- 新规则仅当 eval 不达标，且一次只加一项；诊断：`scripts/diagnose_retrieval.py`。
 
-## Phase 4–5
+## Phase 4–5 / 10
 
 - Prompt → `prompts/code_qa.md`；逻辑 → `04_answer.py`。
+- Phase 10：`validate_answer_coverage()`；`citation_in_hits` 接受 `symbol_start`。
 - `LLM_PROVIDER` / `LLM_MODEL` / `LLM_API_KEY` 环境变量。
 - `app.py`：`--json` 不用 Rich；默认 `top_k=8`。
 

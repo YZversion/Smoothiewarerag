@@ -97,4 +97,4 @@ Flow questions with reporank:
 
 Keep `ENABLE_REPORANK` default off.
 
-Phase 9 is considered implemented as an A/B experiment, but not promoted to the default retrieval path. The next higher-value step is Phase 10 answer completeness, or a wire bonder probe that exposes real target-code failure modes before further graph complexity.
+Phase 9 is considered implemented as an A/B experiment, but not promoted to the default retrieval path. Phase 10 completed next (LLM completeness + Q3–Q5 retrieval); see `notes/phase10_conclusion.md`. Next: Phase 11 wire bonder probe.

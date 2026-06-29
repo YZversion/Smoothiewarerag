@@ -360,4 +360,28 @@
 - 开启 PageRank 时 `eval_answer_layer.py` mean sym_cov@trim 从 71% 降到 68%，进一步支持默认关闭。
 - Phase 9 作为实验完成，但不并入默认检索路径；下一步优先 Phase 10 LLM 答案完整性或 wire bonder 最小迁移探针。
 
+## 2026-06-29 — Session 8
+
+### Phase 10 完成：LLM 答案完整性 + Q3–Q5 检索补齐
+
+**实现内容**
+- `04_answer.py`：`validate_answer_coverage`、`format_primary_checklist`；`citation_in_hits` 接受 `symbol_start`
+- `prompts/code_qa.md`：primary 清单段 + 自检
+- `eval_answer_layer.py`：`ctx_primary` / `expected` / `cite`；`--resume` / `--ids`
+- `scripts/diagnose_retrieval.py`：四层检索缺口诊断
+- `03_search.py`：halt/module hint 扩展；structure 题 `per_file=1`；跳过 call_graph；`expand_bundle` 两阶段
+
+**指标**
+
+| 项 | 结果 |
+|----|------|
+| tune LLM expected | **5/5** |
+| tune citation | **5/5** |
+| Q3–Q5 bundle@8 | **6/6、7/7、6/6** |
+| 35 题 mean cov@5 | **94%** PASS |
+| H26/H30 citation | OK（symbol_start 校验） |
+
+**结论**
+- 两阶段 LLM 不需要；下一步 **Phase 11 wire bonder** 迁移探针。
+
 <!-- 新 Session 在此追加，格式：## YYYY-MM-DD — Session N -->

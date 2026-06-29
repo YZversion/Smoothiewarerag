@@ -1,7 +1,7 @@
 # 知识库验收清单 — Smoothieware MVP
 
 > **验收对象**：`industrial-cpp-kb-lab` 最小可演示知识库（rg + ctags + BM25 + LLM）  
-> **Phase 6+7 验收日期**：2026-06-25　　**Phase 8 更新**：2026-06-29  
+> **Phase 6+7 验收日期**：2026-06-25　　**Phase 8 更新**：2026-06-29　　**Phase 10 更新**：2026-06-29  
 > **结论**：**通过** — 可交付 demo / 作为 Phase 11 wire bonder 迁移模板
 
 Phase 6.2（向量 / Doxygen / Web UI）**不纳入本次验收**，见 `PLAN.md` 升级决策。
@@ -34,13 +34,14 @@ python src/run_regression.py --top-k 8
 **CI（Phase 7）：** 每次 push/PR 自动跑检索 gate。  
 **LLM 完整性（Phase 10）：** `validate_answer_coverage()` + `eval_answer_layer.py --llm`；**报告项**，非 CI gate。见 `notes/phase10_conclusion.md`。
 
-| 检查项 | 门槛 | Phase 6+7（2026-06-25） | Phase 8（2026-06-29） |
-|--------|------|------------------------|----------------------|
-| 检索 gate | all **mean cov@5 ≥ 70%** | **73% PASS**（15 题） | **94% PASS**（35 题） |
-| Recall@5 | 分项报告 | 14/15（H4 open） | **35/35**（H4 PASS，dispatch_index 修复） |
-| Bundle（Q1–Q3） | ≥3/3 | **3/3 PASS** | **3/3 PASS** |
-| LLM 引用（tune Q1–Q5） | citation 无胡编 | **5/5 PASS** | **5/5 PASS** |
-| sym_cov@trim | 报告项 | ~50% | **71%**（Phase 8 基线 54% → 71%） |
+| 检查项 | 门槛 | Phase 6+7（2026-06-25） | Phase 8（2026-06-29） | Phase 10（2026-06-29） |
+|--------|------|------------------------|----------------------|----------------------|
+| 检索 gate | all **mean cov@5 ≥ 70%** | **73% PASS**（15 题） | **94% PASS**（35 题） | **94% PASS**（Q3–Q5 bundle@8 满） |
+| Recall@5 | 分项报告 | 14/15（H4 open） | **35/35** | **35/35** |
+| Bundle（Q1–Q3） | ≥3/3 | **3/3 PASS** | **3/3 PASS** | **3/3 PASS** |
+| LLM 引用（tune Q1–Q5） | citation 无胡编 | **5/5 PASS** | **5/5 PASS** | **5/5 PASS** |
+| tune expected 全列 | ≥4/5（报告项） | — | — | **5/5 PASS** |
+| sym_cov@trim | 报告项 | ~50% | **71%** | **76%**（tune 复测） |
 
 可选深层评估：
 
@@ -66,18 +67,18 @@ python src/eval_answer_layer.py --top-k 8 --llm
 
 **已达标：**
 
-- 文件级检索：mean cov@5 73%，gate PASS
-- LLM 引用合法性：15/15（分层 eval）
-- 检索规则可迁移：无 expected_files 硬编码；hint 短语/共现
+- 文件级检索：mean cov@5 **94%**，gate PASS
+- LLM 引用合法性：tune **5/5** citation
+- tune expected 全列：**5/5**（Phase 10；见 `phase10_conclusion.md`）
+- 检索规则可迁移：hint / coherence / bundle，无 expected_files 硬编码
 
 **已知限制（不阻塞验收）：**
 
 | 限制 | 说明 |
 |------|------|
-| H4 @5 | Phase 8 dispatch_index 已修复，现 PASS@5 |
-| Q2–Q5 coverage@5 | 多跳/多文件题偏低，Recall@5 仍 PASS |
-| LLM 完整性 | 约 40% 题未列全所有期望文件（见 `phase6_conclusion.md`） |
-| 符号 chunk 对齐 | context sym_cov ~50%，影响深度问答 |
+| Q2 cov@5 | 仍缺 GcodeDispatch @5；@10 满；LLM expected 5/5 |
+| 符号 chunk 对齐 | sym_cov@trim ~76%；长函数子窗口 + 同名 handler 仍难 100% |
+| 全量 35 题 LLM | 修复前全量 expected 83%、citation 94%；H26/H30 citation 已修 |
 
 **6.2 明确不做（本次）：**
 

@@ -155,7 +155,9 @@ Phase 9 产物，由 `03_build_repomap.py` 构建。图边来源为低噪声 men
 
 ### Bundle（Phase 3.3）
 
-`search(..., bundle=True)`：primary + 同文件 `file_overview` + 配对 `.h` class。
+`search(..., bundle=True)`：primary + 同文件 `file_overview` + 配对 `.h` class。Phase 10：两阶段 `expand_bundle`（先全部 primary，再补 overview/header），避免 header 去重吃掉独立 primary 头文件。
+
+**多文件结构题（Phase 10）：** `motion_structure` / `halt` / `module` 触发时 `diversify(per_file=1)`；此类题跳过 call_graph extras，减少噪声挤占 top-8。
 
 ### Mention Graph 扩展（Phase 3.4）
 
@@ -179,15 +181,17 @@ call_graph.json: {mentioned_by: {sym: [chunk_id,...]}, mentions: {chunk_id: [sym
 ### 评估
 
 `eval/eval_questions.json`（35 题：5 tune + 30 holdout）→ Recall@5 / coverage@K / Recall@10。  
-**Gate：** 全体 **mean coverage@5 ≥ 70%**。Phase 8 当前：35/35 Recall@5，mean coverage@5 94%，`eval_answer_layer.py` mean sym_cov@trim 71%。
+**Gate：** 全体 **mean coverage@5 ≥ 70%**。当前：35/35 Recall@5，mean coverage@5 **94%**。  
+**Phase 10 报告项：** `eval_answer_layer.py --llm`（tune expected 5/5）；`scripts/diagnose_retrieval.py` 四层缺口诊断。
 
 ---
 
 ## 04_answer.py — LLM 问答
 
-- `answer()` / `answer_stream()`：检索 bundle → `build_prompt()` → LLM
+- `answer()` / `answer_stream()`：检索 bundle → `build_prompt()`（含 `{{primary_checklist}}`）→ LLM
 - **`trim_context_hits`**：先保留全部 `primary`，再用 slot 填 overview/header（默认最多 8 chunk）
-- **`validate_citations()`**：检查回答中 `` `file:line` `` 是否落在 hit chunk 行范围
+- **`validate_answer_coverage()`**：检查答案是否提及 trimmed context 中每个 primary 文件
+- **`validate_citations()`**：检查 `` `file:line` `` 落在 chunk 行范围或 hit `symbol_start`（长子窗口函数入口）
 - 环境变量：`LLM_PROVIDER`, `LLM_MODEL`, `LLM_API_KEY`, `LLM_BASE_URL`
 
 ---

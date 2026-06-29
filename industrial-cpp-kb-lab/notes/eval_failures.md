@@ -1,38 +1,40 @@
 # Eval 失败案例库
 
 > Phase 6.1 — 检索层漏召回 / 错排序根因记录。  
-> **检索层已冻结**（2026-06-25）；Phase 8（2026-06-29）新增 dispatch_index，H4 已修复，eval set 扩至 35 题。  
-> 本文件只记录 Phase 6.1 时的 15 题状态；H11–H30 见 `notes/phase8_symbol_dispatch_audit.md`。  
-> 复现：`python src/03_search.py --eval`（35 题，top_k=5）
+> Phase 8（2026-06-29）：dispatch_index，H4 修复，eval 扩至 35 题。  
+> Phase 10（2026-06-29）：Q3–Q5 tune bundle@8 满覆盖；见 `q345_retrieval_diagnosis.md`。  
+> 复现：`python src/03_search.py --eval`（35 题）；`python scripts/diagnose_retrieval.py --ids Q3,Q4,Q5`
 
 **原则：** 记录现象与可迁移根因；**不**用 expected_files 文件名硬编码加分。  
 **holdout 纪律：** 不为 holdout @5 缺口写规则——H4 是戒掉 hint 误触后的真缺口，接受 FAIL@5、看 @10。
 
 ---
 
-## 状态总表（2026-06-25 冻结后）
+## 状态总表（当前）
 
-| ID | split | Recall@5 | cov@5 | 状态 | 备注 |
-|----|-------|----------|-------|------|------|
-| Q1 | tune | PASS | 3/3 (100%) | **OK** | — |
-| Q2 | tune | PASS | 4/5 (80%) | **已好转** | 修前 2/5；仍缺 GcodeDispatch @5，@10 满 |
-| Q3 | tune | PASS | 4/6 (67%) | open | 文件够、符号 chunk 对齐弱（见 phase6_conclusion） |
-| Q4 | tune | PASS | 3/7 (43%) | open | 多文件 halt 链，coverage 低但门槛 PASS |
-| Q5 | tune | PASS | 3/6 (50%) | open | 同上 |
-| H1 | holdout | PASS | 1/1 (100%) | **OK** | — |
-| H2 | holdout | PASS | 1/1 (100%) | **OK** | — |
-| H3 | holdout | PASS | 1/2 (50%) | open | 缺 Kernel.cpp @5 |
-| H4 | holdout | **PASS** | 1/1 (100%) | **Phase 8 修复** | dispatch_index 命中 `Endstops::on_gcode_received` 内 G28 证据行 |
-| H5 | holdout | PASS | 1/1 (100%) | **OK** | — |
-| H6 | holdout | PASS | 1/1 (100%) | **OK** | — |
-| H7 | holdout | PASS | 1/1 (100%) | **OK** | — |
-| H8 | holdout | PASS | 1/2 (50%) | **已修复** | 修前 0/2 FAIL；hint 误触已消，main 进 @5 |
-| H9 | holdout | PASS | 1/2 (50%) | open | .h 进榜、.cpp @10 |
-| H10 | holdout | PASS | 1/1 (100%) | **已修复** | 修前 0/1 FAIL；hint + context coherence |
+| ID | split | Recall@5 | cov@5 | bundle@8 | 状态 | 备注 |
+|----|-------|----------|-------|----------|------|------|
+| Q1 | tune | PASS | 3/3 | 3/3 | **OK** | — |
+| Q2 | tune | PASS | 4/5 | 5/5 | **OK** | @5 仍缺 GcodeDispatch；LLM expected 5/5 |
+| Q3 | tune | PASS | 5/6 | **6/6** | **Phase 10 修复** | diversify + Robot 召回 |
+| Q4 | tune | PASS | 4/7 | **7/7** | **Phase 10 修复** | halt hint 扩展 |
+| Q5 | tune | PASS | 5/6 | **6/6** | **Phase 10 修复** | expand_bundle + 跳过 structure 题 graph |
+| H1 | holdout | PASS | 1/1 | 1/1 | **OK** | — |
+| H2 | holdout | PASS | 1/1 | 1/1 | **OK** | — |
+| H3 | holdout | PASS | 1/2 | 1/2 | open | 缺 Kernel.cpp @5 |
+| H4 | holdout | PASS | 1/1 | 1/1 | **Phase 8 修复** | dispatch_index G28 |
+| H5 | holdout | PASS | 1/1 | 1/1 | **OK** | — |
+| H6 | holdout | PASS | 1/1 | 1/1 | **OK** | — |
+| H7 | holdout | PASS | 1/1 | 1/1 | **OK** | — |
+| H8 | holdout | PASS | 1/2 | 1/2 | **已修复** | hint 误触已消 |
+| H9 | holdout | PASS | 1/2 | 1/2 | open | .h 进榜、.cpp @10 |
+| H10 | holdout | PASS | 1/1 | 1/1 | **已修复** | hint + context coherence |
 
 **Phase 6.1 汇总（15 题）：** Recall@5 = 14/15，mean cov@5 = **73%**（gate PASS）。已修复 3 题（Q2 大幅好转、H8、H10）；open 题不再为 @5 写检索规则。
 
 **Phase 8 更新（35 题，2026-06-29）：** H4 由 dispatch_index 修复（PASS）；35/35 Recall@5；mean cov@5 = **94%**。新增 H11–H30（dispatch 题含 G28/M104/M221/M907 等）见 `notes/phase8_symbol_dispatch_audit.md`。
+
+**Phase 10 更新（2026-06-29）：** Q3–Q5 bundle@8 满覆盖；tune LLM expected **5/5**；`citation_in_hits` 支持 `symbol_start`（H26/H30）。诊断：`scripts/diagnose_retrieval.py`。
 
 ### 已实施修复（03_search.py）
 
@@ -41,6 +43,9 @@
 | Hint 子串误触发（H8/H10） | 短语/共现触发（`_hint_entry`、`_hint_motion_chain`） |
 | 子窗口压过入口 chunk（Q2） | `ENTRY_CHUNK_BONUS` + `_hit_sort_key` 入口优先 |
 | 泛滥 `on_*` 占榜（Q2/H10） | `context_coherence_adjustment()` 替代频率降权 |
+| Q3 Robot @8 缺失（Phase 10） | `multi_file_structure_query` → `per_file=1` |
+| Q4 halt 链 @8 缺失（Phase 10） | `halt` hint 扩展 SerialConsole/GcodeDispatch/Kernel 等 |
+| Q5 Module.h 被 header 去重（Phase 10） | `expand_bundle` 两阶段 + primary 升级；structure 题跳过 call_graph |
 
 ---
 
@@ -145,7 +150,8 @@ Phase 8：`05_extract_dispatch_index.py` 静态抽取该证据行，`search_disp
 | 泛滥 `on_*` 占榜 | Q2, H10 | **已缓解** | context coherence |
 | 子窗口 > 入口行 | Q2 | **已修** | `symbol_start` 优先 |
 | top_k 截断 | Q2 | open | 报告 @10；不调 top_k |
-| holdout 真缺口 | H4 | **接受** | 不写 per-question 规则 |
+| 多文件 structure 挤占 | Q3–Q5 | **Phase 10 修复** | per_file=1 + hint/bundle |
+| holdout 真缺口 | H4 | **Phase 8 修复** | dispatch_index |
 
 ---
 
@@ -156,4 +162,4 @@ cd industrial-cpp-kb-lab
 python src/03_search.py --eval
 ```
 
-Gate：**all mean cov@5 >= 70%**（当前 73%，PASS）。分项见 `notes/phase6_conclusion.md`。
+Gate：**all mean cov@5 ≥ 70%**（当前 **94%**，PASS）。分项见 `notes/phase10_conclusion.md`。

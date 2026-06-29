@@ -1,5 +1,7 @@
 # Phase 6.1 结论 — 检索 vs LLM（2026-06-25）
 
+> **历史基线。** Phase 10（2026-06-29）已补齐 Q3–Q5 检索与 tune LLM expected（5/5）。见 [`phase10_conclusion.md`](phase10_conclusion.md)。
+
 ## 三句话结论
 
 1. **检索够用**：15 题 Recall@5 = 14/15（93%），mean coverage@5 = **73%**（>70% 门槛）；`top_k=8` 时 primary 文件覆盖 **76%**。BM25+symbol+rg 不必再调，也暂不需要向量检索。

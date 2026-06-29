@@ -76,7 +76,9 @@ Smoothiewarerag/
     │   ├── 05_extract_dispatch_index.py
     │   ├── app.py                 # 旧 REPL / Rich CLI
     │   ├── run_regression.py
+    │   ├── eval_answer_layer.py       # Phase 10：检索 vs LLM 分层 eval
     │   └── kb_cli/                # 新 Typer CLI + Textual TUI
+    ├── scripts/                     # ci_build_and_eval、diagnose_retrieval
     ├── data/                      # 生成物（chunks / call_graph / dispatch_index / repomap 等）
     ├── eval/eval_questions.json
     ├── prompts/code_qa.md
@@ -95,14 +97,15 @@ Smoothiewarerag/
 | 3.4 | mention graph（`03_build_callgraph.py`）+ `search_graph()` | ✅ |
 | 4 | LLM 问答 + 引用校验 | ✅ |
 | 5 | `kb_cli` Typer CLI + Textual TUI（j/k / help / search） | ✅ |
-| 6 | 30 题 eval；mean cov@5=87% PASS；检索冻结 | ✅ |
+| 6 | 35 题 eval；mean cov@5≥70% gate | ✅ |
 | Plan B | rg/BM25 vs CodeGraph A/B 对比完成 | ✅ |
 | 7 | CI（GitHub Actions ✅ + 本地镜像脚本） | ✅ |
-| 8 | AST-aware 符号检索 + dispatch index；35 题 Recall@5=35/35，mean cov@5=94%，sym_cov@trim=71% | ✅ |
-| 9 | Repomap PageRank A/B；默认关闭，未并入默认检索路径 | ✅ |
-| 10–12 | LLM 完整性 → wire bonder → CLI 产品化 | ⬜ |
+| 8 | AST-aware 符号检索 + dispatch index；35 题 Recall@5=35/35，mean cov@5=94% | ✅ |
+| 9 | Repomap PageRank A/B；默认关闭 | ✅ |
+| 10 | primary 清单 + coverage 度量；tune 5/5 expected；Q3–Q5 检索补齐 | ✅ |
+| 11–12 | wire bonder → CLI 产品化 | ⬜ |
 
-检索回归：`.\kb eval` 或 `python src/03_search.py --eval` → mean cov@5 **≥70%** gate。  
+检索回归：`.\kb eval` 或 `python src/03_search.py --eval` → mean cov@5 **≥70%** gate（当前 **94%**）。  
 CI：[![Eval](https://github.com/YZversion/Smoothiewarerag/actions/workflows/eval.yml/badge.svg)](https://github.com/YZversion/Smoothiewarerag/actions/workflows/eval.yml) — 每次 push/PR 自动 shallow clone + 重建索引 + eval。本地镜像：`.\scripts\ci_build_and_eval.ps1`。
 
 ---
@@ -125,4 +128,5 @@ CI：[![Eval](https://github.com/YZversion/Smoothiewarerag/actions/workflows/eva
 - [AGENTS.md](AGENTS.md) — 协作入口与命令
 - [architecture.md](architecture.md) — 架构与设计决策
 - [docs/history.md](docs/history.md) — Session 日志
+- [industrial-cpp-kb-lab/notes/phase10_conclusion.md](industrial-cpp-kb-lab/notes/phase10_conclusion.md) — Phase 10 结论
 - [industrial-cpp-kb-lab/notes/smoothieware_code_map.md](industrial-cpp-kb-lab/notes/smoothieware_code_map.md) — 代码地图
