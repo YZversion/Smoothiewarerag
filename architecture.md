@@ -230,9 +230,10 @@ call_graph.json: {mentioned_by: {sym: [chunk_id,...]}, mentions: {chunk_id: [sym
 | chunk 边界 | ctags `end_line` | 工业 C++ 可靠 |
 | Hint 策略 | `HINT_GROUPS` 具名触发函数 | 避免 Q1/Q2 互污染；可测试 |
 | Mention graph | text-scan，不引入新工具 | 补直接调用；事件总线盲区已知 |
+| Dispatch index | 静态模式抽取命令号 / handler | 补 `G28/M104` 这类分发盲区；不让 LLM 猜 |
 | 不加文件名白名单 | 泛化规则 only | Phase 7 无 golden set |
 | LLM | OpenAI 兼容 SDK | 智谱/OpenAI 可换 |
-| eval 规模 | 5 题 | 易过拟合；Phase 6 扩 hold-out |
+| eval 规模 | 35 题 | 5 tune + 30 holdout，含 Phase 8 dispatch 题 |
 
 ---
 
@@ -248,7 +249,8 @@ call_graph.json: {mentioned_by: {sym: [chunk_id,...]}, mentions: {chunk_id: [sym
 python src/01_scan_files.py --repo-root path/to/wire_bonder --src-root path/to/wire_bonder/src
 python src/02_extract_symbols.py --repo-root path/to/wire_bonder
 python src/03_build_chunks.py
+python src/05_extract_dispatch_index.py
 python src/app.py "你的设备问题"
 ```
 
-检索规则（意图 hints、`on_*` 频率抑噪、trim primary）应随事件驱动 C++ 架构迁移；Smoothieware 专属文件名调参不应迁移。
+检索规则（意图 hints、`on_*` 频率抑噪、method/class 直达、dispatch 静态证据、trim primary）应随事件驱动 C++ 架构迁移；Smoothieware 专属文件名调参不应迁移。

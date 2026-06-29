@@ -1,11 +1,11 @@
 {
-  "version": 2,
-  "description": "Phase 6 retrieval eval: tune (历史调参集) + holdout (冻结，只跑分，不作调参反馈). 检索层已冻结.",
+  "version": 3,
+  "description": "Phase 8 retrieval eval: 5 tune + 30 holdout. H26-H30 cover dispatch-index questions; holdout 仍只跑分，不作 per-question 文件名特判.",
   "metrics": {
     "gate": "全体 mean coverage@5 >= 70%（python src/03_search.py --eval 退出码 0）",
     "coverage": "每题 coverage@K = |hit expected files| / |expected_files|",
     "recall5": "每题 Recall@5 = 至少命中 1 个 expected file（分项报告）",
-    "holdout": "holdout 只报告；不为 holdout @5 缺口写检索规则（例：H4 戒掉 hint 误触后的真缺口）"
+    "holdout": "holdout 只报告；不为 holdout @5 缺口写 expected_files 文件名特判"
   },
   "questions": [
     {

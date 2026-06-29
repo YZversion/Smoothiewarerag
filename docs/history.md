@@ -291,4 +291,38 @@
 2. **mention graph 对直接函数调用有效**，对事件总线无效：补上 Q5 Module.h，但 Q2/Q3 改善有限。
 3. **TUI 工程量小、体验提升明显**：Textual 8.x 的 ModalScreen + DataTable.RowHighlighted 足够实现流畅的 j/k preview 联动。
 
+---
+
+## 2026-06-29 — Session 6
+
+### Phase 8 完成：AST-aware 符号检索 + dispatch index
+
+**实现内容**
+- `src/03_search.py` 新增 `search_method()` / `search_class()`：支持 `Class::method`、`Class.method`、唯一实现 symbol 精确命中，直接拉实现 chunk，并与 BM25 / symbol / rg 融合排序。
+- `src/03_search.py` 新增 `search_dispatch()` / `load_dispatch_index()`：query 含 `G28`、`M104`、`M109`、`M221`、`M907`、`M20/M30` 等命令号时，先查 dispatch evidence，再参与融合排序。
+- 新增 `src/05_extract_dispatch_index.py`，输出 `data/dispatch_index.json`；当前产物 175 entries / 110 fixed commands。
+- `eval/eval_questions.json` 扩到 35 题：5 tune + 30 holdout，新增 H26-H30 五道 dispatch 题。
+- `kb_cli/render.py` 增加 `method` / `class` / `dispatch` source badge。
+- 新增 `notes/phase8_symbol_dispatch_audit.md`，记录 Q2-Q5 expected symbol → chunk 对齐矩阵、dispatch 抽取结果与 Phase 8 验收。
+
+**关键修正**
+- Q3 结构题过去容易被 constructor / header class chunk 压过；现在同一 class token 命中时优先实现方法 chunk，并增强构造函数降权。
+- H4 `G28` 不再靠 homing hint 或文件名特判；dispatch index 命中 `Endstops::on_gcode_received` 内的 `gcode->g == 28` 证据行。
+- 模块意图触发收紧，避免裸 `模块` 误伤非模块题；`模块系统 / 注册 / 触发 / 通信` 才进入 module hint。
+
+**验证结果**
+
+| 命令 | 结果 |
+|---|---|
+| `python src/03_build_chunks.py` | 1569 chunks |
+| `python src/05_extract_dispatch_index.py` | 175 entries / 110 fixed commands |
+| `python src/03_build_callgraph.py` | 986 chunks with mentions / 5719 edges |
+| `python src/03_search.py --eval` | 35/35 Recall@5；all mean cov@5 94%；tune 5/5 |
+| `python src/eval_answer_layer.py` | mean file_cov@primary 93%；mean sym_cov@trim 71% |
+| `python src/run_regression.py --skip-llm --top-k 8` | PASS |
+
+**结论**
+- Phase 8 验收通过：`mean sym_cov@trim >= 65%`、H4 Recall@5 命中 `Endstops.cpp`、tune 5 题不回归。
+- 下一步进入 Phase 9：Repomap PageRank，用 Phase 8 的符号质量和 dispatch 边作为更稳的图排序地基。
+
 <!-- 新 Session 在此追加，格式：## YYYY-MM-DD — Session N -->
