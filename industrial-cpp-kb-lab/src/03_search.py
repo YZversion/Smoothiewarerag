@@ -11,6 +11,7 @@ Phase 3.2 — BM25 + symbol + ripgrep 融合检索
 
 import argparse
 import json
+import os
 import re
 import shutil
 import subprocess
@@ -116,6 +117,12 @@ ENTRY_CHUNK_BONUS = 6.0
 
 CALL_GRAPH_PATH = LAB_ROOT / "data" / "call_graph.json"
 DISPATCH_INDEX_PATH = LAB_ROOT / "data" / "dispatch_index.json"
+REPOMAP_GRAPH_PATH = LAB_ROOT / "data" / "repomap_graph.json"
+ENABLE_REPORANK_ENV = "ENABLE_REPORANK"
+REPORANK_DAMPING = 0.85
+REPORANK_ITERS = 30
+REPORANK_EXTRAS = 3
+REPORANK_SCORE_SCALE = 1000.0
 
 # ── 全局索引（load 后填充）────────────────────────────────
 _CHUNKS: list[dict] = []
@@ -129,6 +136,8 @@ _BM25_CHUNK_IDS: list[str] = []
 _RG_BIN: str = ""
 _CALL_GRAPH: dict = {}
 _DISPATCH_INDEX: list[dict] = []
+_REPOMAP: dict = {}
+_ENABLE_REPORANK: bool = os.environ.get(ENABLE_REPORANK_ENV, "").strip() == "1"
 
 
 def find_rg(preferred: str | None = None) -> str:
@@ -744,7 +753,8 @@ def expand_bundle(primary_hits: list[dict]) -> list[dict]:
 
 def search(query: str, top_k: int = 10, src_root: Path | None = None,
            repo_root: Path | None = None, rg_bin: str | None = None,
-           bundle: bool = False) -> list[dict]:
+           bundle: bool = False,
+           enable_reporank: bool | None = None) -> list[dict]:
     if not _CHUNKS:
         raise RuntimeError("索引未加载，请先调用 load_index()")
     src = src_root or SRC_ROOT
@@ -784,10 +794,27 @@ def search(query: str, top_k: int = 10, src_root: Path | None = None,
     hits.sort(key=_hit_sort_key)
     primary = diversify(hits, top_k)
 
-    if flow_intent_query(query) and _CALL_GRAPH:
-        graph_extras = search_graph(primary)
-        if graph_extras:
-            primary = primary + graph_extras
+    exact_seed_ids = (
+        set(method_scores)
+        | set(class_scores)
+        | set(dispatch_scores)
+        | set(sym_scores)
+    )
+    use_reporank = _ENABLE_REPORANK if enable_reporank is None else enable_reporank
+    if flow_intent_query(query):
+        if use_reporank and _REPOMAP:
+            repomap_extras = search_reporank(
+                primary,
+                query,
+                top_k=REPORANK_EXTRAS,
+                exact_seed_ids=exact_seed_ids,
+            )
+            if repomap_extras:
+                primary = primary + repomap_extras
+        elif _CALL_GRAPH:
+            graph_extras = search_graph(primary)
+            if graph_extras:
+                primary = primary + graph_extras
 
     if bundle:
         return expand_bundle(primary)
@@ -796,10 +823,12 @@ def search(query: str, top_k: int = 10, src_root: Path | None = None,
 
 def eval_question(question: dict, k: int, src_root: Path | None = None,
                   repo_root: Path | None = None,
-                  rg_bin: str | None = None) -> dict:
+                  rg_bin: str | None = None,
+                  enable_reporank: bool | None = None) -> dict:
     """单题检索评估：pass（≥1 hit）、hit/miss、coverage@K。"""
     results = search(question["question"], top_k=k, src_root=src_root,
-                     repo_root=repo_root, rg_bin=rg_bin)
+                     repo_root=repo_root, rg_bin=rg_bin,
+                     enable_reporank=enable_reporank)
     result_files = {r["file"] for r in results}
     expected = question["expected_files"]
     hit = [f for f in expected if f in result_files]
@@ -823,11 +852,12 @@ def eval_recall(question: dict, k: int) -> tuple[bool, list[str], list[str]]:
 def _split_stats(questions: list[dict], k: int,
                  src_root: Path | None = None,
                  repo_root: Path | None = None,
-                 rg_bin: str | None = None) -> dict:
+                 rg_bin: str | None = None,
+                 enable_reporank: bool | None = None) -> dict:
     rows = []
     for q in questions:
         r = eval_question(q, k, src_root=src_root, repo_root=repo_root,
-                          rg_bin=rg_bin)
+                          rg_bin=rg_bin, enable_reporank=enable_reporank)
         rows.append({
             "id": q["id"],
             "split": q.get("split", "tune"),
@@ -850,14 +880,17 @@ def _aggregate(rows: list[dict], split: str | None = None) -> dict:
 
 def eval_summary(eval_path: Path = EVAL_PATH, src_root: Path | None = None,
                  repo_root: Path | None = None,
-                 rg_bin: str | None = None) -> dict:
+                 rg_bin: str | None = None,
+                 enable_reporank: bool | None = None) -> dict:
     """返回 Recall + coverage 统计，供回归脚本调用。"""
     data = json.loads(eval_path.read_text(encoding="utf-8"))
     questions = data["questions"]
     rows5 = _split_stats(questions, 5, src_root=src_root,
-                         repo_root=repo_root, rg_bin=rg_bin)
+                         repo_root=repo_root, rg_bin=rg_bin,
+                         enable_reporank=enable_reporank)
     rows10 = _split_stats(questions, 10, src_root=src_root,
-                          repo_root=repo_root, rg_bin=rg_bin)
+                          repo_root=repo_root, rg_bin=rg_bin,
+                          enable_reporank=enable_reporank)
     by_id10 = {r["id"]: r for r in rows10}
 
     details = []
@@ -902,7 +935,8 @@ def _fmt_cov(hit_n: int, exp_n: int, cov: float) -> str:
 
 def run_eval(eval_path: Path = EVAL_PATH, src_root: Path | None = None,
              repo_root: Path | None = None,
-             rg_bin: str | None = None) -> int:
+             rg_bin: str | None = None,
+             enable_reporank: bool | None = None) -> int:
     data = json.loads(eval_path.read_text(encoding="utf-8"))
     questions = data["questions"]
     n_tune = sum(1 for q in questions if q.get("split", "tune") == "tune")
@@ -911,7 +945,7 @@ def run_eval(eval_path: Path = EVAL_PATH, src_root: Path | None = None,
           f"{n_tune} tune + {n_hold} holdout)\n")
 
     summary = eval_summary(eval_path, src_root=src_root, repo_root=repo_root,
-                           rg_bin=rg_bin)
+                           rg_bin=rg_bin, enable_reporank=enable_reporank)
     current_split = None
     for d in summary["details"]:
         sp = d["split"]
@@ -953,6 +987,14 @@ def load_call_graph(path: Path = CALL_GRAPH_PATH) -> None:
         _CALL_GRAPH = {}
 
 
+def load_repomap(path: Path = REPOMAP_GRAPH_PATH) -> None:
+    global _REPOMAP
+    if path.is_file():
+        _REPOMAP = json.loads(path.read_text(encoding="utf-8"))
+    else:
+        _REPOMAP = {}
+
+
 def search_graph(primary_hits: list[dict]) -> list[dict]:
     """调用图扩展：查 primary symbols 的 mentioners，返回新文件的候选 hits（≤3）。
     仅对 flow_intent 查询调用。call_graph.json 不存在时静默 no-op。
@@ -989,6 +1031,98 @@ def search_graph(primary_hits: list[dict]) -> list[dict]:
     return extras
 
 
+def _normalize_personalization(weights: dict[str, float]) -> dict[str, float]:
+    valid = {cid: w for cid, w in weights.items()
+             if w > 0 and cid in _REPOMAP.get("nodes", {})}
+    total = sum(valid.values())
+    if total <= 0:
+        return {}
+    return {cid: w / total for cid, w in valid.items()}
+
+
+def personalized_reporank(seed_chunk_ids: dict[str, float],
+                          seed_tokens: list[str],
+                          limit: int = 50) -> list[tuple[str, float]]:
+    """Weighted personalized PageRank over repomap_graph.json.
+
+    The score is used only for ranking extra context candidates.
+    """
+    if not _REPOMAP:
+        return []
+    nodes = _REPOMAP.get("nodes", {})
+    edges = _REPOMAP.get("edges", {})
+    symbol_to_chunks = _REPOMAP.get("symbol_to_chunks", {})
+    personalization: dict[str, float] = dict(seed_chunk_ids)
+
+    for tok in seed_tokens:
+        if len(tok) < 4:
+            continue
+        for cid in symbol_to_chunks.get(tok, [])[:8]:
+            personalization[cid] = personalization.get(cid, 0.0) + 0.35
+
+    p = _normalize_personalization(personalization)
+    if not p:
+        return []
+
+    node_ids = list(nodes)
+    rank = {cid: p.get(cid, 0.0) for cid in node_ids}
+    out_weight = {
+        cid: sum(float(e.get("weight", 0.0)) for e in edges.get(cid, []))
+        for cid in node_ids
+    }
+
+    for _ in range(REPORANK_ITERS):
+        new_rank = {cid: (1.0 - REPORANK_DAMPING) * p.get(cid, 0.0)
+                    for cid in node_ids}
+        dangling = sum(rank[cid] for cid in node_ids if out_weight.get(cid, 0.0) <= 0.0)
+        for cid, pval in p.items():
+            new_rank[cid] = new_rank.get(cid, 0.0) + REPORANK_DAMPING * dangling * pval
+        for src in node_ids:
+            denom = out_weight.get(src, 0.0)
+            if denom <= 0.0:
+                continue
+            for edge in edges.get(src, []):
+                dst = edge.get("to")
+                if dst not in new_rank:
+                    continue
+                weight = float(edge.get("weight", 0.0))
+                new_rank[dst] += REPORANK_DAMPING * rank[src] * weight / denom
+        rank = new_rank
+
+    ranked = sorted(rank.items(), key=lambda item: -item[1])
+    return ranked[:limit]
+
+
+def search_reporank(primary_hits: list[dict], query: str, top_k: int = REPORANK_EXTRAS,
+                    exact_seed_ids: set[str] | None = None) -> list[dict]:
+    """Optional Phase 9 A/B graph expansion, replacing search_graph when enabled."""
+    primary_ids = {h["chunk_id"] for h in primary_hits}
+    primary_files = {h["file"] for h in primary_hits}
+    seed_weights: dict[str, float] = {}
+    for hit in primary_hits:
+        seed_weights[hit["chunk_id"]] = max(seed_weights.get(hit["chunk_id"], 0.0), 3.0)
+    for cid in exact_seed_ids or set():
+        seed_weights[cid] = max(seed_weights.get(cid, 0.0), 2.0)
+
+    ranked = personalized_reporank(seed_weights, expand_query_tokens(query, tokenize(query)))
+    extras: list[dict] = []
+    seen_files: set[str] = set(primary_files)
+    for cid, rank_score in ranked:
+        if cid in primary_ids:
+            continue
+        chunk = _CHUNK_BY_ID.get(cid)
+        if not chunk or chunk["file"] in seen_files:
+            continue
+        if chunk["type"] not in ("function", "class", "file_overview"):
+            continue
+        seen_files.add(chunk["file"])
+        score = W_GRAPH + (rank_score * REPORANK_SCORE_SCALE) + chunk_score_bonus(chunk)
+        extras.append(hit_from_chunk(chunk, round(score, 2), "reporank"))
+        if len(extras) >= top_k:
+            break
+    return extras
+
+
 def load_index(chunks_path: Path = CHUNKS_PATH, symbols_path: Path = SYMBOLS_PATH,
                rg_bin: str | None = None) -> None:
     global _RG_BIN
@@ -1002,6 +1136,7 @@ def load_index(chunks_path: Path = CHUNKS_PATH, symbols_path: Path = SYMBOLS_PAT
     build_bm25()
     load_call_graph()
     load_dispatch_index()
+    load_repomap()
 
 
 def parse_args() -> argparse.Namespace:
@@ -1016,6 +1151,8 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--repo-root", default=str(DEFAULT_REPO_ROOT))
     p.add_argument("--src-root", default=None)
     p.add_argument("--rg-bin", default=None)
+    p.add_argument("--enable-reporank", action="store_true",
+                   help="Phase 9 A/B: use optional repomap PageRank extras")
     return p.parse_args()
 
 
@@ -1024,17 +1161,20 @@ def main() -> None:
     load_index(Path(args.chunks), Path(args.symbols), args.rg_bin)
     repo_root = Path(args.repo_root)
     src_root = Path(args.src_root) if args.src_root else repo_root / "src"
+    enable_reporank = True if args.enable_reporank else None
 
     if args.eval:
         sys.exit(run_eval(Path(args.eval_file), src_root=src_root,
-                          repo_root=repo_root, rg_bin=args.rg_bin))
+                          repo_root=repo_root, rg_bin=args.rg_bin,
+                          enable_reporank=enable_reporank))
 
     if not args.query:
         print("请提供 query，或使用 --eval", file=sys.stderr)
         sys.exit(1)
 
     results = search(args.query, top_k=args.top_k, src_root=src_root,
-                     repo_root=repo_root, rg_bin=args.rg_bin)
+                     repo_root=repo_root, rg_bin=args.rg_bin,
+                     enable_reporank=enable_reporank)
     if args.json:
         print(json.dumps(results, ensure_ascii=False, indent=2))
         return

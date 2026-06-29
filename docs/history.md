@@ -325,4 +325,39 @@
 - Phase 8 验收通过：`mean sym_cov@trim >= 65%`、H4 Recall@5 命中 `Endstops.cpp`、tune 5 题不回归。
 - 下一步进入 Phase 9：Repomap PageRank，用 Phase 8 的符号质量和 dispatch 边作为更稳的图排序地基。
 
+---
+
+## 2026-06-29 — Session 7
+
+### Phase 9 完成：Repomap PageRank A/B（默认关闭）
+
+**实现内容**
+- 新增 `src/03_build_repomap.py`，读取 `chunks.jsonl`、`symbol_index.json`、`call_graph.json`、`dispatch_index.json`，输出 `data/repomap_graph.json` 与 `data/repomap_scores.json`。
+- 图边来源：低噪声 mention、same-file overview/相邻边、include、dispatch；过滤高频泛符号，避免 `read/value/size/uint32_t` 主导。
+- `src/03_search.py` 新增 `load_repomap()`、`personalized_reporank()`、`search_reporank()`。
+- 新增开关：`ENABLE_REPORANK=1` 或 `python src/03_search.py --enable-reporank`；默认关闭时仍走旧 `search_graph()`。
+- 新增 `notes/phase9_ab_report.md` 记录基线、A/B 结果与默认关闭决策。
+
+**图产物**
+
+| 指标 | 数值 |
+|---|---:|
+| nodes | 1569 |
+| edges | 26774 |
+| low-noise symbols | 920 |
+| filtered mentioned symbols | 38 |
+| mention / same-file / include / dispatch edges | 12406 / 4676 / 10332 / 4958 |
+
+**A/B 结果**
+
+| 模式 | Recall@5 | mean cov@5 | Q2-Q5 mean cov@5 |
+|---|---:|---:|---:|
+| 默认关闭 | 35/35 | 94% | 68% |
+| `--enable-reporank` | 35/35 | 94% | 68% |
+
+**结论**
+- PageRank A/B 未达到 Q2-Q5 `+5pp` 门槛；Q2 仍未把 `GcodeDispatch.cpp` 拉入 top-5，原因是事件总线动态分发边仍不可由 mention/PageRank 推断。
+- 开启 PageRank 时 `eval_answer_layer.py` mean sym_cov@trim 从 71% 降到 68%，进一步支持默认关闭。
+- Phase 9 作为实验完成，但不并入默认检索路径；下一步优先 Phase 10 LLM 答案完整性或 wire bonder 最小迁移探针。
+
 <!-- 新 Session 在此追加，格式：## YYYY-MM-DD — Session N -->
