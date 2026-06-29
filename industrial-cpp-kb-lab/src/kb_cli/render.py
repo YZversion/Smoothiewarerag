@@ -189,6 +189,25 @@ def citation_panel(cites: dict | None) -> Panel:
     return Panel("\n".join(lines), title=f"Citation Check: {status}", border_style=style)
 
 
+def coverage_panel(coverage: dict | None) -> Panel:
+    if not coverage:
+        return Panel("coverage check pending", title="Coverage Check", border_style="dim")
+    n = len(coverage.get("primary_files", []))
+    m = len(coverage.get("mentioned", []))
+    status = "OK" if coverage.get("ok") else "WARN"
+    style = "green" if coverage.get("ok") else "yellow"
+    lines = [f"primary files: {m}/{n}"]
+    missing = coverage.get("missing") or []
+    if missing:
+        lines.append("missing: " + ", ".join(Path(f).name for f in missing[:5]))
+    return Panel("\n".join(lines), title=f"Coverage Check: {status}", border_style=style)
+
+
+def checks_footer(cites: dict | None, coverage: dict | None) -> RenderableType:
+    from rich.columns import Columns
+    return Columns([citation_panel(cites), coverage_panel(coverage)], equal=True)
+
+
 def answer_layout(
     question: str,
     answer: str,
@@ -197,6 +216,7 @@ def answer_layout(
     status: str,
     model: str,
     cites: dict | None = None,
+    coverage: dict | None = None,
 ) -> Layout:
     layout = Layout()
     layout.split_column(
@@ -216,7 +236,7 @@ def answer_layout(
     layout["answer"].update(Panel(body, title="Answer", border_style="green"))
     layout["sources"].update(Panel(sources_table(hits, compact=True), title="Sources",
                                    border_style="magenta"))
-    layout["footer"].update(citation_panel(cites))
+    layout["footer"].update(checks_footer(cites, coverage))
     return layout
 
 
@@ -226,6 +246,7 @@ def stream_answer_dashboard(
     token_iter: Iterable[str],
     *,
     model: str,
+    coverage: dict | None = None,
 ) -> str:
     full_text = ""
     with Live(

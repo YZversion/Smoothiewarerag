@@ -1,0 +1,129 @@
+{
+  "top_k": 8,
+  "context": {
+    "mean_file_cov_primary": 1.0,
+    "mean_sym_cov_trim": 0.76,
+    "rows": [
+      {
+        "id": "Q1",
+        "split": "tune",
+        "file_cov": 1.0,
+        "sym_bundle": 3,
+        "sym_trim": 3,
+        "sym_n": 3,
+        "trim_loss": 0
+      },
+      {
+        "id": "Q2",
+        "split": "tune",
+        "file_cov": 1.0,
+        "sym_bundle": 4,
+        "sym_trim": 4,
+        "sym_n": 5,
+        "trim_loss": 0
+      },
+      {
+        "id": "Q3",
+        "split": "tune",
+        "file_cov": 1.0,
+        "sym_bundle": 4,
+        "sym_trim": 4,
+        "sym_n": 4,
+        "trim_loss": 0
+      },
+      {
+        "id": "Q4",
+        "split": "tune",
+        "file_cov": 1.0,
+        "sym_bundle": 2,
+        "sym_trim": 2,
+        "sym_n": 4,
+        "trim_loss": 0
+      },
+      {
+        "id": "Q5",
+        "split": "tune",
+        "file_cov": 1.0,
+        "sym_bundle": 2,
+        "sym_trim": 2,
+        "sym_n": 4,
+        "trim_loss": 0
+      }
+    ]
+  },
+  "llm": {
+    "citation_ok": 5,
+    "citation_ok_rate": 1.0,
+    "all_expected_files": 5,
+    "all_expected_files_rate": 1.0,
+    "context_primary_full": 4,
+    "context_primary_full_rate": 0.8,
+    "mean_context_primary_ratio": 0.975,
+    "tune_all_expected_files": 5,
+    "tune_all_expected_files_rate": 1.0,
+    "rows": [
+      {
+        "id": "Q1",
+        "split": "tune",
+        "cite_ok": true,
+        "ctx_primary": "5/5",
+        "ctx_ratio": 1.0,
+        "ctx_primary_ok": true,
+        "expected": "3/3",
+        "expected_all": true,
+        "syms_in_ans": "3/3",
+        "missing_primary": []
+      },
+      {
+        "id": "Q2",
+        "split": "tune",
+        "cite_ok": true,
+        "ctx_primary": "5/5",
+        "ctx_ratio": 1.0,
+        "ctx_primary_ok": true,
+        "expected": "5/5",
+        "expected_all": true,
+        "syms_in_ans": "3/5",
+        "missing_primary": []
+      },
+      {
+        "id": "Q3",
+        "split": "tune",
+        "cite_ok": true,
+        "ctx_primary": "8/8",
+        "ctx_ratio": 1.0,
+        "ctx_primary_ok": true,
+        "expected": "6/6",
+        "expected_all": true,
+        "syms_in_ans": "2/4",
+        "missing_primary": []
+      },
+      {
+        "id": "Q4",
+        "split": "tune",
+        "cite_ok": true,
+        "ctx_primary": "8/8",
+        "ctx_ratio": 1.0,
+        "ctx_primary_ok": true,
+        "expected": "7/7",
+        "expected_all": true,
+        "syms_in_ans": "3/4",
+        "missing_primary": []
+      },
+      {
+        "id": "Q5",
+        "split": "tune",
+        "cite_ok": true,
+        "ctx_primary": "7/8",
+        "ctx_ratio": 0.875,
+        "ctx_primary_ok": false,
+        "expected": "6/6",
+        "expected_all": true,
+        "syms_in_ans": "3/4",
+        "missing_primary": [
+          "src/libs/PublicData.h"
+        ]
+      }
+    ]
+  }
+}

@@ -81,7 +81,7 @@ def main(skip_llm: bool | None = None) -> int:
     search.load_index()
 
     failed = False
-    print("=== [1/3] Recall@K + coverage (03_search) ===\n")
+    print("=== [1/4] Recall@K + coverage (03_search) ===\n")
     summary = search.eval_summary(EVAL_PATH)
     current_split = None
     for d in summary["details"]:
@@ -104,7 +104,7 @@ def main(skip_llm: bool | None = None) -> int:
     else:
         print(f"  PASS (gate: all mean cov@5 >= {search.EVAL_COV5_GATE:.0%})")
 
-    print("\n=== [2/3] Bundle coverage (03_search --bundle) ===\n")
+    print("\n=== [2/4] Bundle coverage (03_search --bundle) ===\n")
     data = json.loads(EVAL_PATH.read_text(encoding="utf-8"))
     bundle_pass = 0
     for q in data["questions"]:
@@ -125,29 +125,45 @@ def main(skip_llm: bool | None = None) -> int:
         print(f"FAIL (need {need})")
         failed = True
 
-    print("\n=== [3/3] Citation check (04_answer, optional) ===\n")
+    print("\n=== [3/4] Citation check (04_answer, optional) ===\n")
     if skip_llm or not os.environ.get("LLM_API_KEY", "").strip():
         print("SKIP (无 LLM_API_KEY 或 --skip-llm)")
     else:
-        cite_ok = 0
+        cite_ok = cov_full = 0
         tune_ids = {d["id"] for d in summary["details"] if d["split"] == "tune"}
-        for q in data["questions"]:
-            if q["id"] not in tune_ids:
-                continue
+        tune_questions = [q for q in data["questions"] if q["id"] in tune_ids]
+        coverage_lines: list[str] = []
+        for q in tune_questions:
             result = answer_mod.answer(q["question"], top_k=top_k,
                                        search_mod=search)
-            ok = result.get("citations", {}).get("ok", False)
-            mark = "PASS" if ok else "WARN"
+            c_ok = result.get("citations", {}).get("ok", False)
+            c_mark = "PASS" if c_ok else "WARN"
             inv = result.get("citations", {}).get("invalid", [])
-            print(f"  {q['id']} {mark}" + (f"  invalid={inv[:2]}" if inv else ""))
-            if ok:
+            print(f"  {q['id']} {c_mark}" + (f"  invalid={inv[:2]}" if inv else ""))
+            if c_ok:
                 cite_ok += 1
+            cov = result.get("coverage", {})
+            n = len(cov.get("primary_files", []))
+            m = len(cov.get("mentioned", []))
+            v_ok = cov.get("ok", False)
+            v_mark = "OK" if v_ok else "WARN"
+            miss = cov.get("missing", [])
+            coverage_lines.append(
+                f"  {q['id']} {v_mark}  primary={m}/{n}"
+                + (f"  missing={[Path(f).name for f in miss[:3]]}" if miss else "")
+            )
+            if v_ok:
+                cov_full += 1
         print(f"\nCitation: {cite_ok}/{len(tune_ids)}  ", end="")
         if cite_ok >= 4:
             print("PASS")
         else:
             print("WARN (非阻断，人工复核)")
-            # citation warnings don't fail regression hard
+
+        print("\n=== [4/4] Answer coverage (report only) ===\n")
+        for line in coverage_lines:
+            print(line)
+        print(f"\nCoverage (tune primary full): {cov_full}/{len(tune_ids)}  (report only)")
 
     print("\n" + "=" * 50)
     if failed:

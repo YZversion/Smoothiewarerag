@@ -79,10 +79,12 @@ HINT_GROUPS: list[tuple[str, object, list[str]]] = [
     ]),
     ("halt", _hint_halt, [
         "halt", "ON_HALT", "KillButton", "immediate_halt", "Endstops", "on_halt",
+        "SerialConsole", "halt_flag", "GcodeDispatch", "Kernel", "Conveyor",
+        "StepperMotor",
     ]),
     ("module", _hint_module, [
         "Module", "Kernel", "register_for_event", "call_event", "PublicData",
-        "add_module", "get_value", "set_value",
+        "add_module", "get_value", "set_value", "main", "ON_MODULE_LOADED",
     ]),
 ]
 
@@ -158,6 +160,16 @@ def _query_lower(query: str) -> str:
 def matched_hint_groups(query: str) -> list[str]:
     ql = _query_lower(query)
     return [name for name, trigger, _ in HINT_GROUPS if trigger(query, ql)]
+
+
+def multi_file_structure_query(query: str) -> bool:
+    """多文件结构/流程题：收紧 diversify 每文件 chunk 上限。"""
+    ql = _query_lower(query)
+    return (
+        _hint_motion_structure(query, ql)
+        or _hint_halt(query, ql)
+        or _hint_module(query, ql)
+    )
 
 
 def expand_query_tokens(query: str, tokens: list[str]) -> list[str]:
@@ -646,6 +658,25 @@ def context_coherence_adjustment(chunk: dict, query_tokens: list[str]) -> float:
 
     if sym.startswith("on_") and sym not in GENERIC_EVENT_HANDLERS and named:
         return -CONTEXT_INCOHERENCE_PENALTY
+    # module 题误抬 Player（无 entry 意图时）
+    if stem == "player" and "player" not in tok_set:
+        if "register_for_event" in tok_set or "add_module" in tok_set:
+            return -CONTEXT_INCOHERENCE_PENALTY * 2
+    if stem == "switch" and "register_for_event" in tok_set:
+        return -CONTEXT_INCOHERENCE_PENALTY * 2
+    return 0.0
+
+
+def hint_key_header_boost(chunk: dict, query: str) -> float:
+    """module 题抬 Module.h / Kernel.h 头文件。"""
+    ql = _query_lower(query)
+    if not _hint_module(query, ql):
+        return 0.0
+    if not chunk["file"].endswith((".h", ".hpp")):
+        return 0.0
+    stem = Path(chunk["file"]).stem.lower()
+    if stem in ("module", "kernel"):
+        return 14.0
     return 0.0
 
 
@@ -664,7 +695,8 @@ def chunk_score_bonus(chunk: dict) -> float:
 
 
 def merge_scores(*score_maps: dict[str, float],
-                 query_tokens: list[str] | None = None) -> dict[str, float]:
+                 query_tokens: list[str] | None = None,
+                 query: str | None = None) -> dict[str, float]:
     merged: dict[str, float] = {}
     for sm in score_maps:
         for cid, sc in sm.items():
@@ -674,6 +706,8 @@ def merge_scores(*score_maps: dict[str, float],
         merged[cid] += chunk_score_bonus(chunk)
         if query_tokens is not None:
             merged[cid] += context_coherence_adjustment(chunk, query_tokens)
+        if query is not None:
+            merged[cid] += hint_key_header_boost(chunk, query)
     return merged
 
 
@@ -730,6 +764,10 @@ def expand_bundle(primary_hits: list[dict]) -> list[dict]:
     def add(hit: dict, role: str) -> None:
         cid = hit["chunk_id"]
         if cid in seen:
+            if role == "primary":
+                for entry in bundle:
+                    if entry["chunk_id"] == cid:
+                        entry["bundle_role"] = "primary"
             return
         seen.add(cid)
         entry = dict(hit)
@@ -738,6 +776,7 @@ def expand_bundle(primary_hits: list[dict]) -> list[dict]:
 
     for h in primary_hits:
         add(h, "primary")
+    for h in primary_hits:
         chunk = _CHUNK_BY_ID[h["chunk_id"]]
         ov = overview_chunk(chunk["file"])
         if ov:
@@ -769,7 +808,8 @@ def search(query: str, top_k: int = 10, src_root: Path | None = None,
     bm25_scores = search_bm25(tokens)
     rg_scores = search_rg(tokens, src, repo, rg)
     merged = merge_scores(method_scores, class_scores, dispatch_scores,
-                          sym_scores, bm25_scores, rg_scores, query_tokens=tokens)
+                          sym_scores, bm25_scores, rg_scores,
+                          query_tokens=tokens, query=query)
 
     hits = []
     for cid, score in merged.items():
@@ -792,7 +832,8 @@ def search(query: str, top_k: int = 10, src_root: Path | None = None,
         hits.append(h)
 
     hits.sort(key=_hit_sort_key)
-    primary = diversify(hits, top_k)
+    per_file = 1 if multi_file_structure_query(query) else 2
+    primary = diversify(hits, top_k, per_file=per_file)
 
     exact_seed_ids = (
         set(method_scores)
@@ -801,7 +842,7 @@ def search(query: str, top_k: int = 10, src_root: Path | None = None,
         | set(sym_scores)
     )
     use_reporank = _ENABLE_REPORANK if enable_reporank is None else enable_reporank
-    if flow_intent_query(query):
+    if flow_intent_query(query) and not multi_file_structure_query(query):
         if use_reporank and _REPOMAP:
             repomap_extras = search_reporank(
                 primary,

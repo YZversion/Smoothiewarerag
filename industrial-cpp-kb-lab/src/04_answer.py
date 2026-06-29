@@ -19,11 +19,12 @@ import json
 import os
 import re
 import sys
+import time
 from collections.abc import Iterator
 from pathlib import Path
 
 try:
-    from openai import OpenAI
+    from openai import APIConnectionError, APITimeoutError, OpenAI, RateLimitError
 except ImportError:
     sys.exit("openai 未安装，请运行: pip install -r requirements.txt")
 
@@ -57,13 +58,76 @@ def normalize_cite_path(path: str) -> str:
 
 def citation_in_hits(file: str, line: int, hits: list[dict],
                      chunk_by_id: dict) -> bool:
+    norm = normalize_cite_path(file)
     for h in hits:
-        if h["file"] != file:
+        if normalize_cite_path(h["file"]) != norm:
             continue
+        sym_start = h.get("symbol_start")
+        if sym_start is not None and line == sym_start:
+            return True
+        c_start = h.get("chunk_line_start", h.get("line_start"))
+        c_end = h.get("chunk_line_end", h.get("line_end", c_start))
+        if c_start is not None and c_end is not None and c_start <= line <= c_end:
+            return True
         chunk = chunk_by_id.get(h["chunk_id"])
         if chunk and chunk["start_line"] <= line <= chunk["end_line"]:
             return True
     return False
+
+
+def file_mentioned_in_answer(answer: str, path: str) -> bool:
+    stem = Path(path).name
+    norm = path.replace("\\", "/")
+    al = answer.lower()
+    return stem.lower() in al or norm in answer or norm.lstrip("/") in answer
+
+
+def context_primary_files(hits: list[dict],
+                          max_chunks: int = MAX_CONTEXT_CHUNKS) -> list[dict]:
+    """Trimmed context 中 bundle_role=primary 的唯一文件（保留首次出现的 symbol 信息）。"""
+    trimmed = trim_context_hits(hits, max_chunks)
+    seen: set[str] = set()
+    out: list[dict] = []
+    for h in trimmed:
+        if h.get("bundle_role", "primary") != "primary":
+            continue
+        f = h["file"]
+        if f in seen:
+            continue
+        seen.add(f)
+        out.append(h)
+    return out
+
+
+def format_primary_checklist(hits: list[dict],
+                             max_chunks: int = MAX_CONTEXT_CHUNKS) -> str:
+    primaries = context_primary_files(hits, max_chunks)
+    if not primaries:
+        return "（无 primary chunk）"
+    lines: list[str] = []
+    for i, h in enumerate(primaries, 1):
+        sym = h.get("symbol") or ""
+        sym_part = f" — symbol={sym}" if sym else ""
+        lines.append(f"{i}. `{h['file']}`{sym_part}")
+    return "\n".join(lines)
+
+
+def validate_answer_coverage(answer: str, hits: list[dict],
+                           max_chunks: int = MAX_CONTEXT_CHUNKS) -> dict:
+    """检查答案是否提及 trimmed context 中每个 primary 文件。"""
+    primaries = context_primary_files(hits, max_chunks)
+    primary_files = [h["file"] for h in primaries]
+    mentioned = [f for f in primary_files if file_mentioned_in_answer(answer, f)]
+    missing = [f for f in primary_files if f not in mentioned]
+    n = len(primary_files)
+    ratio = len(mentioned) / n if n else 1.0
+    return {
+        "primary_files": primary_files,
+        "mentioned": mentioned,
+        "missing": missing,
+        "ratio": round(ratio, 4),
+        "ok": len(missing) == 0,
+    }
 
 
 def validate_citations(answer: str, hits: list[dict],
@@ -151,10 +215,15 @@ def format_context_chunks(hits: list[dict]) -> str:
 
 
 def build_prompt(template: str, question: str, hits: list[dict]) -> str:
-    ctx = format_context_chunks(trim_context_hits(hits))
+    trimmed = trim_context_hits(hits)
+    ctx = format_context_chunks(trimmed)
+    checklist = format_primary_checklist(hits)
+    n = len(context_primary_files(hits))
     return (
         template.replace("{{question}}", question.strip())
         .replace("{{context_chunks}}", ctx)
+        .replace("{{primary_checklist}}", checklist)
+        .replace("{{primary_count}}", str(n))
     )
 
 
@@ -177,17 +246,27 @@ def llm_config() -> tuple[str, str, str, str | None]:
 
 
 def call_llm(prompt: str, provider: str, api_key: str, model: str,
-             base_url: str | None) -> str:
-    kwargs: dict = {"api_key": api_key}
+             base_url: str | None, *, max_attempts: int = 5) -> str:
+    kwargs: dict = {"api_key": api_key, "timeout": 180.0, "max_retries": 0}
     if base_url:
         kwargs["base_url"] = base_url
     client = OpenAI(**kwargs)
-    resp = client.chat.completions.create(
-        model=model,
-        messages=[{"role": "user", "content": prompt}],
-        temperature=0.2,
-    )
-    return (resp.choices[0].message.content or "").strip()
+    last_err: Exception | None = None
+    for attempt in range(1, max_attempts + 1):
+        try:
+            resp = client.chat.completions.create(
+                model=model,
+                messages=[{"role": "user", "content": prompt}],
+                temperature=0.2,
+            )
+            return (resp.choices[0].message.content or "").strip()
+        except (APITimeoutError, APIConnectionError, RateLimitError) as exc:
+            last_err = exc
+            if attempt >= max_attempts:
+                break
+            time.sleep(min(2 ** attempt, 30))
+    assert last_err is not None
+    raise last_err
 
 
 def call_llm_stream(prompt: str, provider: str, api_key: str, model: str,
@@ -230,6 +309,7 @@ def answer(question: str, top_k: int = 5, search_mod=None) -> dict:
     provider, api_key, model, base_url = llm_config()
     text = call_llm(prompt, provider, api_key, model, base_url)
     cites = validate_citations(text, hits, kb._CHUNK_BY_ID)
+    coverage = validate_answer_coverage(text, hits)
 
     return {
         "question": question,
@@ -239,6 +319,7 @@ def answer(question: str, top_k: int = 5, search_mod=None) -> dict:
         "provider": provider,
         "model": model,
         "citations": cites,
+        "coverage": coverage,
     }
 
 
@@ -271,6 +352,13 @@ def print_result(result: dict, show_context: bool = False) -> None:
             print(f"  valid: {cites['valid'][:5]}")
         if cites["invalid"]:
             print(f"  invalid: {cites['invalid'][:5]}")
+    cov = result.get("coverage")
+    if cov:
+        mark = "OK" if cov["ok"] else "WARN"
+        print(f"\n--- 完整性 [{mark}] ---")
+        print(f"  primary: {len(cov['mentioned'])}/{len(cov['primary_files'])}")
+        if cov["missing"]:
+            print(f"  missing: {cov['missing'][:5]}")
     print("\n--- answer ---\n")
     print(result["answer"])
     print()

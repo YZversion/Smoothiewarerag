@@ -71,6 +71,7 @@ def ask_action(
             render.console.print(Panel(result["answer"], title="Answer",
                                        border_style="green"))
             render.console.print(render.citation_panel(result.get("citations")))
+            render.console.print(render.coverage_panel(result.get("coverage")))
             render.console.print(render.sources_table(result["hits"]))
             if show_context:
                 render.render_context(result["hits"])
@@ -81,6 +82,7 @@ def ask_action(
             "answer": result["answer"],
             "model": f"{result['provider']} / {result['model']}",
             "citations": result.get("citations"),
+            "coverage": result.get("coverage"),
             "hits": result["hits"],
         })
         return result
@@ -106,7 +108,8 @@ def ask_action(
         model=f"{provider} / {model}",
     )
     cites = answer.validate_citations(text, hits, search._CHUNK_BY_ID)
-    render.console.print(render.citation_panel(cites))
+    coverage = answer.validate_answer_coverage(text, hits)
+    render.console.print(render.checks_footer(cites, coverage))
     store.append({
         "kind": "ask",
         "question": question,
@@ -114,6 +117,7 @@ def ask_action(
         "answer": text,
         "model": f"{provider} / {model}",
         "citations": cites,
+        "coverage": coverage,
         "hits": hits,
     })
     return {
@@ -123,6 +127,7 @@ def ask_action(
         "provider": provider,
         "model": model,
         "citations": cites,
+        "coverage": coverage,
         "hits": hits,
     }
 
