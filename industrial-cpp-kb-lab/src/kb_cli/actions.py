@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import subprocess
 import sys
 import time
 from datetime import datetime, timezone
@@ -9,12 +10,13 @@ from pathlib import Path
 from rich.panel import Panel
 
 from . import render
-from .runtime import LAB_ROOT, answer_module, model_label, search_module
+from .runtime import DATA_DIR, LAB_ROOT, SRC_DIR, answer_module, model_label, search_module
 from .session import SessionStore
 
 store = SessionStore()
 
 _QUERY_LOG = LAB_ROOT / "logs" / "query.jsonl"
+_ERROR_LOG  = LAB_ROOT / "logs" / "error.jsonl"
 
 
 def _log_query(record: dict) -> None:
@@ -24,6 +26,26 @@ def _log_query(record: dict) -> None:
             f.write(json.dumps(record, ensure_ascii=False) + "\n")
     except Exception:
         pass
+
+
+def _log_error(record: dict) -> None:
+    try:
+        _ERROR_LOG.parent.mkdir(parents=True, exist_ok=True)
+        with _ERROR_LOG.open("a", encoding="utf-8") as f:
+            f.write(json.dumps(record, ensure_ascii=False) + "\n")
+    except Exception:
+        pass
+
+
+def _get_git_sha(repo_root: Path) -> str:
+    try:
+        r = subprocess.run(
+            ["git", "rev-parse", "--short", "HEAD"],
+            cwd=str(repo_root), capture_output=True, text=True, timeout=5,
+        )
+        return r.stdout.strip() if r.returncode == 0 else ""
+    except Exception:
+        return ""
 
 
 def answer_json(result: dict) -> None:
@@ -251,4 +273,186 @@ def require_question(parts: list[str]) -> str:
 
 def typer_exit() -> SystemExit:
     return SystemExit(2)
+
+
+# ── Index management actions ───────────────────────────────────────────────
+
+def build_index_action(repo_root: Path, out: Path | None = None) -> int:
+    from .manifest import IndexManifest
+
+    repo_root = repo_root.resolve()
+    if not repo_root.is_dir():
+        render.console.print(f"[red]repo_root 不存在: {repo_root}[/]")
+        return 1
+
+    stages = [
+        ("01 scan",      [sys.executable, str(SRC_DIR / "01_scan_files.py"),
+                          "--repo-root", str(repo_root)]),
+        ("02 symbols",   [sys.executable, str(SRC_DIR / "02_extract_symbols.py"),
+                          "--repo-root", str(repo_root)]),
+        ("03 chunks",    [sys.executable, str(SRC_DIR / "03_build_chunks.py")]),
+        ("03 callgraph", [sys.executable, str(SRC_DIR / "03_build_callgraph.py")]),
+        ("05 dispatch",  [sys.executable, str(SRC_DIR / "05_extract_dispatch_index.py"),
+                          "--repo-root", str(repo_root)]),
+    ]
+
+    render.console.rule("[bold]kb index build[/]")
+    ts_start = datetime.now(timezone.utc)
+    for name, cmd in stages:
+        render.console.print(f"  [cyan]→[/cyan] {name}…")
+        r = subprocess.run(
+            cmd, cwd=str(LAB_ROOT),
+            capture_output=True, text=True, encoding="utf-8", errors="replace",
+        )
+        if r.returncode != 0:
+            render.console.print(f"  [red]✗ {name} FAILED (exit {r.returncode})[/]")
+            if r.stderr:
+                render.console.print(r.stderr[-2000:])
+            _log_error({
+                "ts": ts_start.isoformat(), "stage": name, "file": "",
+                "msg": (r.stderr or "")[-500:], "traceback": "",
+            })
+            return 1
+        last_line = r.stdout.strip().splitlines()[-1] if r.stdout.strip() else name
+        render.console.print(f"  [green]✓[/green] {last_line}")
+
+    chunks_path   = DATA_DIR / "chunks.jsonl"
+    symbols_path  = DATA_DIR / "symbol_index.json"
+    dispatch_path = DATA_DIR / "dispatch_index.json"
+    file_man_path = DATA_DIR / "file_manifest.json"
+
+    try:
+        chunk_count    = sum(1 for ln in chunks_path.read_text(encoding="utf-8").splitlines() if ln.strip())
+        symbols        = json.loads(symbols_path.read_text(encoding="utf-8"))
+        files          = json.loads(file_man_path.read_text(encoding="utf-8"))
+        dispatch_data  = json.loads(dispatch_path.read_text(encoding="utf-8"))
+        dispatch_count = len(dispatch_data.get("entries", dispatch_data if isinstance(dispatch_data, list) else []))
+    except Exception as exc:
+        render.console.print(f"[red]读取索引产物失败: {exc}[/]")
+        return 1
+
+    manifest = IndexManifest(
+        repo_root      = str(repo_root),
+        git_sha        = _get_git_sha(repo_root),
+        file_count     = len(files),
+        chunk_count    = chunk_count,
+        symbol_count   = len(symbols),
+        dispatch_count = dispatch_count,
+        chunks_file    = str(chunks_path),
+        symbols_file   = str(symbols_path),
+    )
+    manifest_dir  = out.resolve() if out else DATA_DIR
+    manifest_path = manifest_dir / "index_manifest.json"
+    manifest.save(manifest_path)
+
+    render.console.rule("[bold green]索引构建完成[/]")
+    render.console.print(manifest.summary())
+    render.console.print(f"[dim]manifest → {manifest_path}[/]")
+    return 0
+
+
+def check_index_action(index: Path) -> int:
+    from .manifest import IndexManifest
+    from .errors import KBIndexError
+
+    manifest_path = (index / "index_manifest.json") if index.is_dir() else index
+    try:
+        m = IndexManifest.load(manifest_path)
+    except KBIndexError as exc:
+        render.console.print(f"[red]✗ {exc}[/]")
+        return 1
+
+    problems = m.validate(manifest_path.parent)
+    if not problems:
+        render.console.print(f"[green]✓ 索引正常[/]\n{m.summary()}")
+        return 0
+
+    has_missing = any("缺少文件" in p for p in problems)
+    for p in problems:
+        style = "red" if "缺少文件" in p else "yellow"
+        icon  = "✗" if style == "red" else "⚠"
+        render.console.print(f"[{style}]{icon} {p}[/]")
+    return 1 if has_missing else 2
+
+
+def stats_index_action(index: Path) -> None:
+    from .manifest import IndexManifest
+    from .errors import KBIndexError
+    from rich import box as rbox
+    from rich.table import Table
+
+    manifest_path = (index / "index_manifest.json") if index.is_dir() else index
+    try:
+        m = IndexManifest.load(manifest_path)
+    except KBIndexError as exc:
+        render.console.print(f"[red]{exc}[/]")
+        raise SystemExit(1)
+
+    tbl = Table(title="IndexManifest", show_header=False, box=rbox.SIMPLE)
+    tbl.add_column("Field", style="bold cyan", min_width=16)
+    tbl.add_column("Value")
+    for k, v in [
+        ("version",        m.version),
+        ("created_at",     m.created_at[:19]),
+        ("repo_root",      m.repo_root),
+        ("git_sha",        m.git_sha or "(unknown)"),
+        ("file_count",     str(m.file_count)),
+        ("chunk_count",    str(m.chunk_count)),
+        ("symbol_count",   str(m.symbol_count)),
+        ("dispatch_count", str(m.dispatch_count)),
+    ]:
+        tbl.add_row(k, v)
+    render.console.print(tbl)
+
+    for label, fpath in [("chunks_file", m.chunks_file), ("symbols_file", m.symbols_file)]:
+        if fpath:
+            p = Path(fpath)
+            size = f"{p.stat().st_size // 1024} KB" if p.is_file() else "[red]文件不存在[/]"
+            render.console.print(f"  {label}: [dim]{p.name}[/]  ({size})")
+
+
+def serve_action(index: Path, port: int = 8080) -> int:
+    try:
+        import fastapi   # noqa: PLC0415
+        import uvicorn   # noqa: PLC0415
+    except ImportError:
+        render.console.print(
+            "[red]kb serve 需要额外依赖：[/]\n"
+            "  pip install fastapi \"uvicorn[standard]\""
+        )
+        return 1
+
+    from .manifest import IndexManifest
+    from .errors import KBIndexError
+
+    manifest_path = (index / "index_manifest.json") if index.is_dir() else index
+    try:
+        m = IndexManifest.load(manifest_path)
+    except KBIndexError as exc:
+        render.console.print(f"[red]{exc}[/]")
+        return 1
+
+    search = search_module()
+    answer = answer_module()
+
+    fa = fastapi.FastAPI(title="kb serve", version=m.version)
+
+    @fa.get("/health")
+    def health():
+        return {"status": "ok", "index_version": m.version, "chunk_count": m.chunk_count}
+
+    @fa.post("/ask")
+    async def ask_endpoint(request: fastapi.Request):
+        body = await request.json()
+        question = body.get("question", "")
+        top_k    = int(body.get("top_k", 8))
+        return answer.answer(question, top_k=top_k, search_mod=search)
+
+    render.console.print(
+        f"[green bold]kb serve[/]  http://localhost:{port}\n"
+        f"  GET  /health\n"
+        f"  POST /ask   {{\"question\": \"…\", \"top_k\": 8}}"
+    )
+    uvicorn.run(fa, host="0.0.0.0", port=port, log_level="warning")
+    return 0
 

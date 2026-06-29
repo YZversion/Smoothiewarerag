@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import sys
+from pathlib import Path
 from typing import Optional
 
 import typer
@@ -10,16 +11,20 @@ from .runtime import configure_console_encoding
 
 configure_console_encoding()
 
+# ── Sub-app: kb index ────────────────────────────────────────────────────
+index_app = typer.Typer(help="索引管理：build / check / stats")
+
 app = typer.Typer(
     add_completion=True,
     no_args_is_help=False,
     rich_markup_mode="rich",
     help="Smoothieware code knowledge-base CLI.",
 )
+app.add_typer(index_app, name="index")
 
 COMMANDS = {
     "ask", "search", "sources", "symbol", "repl", "eval", "demo",
-    "history", "export", "tui",
+    "history", "export", "tui", "index", "serve",
 }
 
 
@@ -109,6 +114,43 @@ def export(output: str = typer.Argument("answer.md", help="导出路径")) -> No
 @app.command("tui")
 def tui_cmd() -> None:
     tui.run_tui()
+
+
+@app.command("serve")
+def serve(
+    index: Optional[Path] = typer.Option(
+        None, "--index", help="index_manifest.json 所在目录（默认 data/）"
+    ),
+    port: int = typer.Option(8080, "--port", help="HTTP 监听端口"),
+) -> None:
+    from .runtime import DATA_DIR
+    raise typer.Exit(actions.serve_action(index or DATA_DIR, port))
+
+
+# ── kb index subcommands ───────────────────────────────────────────────────
+
+@index_app.command("build")
+def index_build(
+    repo_root: Path = typer.Option(..., "--repo-root", help="源码仓库根目录"),
+    out: Optional[Path] = typer.Option(
+        None, "--out", help="manifest 写入目录（默认 data/）"
+    ),
+) -> None:
+    raise typer.Exit(actions.build_index_action(repo_root, out))
+
+
+@index_app.command("check")
+def index_check(
+    index: Path = typer.Option(..., "--index", help="index_manifest.json 所在目录或文件"),
+) -> int:
+    raise typer.Exit(actions.check_index_action(index))
+
+
+@index_app.command("stats")
+def index_stats_cmd(
+    index: Path = typer.Option(..., "--index", help="index_manifest.json 所在目录或文件"),
+) -> None:
+    actions.stats_index_action(index)
 
 
 def _option_consumes_value(arg: str) -> bool:

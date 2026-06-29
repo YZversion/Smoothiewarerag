@@ -11,7 +11,8 @@
 输入一个 **模块名 / 函数名 / G-code / error·stop 关键词**，系统能返回：
 **相关源码 + 函数 + 解释 + 引用路径（文件:行号）**。
 
-这就是以后 wire bonder 知识库的雏形。
+这就是以后 wire bonder 知识库的雏形，也是**辅助写代码助手**的底层检索基础。  
+→ 长期目标见「长期愿景」章节；当前聚焦 Level 0（只读问答）与 Level 1（修改建议）。
 
 ## 核心原则（贯穿所有 phase）
 
@@ -22,6 +23,73 @@
 - [ ] 每个 phase 有明确「验收标准」，没达标不进入下一个 phase
 - [ ] Phase 1 选出的 10 个重点文件只作为人工理解与评估种子；索引仍覆盖扫描到的全部源码文件
 - [x] CodeGraph 只作为 Plan B 结构图谱实验：Smoothieware 小规模 A/B 已完成；不现在押注、不替代源码核查
+
+---
+
+## 长期愿景 — 从代码问答到辅助写代码
+
+> **现在已完成的检索基础不是玩具——它是代码助手不可跳过的底座。**  
+> 写代码助手的第一步不是"生成代码"，而是"找对上下文"。这套系统已在做最重要的那一层。
+
+### 能力分级
+
+| Level | 能力 | 状态 |
+|-------|------|------|
+| **0** | 只读问答：解释代码、定位函数、找调用链、找错误码、返回 file:line | ✅ **当前** |
+| **1** | 修改建议：说明要改哪些文件、改的顺序、为什么、风险（不生成 patch） | 🎯 **Phase E** |
+| **2** | 生成 patch（unified diff），只展示，不自动应用 | 📋 未来 |
+| **3** | 在临时 workspace 应用 patch 并编译验证，不改原仓库 | 📋 未来 |
+| **4** | 生成 SVN/Git 提交草稿，人工确认后再提交 | 📋 未来 |
+| **5** | 自动改代码（⚠️ 工业运控代码不适合，**长期不做**） | ⛔ 不做 |
+
+### 两条主线
+
+不能直接在 `ask` 功能上硬加 `write` 功能。必须拆成独立的 Read Path 和 Write Path：
+
+```text
+Read Path（已有）              Write Path（未来，从 Level 1 起逐步建立）
+────────────────────           ──────────────────────────────────────
+用户问题                        用户需求
+   ↓                               ↓
+检索相关代码                    定位相关文件 / 函数 / 调用链
+   ↓                               ↓
+拼上下文                        分析影响范围
+   ↓                               ↓
+LLM 解释                       生成修改计划（Level 1 目标）
+   ↓                               ↓
+返回答案 + 引用                  生成 patch/diff（Level 2）
+                                   ↓
+                               编译 / 测试验证（Level 3）
+                                   ↓
+                               人工确认 → 应用修改
+```
+
+### 服务边界（按需分层，不要一次全做）
+
+| 服务 | 职责 | 状态 |
+|------|------|------|
+| `SearchIndex` | 只读索引快照（chunks / symbols / dispatch / graph） | ✅ Phase A.1 |
+| `SearchService` | BM25 / rg / symbol / dispatch 融合检索 | ✅ SearchIndex 类方法 |
+| `ContextBuilder` | 把命中 chunk 组织成 LLM 上下文（bundle / trim） | ✅ bundle 逻辑 |
+| `AnswerService` | 只读问答、引用校验、answer coverage | ✅ `04_answer.py` |
+| `CodeEditPlanner` | 分析需求，生成"要改哪里 + 为什么 + 风险"（不生成 patch） | 📋 Phase E |
+| `PatchGenerator` | 生成 unified diff，不直接改文件 | 📋 Level 2 |
+| `PatchValidator` | 检查 diff 是否可应用、是否越界 | 📋 Level 2 |
+| `BuildRunner` | 运行编译、单测、静态检查 | 📋 Level 3 |
+
+### 判断地基是否就绪的 7 个问题
+
+| 问题 | 当前 |
+|------|------|
+| 能不能稳定找到相关代码？ | ✅ BM25 + symbol + rg + dispatch |
+| 能不能解释为什么找到这些代码？ | ✅ file:line + symbol + dispatch evidence |
+| 能不能避免胡说？ | ✅ citation validation + answer coverage |
+| 能不能支持新代码库？ | ✅ `--repo-root`；待 probe + manifest 完善 |
+| 能不能支撑代码修改分析？ | ⚠️ 检索层可以；缺 edit layer |
+| 能不能安全生成 / 验证 patch？ | ❌ 还没有 PatchValidator / BuildRunner |
+| 能不能让工程师信任？ | ✅ 只读问答可以；自动改代码阶段还不够 |
+
+> **结论：作为代码知识库地基——好，值得继续。Write Path 还缺 50% 安全工程层，从 Level 1 开始逐步建立。**
 
 ---
 
@@ -755,20 +823,21 @@ python src/03_search.py --eval           # gate：mean cov@5 >= 70%
 
 **目标：任何人拿到一个 `repo-root`，都能按文档构建索引并查询，无需读代码。**
 
-### A.1 模块拆分与接口清理
+### A.1 模块拆分与接口清理 ✅
 
-- [ ] 把 `03_search.py` 拆分为：
-  - [ ] `search/index.py` — `SearchIndex` 只读对象（加载 chunks / symbols / dispatch）
-  - [ ] `search/retriever.py` — BM25 / rg / symbol / dispatch 检索逻辑
-  - [ ] `search/bundle.py` — context bundle / trim 逻辑
-  - [ ] `search/eval.py` — `--eval` 评估逻辑（只依赖上方三模块）
-- [ ] 建 `IndexManifest`（`data/index_manifest.json`）：
-  - [ ] 字段：`created_at`、`repo_root`、`git_sha`（如可得）、`file_count`、`chunk_count`、`symbol_count`、`version`
-  - [ ] 每次 `kb index build` 自动写入；`kb index check` 读取验证
-- [ ] 统一异常类型：新建 `kb_cli/errors.py`，所有管道脚本抛出 `KBIndexError` / `KBSearchError`，不再用裸 `Exception`
-- [ ] 统一日志入口：`kb_cli/logging.py`，支持 `LOG_LEVEL` 环境变量
+- [x] 把 `03_search.py` 检索逻辑迁移到 `search/` 包：
+  - [x] `search/index.py` — `SearchIndex` 类（加载、检索、bundle、eval 全部逻辑合为一体）
+  - [x] `search/__init__.py` — re-export 接口
+  - [x] `03_search.py` 重写为轻量 CLI 入口 + 向后兼容 shim（`_INSTANCE = SearchIndex()`）
+  - [x] `kb_cli/runtime.py` 更新：`search_module()` 直接返回 `SearchIndex` 实例
+  - 注：retriever / bundle / eval 合并进 `SearchIndex` 类方法，未单独拆成三个子文件（避免过早拆分）
+- [x] 建 `IndexManifest`（`src/kb_cli/manifest.py`）：
+  - [x] 字段：`created_at`、`repo_root`、`git_sha`（如可得）、`file_count`、`chunk_count`、`symbol_count`、`version`
+  - [ ] 每次 `kb index build` 自动写入；`kb index check` 读取验证（待 A.2 完成）
+- [x] 统一异常类型：新建 `kb_cli/errors.py`（`KBIndexError` / `KBSearchError`）
+- [x] 统一日志入口：`kb_cli/logging.py`，支持 `LOG_LEVEL` 环境变量
 
-### A.2 CLI 命令整理
+### A.2 CLI 命令整理 ✅
 
 > 目标命令结构（Typer subcommand）：
 
@@ -783,60 +852,48 @@ kb probe        --repo-root <path> --out <report_path>   # Phase C 实现
 kb eval         [--index <path>]
 ```
 
-- [ ] `kb index build`：串起 01→02→03→dispatch→callgraph，最后写 `IndexManifest`
-- [ ] `kb index check`：读 manifest，验证 chunks / symbols 文件存在且 count 与记录一致
-- [ ] `kb index stats`：输出 manifest 内容 + 各文件大小，终端友好格式
-- [ ] `kb serve`：FastAPI 最小 HTTP 接口（`POST /ask`、`GET /health`），供 Web UI 调用；可选，不阻塞其他项
-- [ ] 所有命令支持 `--index` 指向任意路径（不再假设 `data/` 固定位置）
+- [x] `kb index build`：串起 01→02→03→dispatch→callgraph，最后写 `IndexManifest`
+- [x] `kb index check`：读 manifest，验证 chunks / symbols 文件存在且 count 与记录一致；exit 0/1/2
+- [x] `kb index stats`：输出 manifest 内容 + 各文件大小，终端友好格式
+- [x] `kb serve`：FastAPI 最小 HTTP 接口（`POST /ask`、`GET /health`）；需 `pip install fastapi uvicorn`
+- [x] `kb index check / stats` 支持 `--index <dir>` 指向任意路径
 
-### A.3 查询日志与错误日志
+### A.3 查询日志与错误日志 ✅
 
-- [ ] 查询日志：每次 `kb ask` / `kb search` 追加一行到 `logs/query.jsonl`
-  - [ ] 字段：`ts`、`question`、`top_k`、`hits_count`、`latency_ms`、`llm_called`、`citation_ok`
-- [ ] 错误日志：管道脚本任何 `KBIndexError` / `KBSearchError` 追加到 `logs/error.jsonl`
-  - [ ] 字段：`ts`、`stage`（scan/ctags/chunk/…）、`file`、`msg`、`traceback`
-- [ ] `logs/` 加入 `.gitignore`
+- [x] 查询日志：每次 `kb ask` / `kb search` 追加一行到 `logs/query.jsonl`
+  - [x] 字段：`ts`、`question`、`top_k`、`hits_count`、`latency_ms`、`llm_called`、`citation_ok`
+- [x] 错误日志：`kb index build` 阶段失败时追加到 `logs/error.jsonl`
+  - [x] 字段：`ts`、`stage`（scan/ctags/chunk/…）、`file`、`msg`、`traceback`
+- [x] `logs/` 加入 `.gitignore`
 
-### A.4 配置文件
+### A.4 配置文件 ✅
 
-- [ ] 新建 `config/default.toml`（或 `.env.example` + TOML 二选一）：
-  ```toml
-  [index]
-  repo_root = "./repos/Smoothieware"
-  out = "./data"
+- [x] 新建 `config/default.toml`，含 `[index]`、`[llm]`、`[search]`、`[serve]` 四节
+- [ ] `04_answer.py` / `03_search.py` 优先读配置文件，环境变量可覆盖（现有 `.env` 用法不变；暂缓，等真实迁移时统一处理）
 
-  [llm]
-  provider = "openai"
-  model = "gpt-4o-mini"
-  timeout_s = 180
-  max_retries = 5
+### A.5 健康检查 ✅
 
-  [search]
-  top_k = 8
-  enable_reporank = false
-  ```
-- [ ] `04_answer.py` / `03_search.py` 优先读配置文件，环境变量可覆盖（不破坏现有 `.env` 用法）
+- [x] `kb index check` 退出码 0 = 正常，1 = 缺文件，2 = count 不一致
+- [x] `kb serve` 提供 `GET /health` 返回 `{"status":"ok","index_version":"…","chunk_count":…}`
 
-### A.5 健康检查
+### A.6 README 生产部署流程 ✅
 
-- [ ] `kb index check` 退出码 0 = 正常，1 = 缺文件，2 = count 不一致
-- [ ] `kb serve` 提供 `GET /health` 返回 `{"status":"ok","index_version":"…","chunk_count":…}`
-
-### A.6 README 生产部署流程
-
-- [ ] 新增 `docs/deployment.md`（或扩充 README 专节），覆盖：
-  - [ ] 环境要求（Python 版本、rg、ctags）
-  - [ ] 一键 build index 命令序列
-  - [ ] 离线部署说明（无公网，本地 LLM 选项）
-  - [ ] 回滚方式（保留旧 `data/index_vXXX/` 目录切换）
-  - [ ] Windows 路径注意事项
+- [x] 新增 `docs/deployment.md`，覆盖：
+  - [x] 环境要求（Python 版本、rg、ctags）
+  - [x] 一键 build index 命令序列
+  - [x] 离线部署说明（无公网，本地 LLM 选项）
+  - [x] 回滚方式（备份 data/ 目录切换）
+  - [x] Windows 路径注意事项
+  - [x] 环境变量参考表
+  - [x] HTTP 服务接口文档
 
 **✅ Phase A 验收**
 
-- [ ] `kb index build → check → stats → ask` 全链路走通，无 import error
-- [ ] `IndexManifest` 文件存在且字段完整
-- [ ] 任意一次 `kb ask` 后 `logs/query.jsonl` 有新增行
-- [ ] `python src/03_search.py --eval` 与 `run_regression.py --skip-llm` 仍绿（不回归）
+- [x] `kb index build → check → stats → ask` 全链路走通，无 import error
+- [x] `IndexManifest` 文件存在且字段完整（files=269, chunks=1569, symbols=3072, dispatch=175）
+- [x] 任意一次 `kb ask` 后 `logs/query.jsonl` 有新增行
+- [x] `python src/03_search.py --eval` 仍绿（35/35 PASS, 94%）
+- [x] `run_regression.py --skip-llm` 仍绿（REGRESSION PASSED）
 
 ---
 
@@ -1075,6 +1132,66 @@ kb probe --repo-root D:/WireBonderCode --out reports/repo_probe.md
 
 ---
 
+## Phase E — Level 1：修改建议（不生成 patch）
+
+**目标：对于"如果要做 X 修改，应该改哪里？"类型的问题，系统能给出结构化建议，而不只是"这些文件可能相关"。**
+
+> 这是 Write Path 的起点，也是工业 C++ 场景中最安全、最有实际价值的第一步。
+
+### E.1 修改意图识别
+
+- [ ] 识别「修改类问题」的触发词：`增加 / 修改 / 添加 / 改变 / 如果要 X，应该 / 怎么实现 Y`
+- [ ] 区分「只是问」（Level 0，走现有 `kb ask`）和「想改」（Level 1，走 `kb edit-plan`）
+- [ ] 修改类问题走独立 prompt 模板，不改现有 `code_qa.md`
+
+### E.2 修改计划 prompt
+
+- [ ] 新建 `prompts/edit_plan.md`：
+  - 角色：工业设备 C++ 修改顾问
+  - 输出结构：受影响文件列表（file:line）+ 改的顺序 + 为什么改这里 + 风险点 + 需工程师确认的事
+  - 禁止：**不生成任何代码；不生成 diff；只给建议**
+  - 引用格式：仍要求 file:line 锚定，所有引用来自检索结果
+
+### E.3 CodeEditPlanner 最小实现
+
+- [ ] 新建 `src/kb_cli/edit_planner.py`：
+  ```python
+  @dataclass
+  class EditPlan:
+      request: str
+      affected_files: list[dict]   # [{file, line, symbol, reason}]
+      change_order: list[str]
+      risks: list[str]
+      questions: list[str]  # 需要工程师先确认的事
+
+  class CodeEditPlanner:
+      def __init__(self, index: SearchIndex, llm_config: dict): ...
+      def plan_edit(self, request: str) -> EditPlan: ...
+  ```
+- [ ] `SearchIndex` 驱动检索，LLM 仅做计划汇总；事实全部来自检索结果
+- [ ] `kb_cli/actions.py` 加入 `edit_plan_action()`
+- [ ] 新增 `kb edit-plan "<修改需求>"` CLI 命令
+
+### E.4 验收问题（Level 1 效果验证）
+
+用 Smoothieware 设计 5 个「修改类问题」，评估 `EditPlan.affected_files` 覆盖率：
+
+- [ ] 如果要增加一个新 G-code 命令，应该改哪些地方？
+- [ ] 如果要给所有 halt 事件增加日志，应该改哪里？
+- [ ] 如果要修改电流控制逻辑，需要改哪些文件？
+- [ ] 如果要给 Planner 加速度曲线增加一种模式，步骤是什么？
+- [ ] 如果要给某模块增加一个新配置参数，需要改哪些地方？
+
+**✅ Phase E 验收**
+
+- [ ] `kb edit-plan "如果要增加一个新 G-code 命令，应该改哪些地方？"` 返回结构化修改计划
+- [ ] 计划包含：受影响文件列表（≥3 个）、改的顺序、至少 1 个风险点
+- [ ] 所有 file:line 引用可在源码中查到（不虚构）
+- [ ] 不生成代码、不生成 patch
+- [ ] 现有 `kb ask` / `kb search` 路径不受影响
+
+---
+
 ## 第二阶段总览
 
 | Phase | 主题 | 核心产物 | 验收标准 |
@@ -1083,11 +1200,13 @@ kb probe --repo-root D:/WireBonderCode --out reports/repo_probe.md
 | **B** | 规模压测（50 万行） | `docs/benchmark_report.md` | 40 万行无崩溃，P95 ≤ 500ms |
 | **C** | repo_probe + 迁移文档 | `kb probe` / `wire_bonder_migration_plan.md` | probe 报告完整，6 步流程文档化 |
 | **D** | 问题集 + 演示材料 | `wirebonder_questions.json` / `demo_script.md` | ≥20 问题，演示材料齐全 |
+| **E** | Level 1 修改建议 | `edit_planner.py` / `prompts/edit_plan.md` | 5 题修改建议，affected_files 覆盖 ≥70% |
 
 **明确不做（第二阶段）：**
 
 - 不加向量检索 / reranker / embedding（BM25 已够用，等真实代码暴露问题再加）
-- 不做自动修 bug / SVN 提交
+- 不做**自动修 bug / SVN 提交**（Level 5 不做；Level 1 修改建议是 Phase E 目标）
+- 不生成 patch / diff（Level 2，暂缓；先验证 Level 1 修改建议的价值）
 - 不追求高并发框架（P95 ≤ 500ms 已满足工程需求）
 - 不继续打磨 Smoothieware Recall 百分点
 - 不做两阶段 LLM（等 wire bonder 真实 Q3–Q5 类问题验证后再决定）
