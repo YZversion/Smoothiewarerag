@@ -2,15 +2,28 @@ from __future__ import annotations
 
 import json
 import sys
+import time
+from datetime import datetime, timezone
 from pathlib import Path
 
 from rich.panel import Panel
 
 from . import render
-from .runtime import answer_module, model_label, search_module
+from .runtime import LAB_ROOT, answer_module, model_label, search_module
 from .session import SessionStore
 
 store = SessionStore()
+
+_QUERY_LOG = LAB_ROOT / "logs" / "query.jsonl"
+
+
+def _log_query(record: dict) -> None:
+    try:
+        _QUERY_LOG.parent.mkdir(parents=True, exist_ok=True)
+        with _QUERY_LOG.open("a", encoding="utf-8") as f:
+            f.write(json.dumps(record, ensure_ascii=False) + "\n")
+    except Exception:
+        pass
 
 
 def answer_json(result: dict) -> None:
@@ -39,17 +52,29 @@ def search_action(
     bundle: bool = False,
 ) -> list[dict]:
     search = search_module()
+    t0 = time.monotonic()
     with render.pipeline_progress() as progress:
         task = progress.add_task("Load index -> BM25 -> symbol fusion -> rg", total=3)
         progress.advance(task)
         hits = search.search(query, top_k=top_k, bundle=bundle)
         progress.advance(task, 2)
+    latency_ms = int((time.monotonic() - t0) * 1000)
     if json_out:
         print(json.dumps({"query": query, "hits": hits}, ensure_ascii=False, indent=2))
     else:
         render.render_search_results(query, hits, preview=preview,
                                      explain=explain, show_context=show_context)
     store.append({"kind": "search", "query": query, "top_k": top_k, "hits": hits})
+    _log_query({
+        "ts": datetime.now(timezone.utc).isoformat(),
+        "kind": "search",
+        "question": query,
+        "top_k": top_k,
+        "hits_count": len(hits),
+        "latency_ms": latency_ms,
+        "llm_called": False,
+        "citation_ok": None,
+    })
     return hits
 
 
@@ -85,6 +110,16 @@ def ask_action(
             "coverage": result.get("coverage"),
             "hits": result["hits"],
         })
+        _log_query({
+            "ts": datetime.now(timezone.utc).isoformat(),
+            "kind": "ask",
+            "question": question,
+            "top_k": top_k,
+            "hits_count": len(result["hits"]),
+            "latency_ms": None,
+            "llm_called": True,
+            "citation_ok": result.get("citations", {}).get("ok"),
+        })
         return result
 
     with render.pipeline_progress() as progress:
@@ -119,6 +154,16 @@ def ask_action(
         "citations": cites,
         "coverage": coverage,
         "hits": hits,
+    })
+    _log_query({
+        "ts": datetime.now(timezone.utc).isoformat(),
+        "kind": "ask-stream",
+        "question": question,
+        "top_k": top_k,
+        "hits_count": len(hits),
+        "latency_ms": None,
+        "llm_called": True,
+        "citation_ok": cites.get("ok") if cites else None,
     })
     return {
         "question": question,

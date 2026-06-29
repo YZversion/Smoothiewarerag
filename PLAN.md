@@ -739,4 +739,355 @@ python src/03_search.py --eval           # gate：mean cov@5 >= 70%
 | `notes/q345_retrieval_diagnosis.md` | Q3–Q5 四层检索诊断 |
 | `PLAN.md` Phase 11–12 + Plan D | **接下来要做的事与延期实验** |
 
-**路线图顺序：** Phase 7 CI ✅ → Phase 8 AST-aware 符号 / dispatch ✅ → Phase 9 PageRank A/B ✅（默认关闭）→ **Phase 10 LLM 完整性 ✅** → **11 wire bonder** → 12 CLI 产品化。
+**路线图顺序：** Phase 7 CI ✅ → Phase 8 AST-aware 符号 / dispatch ✅ → Phase 9 PageRank A/B ✅（默认关闭）→ **Phase 10 LLM 完整性 ✅** → **第二阶段（A→B→C→D）** → 11 wire bonder → 12 CLI 产品化。
+
+---
+
+# 第二阶段 — 工程化 · 规模验证 · 迁移就绪
+
+> **前提：** Smoothieware 验证已完成（Phase 0–10 全绿）。  
+> **目标：** 把"能跑的实验"变成"能交付的工具"，在真实公司代码接入前做好工程底座、规模验证与风险评估。  
+> **原则：** 不加新算法；不追 Recall 百分点；只做让别人说出"这个东西能部署、能重建、能查问题、能解释"的工作。
+
+---
+
+## Phase A — 工程化与可交付性（第 1 周）
+
+**目标：任何人拿到一个 `repo-root`，都能按文档构建索引并查询，无需读代码。**
+
+### A.1 模块拆分与接口清理
+
+- [ ] 把 `03_search.py` 拆分为：
+  - [ ] `search/index.py` — `SearchIndex` 只读对象（加载 chunks / symbols / dispatch）
+  - [ ] `search/retriever.py` — BM25 / rg / symbol / dispatch 检索逻辑
+  - [ ] `search/bundle.py` — context bundle / trim 逻辑
+  - [ ] `search/eval.py` — `--eval` 评估逻辑（只依赖上方三模块）
+- [ ] 建 `IndexManifest`（`data/index_manifest.json`）：
+  - [ ] 字段：`created_at`、`repo_root`、`git_sha`（如可得）、`file_count`、`chunk_count`、`symbol_count`、`version`
+  - [ ] 每次 `kb index build` 自动写入；`kb index check` 读取验证
+- [ ] 统一异常类型：新建 `kb_cli/errors.py`，所有管道脚本抛出 `KBIndexError` / `KBSearchError`，不再用裸 `Exception`
+- [ ] 统一日志入口：`kb_cli/logging.py`，支持 `LOG_LEVEL` 环境变量
+
+### A.2 CLI 命令整理
+
+> 目标命令结构（Typer subcommand）：
+
+```
+kb index build  --repo-root <path> --out <path>
+kb index check  --index <path>
+kb index stats  --index <path>
+kb serve        --index <path> [--port 8080]
+kb ask          "<question>" [--index <path>] [--top-k 8]
+kb search       "<keywords>" [--index <path>]
+kb probe        --repo-root <path> --out <report_path>   # Phase C 实现
+kb eval         [--index <path>]
+```
+
+- [ ] `kb index build`：串起 01→02→03→dispatch→callgraph，最后写 `IndexManifest`
+- [ ] `kb index check`：读 manifest，验证 chunks / symbols 文件存在且 count 与记录一致
+- [ ] `kb index stats`：输出 manifest 内容 + 各文件大小，终端友好格式
+- [ ] `kb serve`：FastAPI 最小 HTTP 接口（`POST /ask`、`GET /health`），供 Web UI 调用；可选，不阻塞其他项
+- [ ] 所有命令支持 `--index` 指向任意路径（不再假设 `data/` 固定位置）
+
+### A.3 查询日志与错误日志
+
+- [ ] 查询日志：每次 `kb ask` / `kb search` 追加一行到 `logs/query.jsonl`
+  - [ ] 字段：`ts`、`question`、`top_k`、`hits_count`、`latency_ms`、`llm_called`、`citation_ok`
+- [ ] 错误日志：管道脚本任何 `KBIndexError` / `KBSearchError` 追加到 `logs/error.jsonl`
+  - [ ] 字段：`ts`、`stage`（scan/ctags/chunk/…）、`file`、`msg`、`traceback`
+- [ ] `logs/` 加入 `.gitignore`
+
+### A.4 配置文件
+
+- [ ] 新建 `config/default.toml`（或 `.env.example` + TOML 二选一）：
+  ```toml
+  [index]
+  repo_root = "./repos/Smoothieware"
+  out = "./data"
+
+  [llm]
+  provider = "openai"
+  model = "gpt-4o-mini"
+  timeout_s = 180
+  max_retries = 5
+
+  [search]
+  top_k = 8
+  enable_reporank = false
+  ```
+- [ ] `04_answer.py` / `03_search.py` 优先读配置文件，环境变量可覆盖（不破坏现有 `.env` 用法）
+
+### A.5 健康检查
+
+- [ ] `kb index check` 退出码 0 = 正常，1 = 缺文件，2 = count 不一致
+- [ ] `kb serve` 提供 `GET /health` 返回 `{"status":"ok","index_version":"…","chunk_count":…}`
+
+### A.6 README 生产部署流程
+
+- [ ] 新增 `docs/deployment.md`（或扩充 README 专节），覆盖：
+  - [ ] 环境要求（Python 版本、rg、ctags）
+  - [ ] 一键 build index 命令序列
+  - [ ] 离线部署说明（无公网，本地 LLM 选项）
+  - [ ] 回滚方式（保留旧 `data/index_vXXX/` 目录切换）
+  - [ ] Windows 路径注意事项
+
+**✅ Phase A 验收**
+
+- [ ] `kb index build → check → stats → ask` 全链路走通，无 import error
+- [ ] `IndexManifest` 文件存在且字段完整
+- [ ] 任意一次 `kb ask` 后 `logs/query.jsonl` 有新增行
+- [ ] `python src/03_search.py --eval` 与 `run_regression.py --skip-llm` 仍绿（不回归）
+
+---
+
+## Phase B — 规模压测（50 万行 C++）（第 2 周）
+
+**目标：拿出一组硬数据，证明系统在 50 万行 C++ 规模下稳定、可用、延迟可接受。**
+
+### B.1 准备 scale_test 语料
+
+> 方法 A（推荐）：多开源 C++ 项目拼接
+
+- [ ] 在 `repos/scale_test/` 下 clone 3–5 个开源 C++ 项目，总行数达 40–60 万行：
+  - 候选：LLVM（子目录）、OpenCV（子目录）、Dear ImGui、raylib、nlohmann/json + 其他小项目
+  - 不要求业务相似；只要是真实 C++ 代码
+- [ ] 记录各项目行数（`cloc` 或 `rg --count-matches "\n"`）
+- [ ] 验证 `rg` 与 `ctags` 在该目录可正常运行
+
+> 方法 B（补充，可选）：合成压力集
+
+- [ ] 写 `scripts/gen_synthetic_cpp.py`：生成 1000 文件 / 5000 class / 50000 function / 大量宏 / 中文注释
+
+### B.2 跑完整索引流程并计时
+
+- [ ] `kb index build --repo-root repos/scale_test --out data/index_scale_500k`
+- [ ] 每个阶段用 `time` / `timeit` 记录：
+
+| 阶段 | 耗时 | 峰值内存 | 输出大小 |
+|------|------|----------|----------|
+| scan（01） | — | — | — |
+| ctags（02） | — | — | — |
+| chunks（03_build） | — | — | — |
+| callgraph | — | — | — |
+| dispatch | — | — | — |
+| BM25 index load | — | — | — |
+
+- [ ] 记录失败项（ctags 解析失败文件数、chunk 异常文件数）
+
+### B.3 查询压测
+
+- [ ] 准备 100 条通用 C++ 查询（不依赖 Smoothieware 业务）：
+  - 类定义、函数实现、错误处理、多线程、宏展开、include 关系等
+- [ ] 批量跑 `kb search`（不调 LLM），记录：
+  - P50 / P95 / P99 延迟
+  - 是否有 OOM / timeout
+  - TUI 是否卡顿（手工验证）
+- [ ] 记录 BM25 内存占用（峰值）
+
+### B.4 输出 benchmark_report.md
+
+- [ ] 新建 `docs/benchmark_report.md`，包含：
+  - 语料描述（项目列表、总行数、文件数）
+  - 各阶段耗时与内存表格
+  - 查询延迟分布（P50/P95/P99）
+  - 已知瓶颈与缓解方案
+  - 与 Smoothieware 小规模对比
+  - 结论：可支撑多大规模，超出后需要哪些优化
+
+**✅ Phase B 验收**
+
+- [ ] scale_test 语料总行数 ≥ 40 万
+- [ ] 完整索引流程无崩溃（允许有解析警告，但管道不中断）
+- [ ] 查询 P95 ≤ 500ms（仅检索，不含 LLM）
+- [ ] `benchmark_report.md` 存在且包含完整数据表格
+- [ ] Smoothieware eval gate 仍绿（scale_test 不影响已有索引）
+
+---
+
+## Phase C — repo_probe 与迁移文档（第 3 周）
+
+**目标：写一个"先扫描、再决策"的工具，让公司代码接入显得专业、可控、低风险。**
+
+### C.1 `kb probe` 工具
+
+新建 `src/kb_probe.py`（或 `src/06_probe.py`），实现：
+
+- [ ] **文件统计**
+  - `.cpp` / `.h` / `.hpp` / `.c` 数量与总行数
+  - 平均文件大小、最大文件 Top 20（文件名 + 行数）
+  - 目录级别行数分布（每个一级目录）
+
+- [ ] **编码检测**
+  - 用 `chardet` 或 `charset-normalizer` 检测每个文件编码
+  - 统计 UTF-8 / GBK / GB18030 / 其他 / 混合编码文件数
+  - 输出编码异常文件列表（混合编码或无法识别）
+
+- [ ] **代码结构统计（ctags）**
+  - class / function / macro / namespace / enum 数量
+  - ctags 解析失败文件列表（`exit code != 0` 或输出为空）
+
+- [ ] **风险文件识别**
+  - 超过 3000 行的文件（列出文件名 + 行数）
+  - 疑似 generated code（含 `// generated` / `// DO NOT EDIT` / `#pragma` 密集）
+  - 二进制或乱码文件
+  - 重复文件（按文件名 / hash）
+
+- [ ] **目录代码地图**
+  - 每个一级目录：文件数、行数、主要 symbol 类型分布
+
+- [ ] **输出格式**
+  - 终端：Rich 表格 + 彩色摘要
+  - `--out report.md`：Markdown 报告
+  - `--json`：机器可读 JSON
+
+```powershell
+kb probe --repo-root D:/WireBonderCode --out reports/repo_probe.md
+```
+
+### C.2 迁移可行性评估集成
+
+- [ ] `kb probe` 末尾输出"索引可行性评估"段：
+  - 预估 scan 耗时（基于 Phase B benchmark）
+  - 预估 ctags 耗时
+  - 预估 chunks 大小（MB）
+  - 风险等级（低 / 中 / 高）：取决于超大文件数、编码异常数、ctags 失败率
+  - 建议（如：建议先排除 generated 目录再索引）
+
+### C.3 wire_bonder_migration_plan.md
+
+新建 `docs/wire_bonder_migration_plan.md`，内容：
+
+- [ ] **接入流程（6 步）**
+  1. 软件部提供只读代码目录（非核心模块 / 历史版本均可）
+  2. 运行 `kb probe`，输出结构报告，无需理解业务
+  3. 确认编码与 ctags 兼容性
+  4. 运行 `kb index build`（本地，不外发代码）
+  5. 用 10 个真实问题验证检索质量
+  6. 工程师验收，决定是否扩大范围
+
+- [ ] **数据安全边界**
+  - 代码只在本地处理
+  - LLM 调用仅发送检索出的 chunk 片段（不发全文）
+  - 可选：离线本地模型（Ollama / llama.cpp），完全不外发
+  - 不修改代码、不写入 SVN
+
+- [ ] **已知适配风险**
+  - GBK / GB18030 编码（已有 chardet 检测）
+  - MFC 消息映射宏（ctags 可能漏解析）
+  - 超长文件（3000+ 行，chunk 窗口兜底）
+  - 动态分发（函数指针 / 消息 ID），需补 dispatch index 规则
+
+- [ ] **回滚策略**
+  - 每次 build 输出到独立 `data/index_vYYYMMDD/`
+  - `kb index check` 验证后再切换
+  - 旧索引目录保留，可随时切回
+
+- [ ] **与 Smoothieware 的差异备忘**
+  - hint group 需按 wire bonder 模块重写
+  - eval questions 需工程师提供 ground truth
+  - dispatch index 规则需适配公司命令格式（菜单 ID / 报警码 / 消息 ID）
+
+**✅ Phase C 验收**
+
+- [ ] `kb probe --repo-root repos/scale_test --out reports/scale_test_probe.md` 输出完整报告（用 scale_test 测试）
+- [ ] 报告包含文件统计 / 编码统计 / 风险文件 / 可行性评估
+- [ ] `docs/wire_bonder_migration_plan.md` 存在，覆盖 6 步流程与数据安全边界
+- [ ] `kb probe` 在 Smoothieware 上也能正常运行（不崩溃）
+
+---
+
+## Phase D — 真实问题集与演示材料（第 4 周）
+
+**目标：把系统从"我能演示"变成"软件部愿意试用"。**
+
+### D.1 收集 wire bonder 工程师真实问题
+
+- [ ] 向软件工程师（或从设备文档 / 培训材料推断）收集 20 个真实问题，类别覆盖：
+
+| 类别 | 示例问题 |
+|------|----------|
+| 入口定位 | 运动命令从界面下发后，进入运控模块的入口在哪里？ |
+| 错误追踪 | 轴超时错误在哪里产生？哪里处理？ |
+| 状态机 | 设备状态机的状态有哪些？转换条件是什么？ |
+| 回零流程 | 回零动作的完整调用链是什么？ |
+| 报警码 | 报警码 0x1234 在哪里定义？在哪里抛出？ |
+| 模块边界 | 视觉模块和运控模块之间怎么通信？ |
+| 配置加载 | 工艺参数从配置文件到运控参数的流程是什么？ |
+| 历史遗留 | 这个类从哪里来？现在还在用吗？ |
+
+- [ ] 问题格式化为 `eval/wirebonder_questions.json`（暂无 ground truth，先有问题类型）：
+  ```json
+  {
+    "id": "motion_entry_001",
+    "question": "运动命令从界面下发后，进入运控模块的入口在哪里？",
+    "category": "entry_point",
+    "required_evidence": ["source_file", "function", "line"],
+    "ground_truth": null
+  }
+  ```
+
+### D.2 用 Smoothieware 做映射演示
+
+- [ ] 对每类问题，找 Smoothieware 中对应的演示问题（已有 eval set 可复用）
+- [ ] 写 `docs/demo_script.md`：5 分钟演示脚本
+  - Q: 运动命令入口 → Smoothieware: G-code 从哪里进入系统
+  - Q: 错误追踪 → Smoothieware: halt / emergency 逻辑在哪里
+  - Q: 模块通信 → Smoothieware: 模块系统如何注册、通信
+
+### D.3 演示材料
+
+- [ ] **一页能力边界说明**（`docs/capability_boundary.md`）：
+  - 能做：定位函数 / 类 / 文件、解释调用关系、给出文件:行号引用、新人辅助、故障初步定位
+  - 不做：自动修 bug、提交 SVN、重构代码、保证回答 100% 正确
+  - 引用来源：全部来自源码 chunk，不凭空生成
+
+- [ ] **一页部署架构图**（`docs/architecture.md` 或 Mermaid 图）：
+  - 输入：代码目录（只读）
+  - 管道：scan → ctags → chunk → BM25 → rg → dispatch → LLM
+  - 输出：回答 + 引用（file:line）
+  - 部署：本地 / 内网，可选离线 LLM
+
+- [ ] **一页风险控制说明**（融入 `wire_bonder_migration_plan.md` 或独立）：
+  - 代码不外发
+  - LLM 只看检索片段
+  - 不写代码
+  - 可回滚
+  - 查询日志本地保留
+
+### D.4 沟通材料
+
+- [ ] 写 `docs/stakeholder_pitch.md`：向软件部提需求的标准话术：
+  > 第一步只需要一个非核心模块的只读目录。我不会修改代码、不会上传代码、不会训练模型。我先做本地结构扫描，输出文件统计和符号统计报告，请工程师验证 10 个问题，再决定是否扩大范围。
+
+- [ ] 拆小请求的 5 步清单：
+  - [ ] Step 1：提供一个非核心目录（不超过 5 万行）
+  - [ ] Step 2：只读扫描，输出 `repo_probe` 报告
+  - [ ] Step 3：构建本地索引，不外发任何代码
+  - [ ] Step 4：10 个真实问题验收
+  - [ ] Step 5：工程师评分后决定下一步
+
+**✅ Phase D 验收**
+
+- [ ] `eval/wirebonder_questions.json` 存在，≥ 20 条，覆盖 ≥ 5 个类别
+- [ ] `docs/demo_script.md` 可支撑 5 分钟演示（无需 PPT）
+- [ ] `docs/capability_boundary.md` 存在，能力与边界描述清晰
+- [ ] `docs/stakeholder_pitch.md` 或等效沟通材料存在
+
+---
+
+## 第二阶段总览
+
+| Phase | 主题 | 核心产物 | 验收标准 |
+|-------|------|----------|----------|
+| **A** | 工程化与可交付性 | `IndexManifest` / `logs/query.jsonl` / CLI 命令整理 | build→check→stats→ask 全链路通 |
+| **B** | 规模压测（50 万行） | `docs/benchmark_report.md` | 40 万行无崩溃，P95 ≤ 500ms |
+| **C** | repo_probe + 迁移文档 | `kb probe` / `wire_bonder_migration_plan.md` | probe 报告完整，6 步流程文档化 |
+| **D** | 问题集 + 演示材料 | `wirebonder_questions.json` / `demo_script.md` | ≥20 问题，演示材料齐全 |
+
+**明确不做（第二阶段）：**
+
+- 不加向量检索 / reranker / embedding（BM25 已够用，等真实代码暴露问题再加）
+- 不做自动修 bug / SVN 提交
+- 不追求高并发框架（P95 ≤ 500ms 已满足工程需求）
+- 不继续打磨 Smoothieware Recall 百分点
+- 不做两阶段 LLM（等 wire bonder 真实 Q3–Q5 类问题验证后再决定）
