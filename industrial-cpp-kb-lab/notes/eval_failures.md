@@ -1,8 +1,9 @@
 # Eval 失败案例库
 
 > Phase 6.1 — 检索层漏召回 / 错排序根因记录。  
-> **检索层已冻结**（2026-06-25）：`mean coverage@5 >= 70%` gate 通过即不再调 `03_search.py`。  
-> 复现：`python src/03_search.py --eval`（15 题，top_k=5）
+> **检索层已冻结**（2026-06-25）；Phase 8（2026-06-29）新增 dispatch_index，H4 已修复，eval set 扩至 35 题。  
+> 本文件只记录 Phase 6.1 时的 15 题状态；H11–H30 见 `notes/phase8_symbol_dispatch_audit.md`。  
+> 复现：`python src/03_search.py --eval`（35 题，top_k=5）
 
 **原则：** 记录现象与可迁移根因；**不**用 expected_files 文件名硬编码加分。  
 **holdout 纪律：** 不为 holdout @5 缺口写规则——H4 是戒掉 hint 误触后的真缺口，接受 FAIL@5、看 @10。
@@ -21,7 +22,7 @@
 | H1 | holdout | PASS | 1/1 (100%) | **OK** | — |
 | H2 | holdout | PASS | 1/1 (100%) | **OK** | — |
 | H3 | holdout | PASS | 1/2 (50%) | open | 缺 Kernel.cpp @5 |
-| H4 | holdout | **FAIL** | 0/1 (0%) | **open（接受）** | 戒掉 motion_chain 误触后真缺口；@10 PASS |
+| H4 | holdout | **PASS** | 1/1 (100%) | **Phase 8 修复** | dispatch_index 命中 `Endstops::on_gcode_received` 内 G28 证据行 |
 | H5 | holdout | PASS | 1/1 (100%) | **OK** | — |
 | H6 | holdout | PASS | 1/1 (100%) | **OK** | — |
 | H7 | holdout | PASS | 1/1 (100%) | **OK** | — |
@@ -29,7 +30,9 @@
 | H9 | holdout | PASS | 1/2 (50%) | open | .h 进榜、.cpp @10 |
 | H10 | holdout | PASS | 1/1 (100%) | **已修复** | 修前 0/1 FAIL；hint + context coherence |
 
-**汇总：** Recall@5 = 14/15，mean cov@5 = **73%**（gate PASS）。已修复 3 题（Q2 大幅好转、H8、H10）；open 题不再为 @5 写检索规则。
+**Phase 6.1 汇总（15 题）：** Recall@5 = 14/15，mean cov@5 = **73%**（gate PASS）。已修复 3 题（Q2 大幅好转、H8、H10）；open 题不再为 @5 写检索规则。
+
+**Phase 8 更新（35 题，2026-06-29）：** H4 由 dispatch_index 修复（PASS）；35/35 Recall@5；mean cov@5 = **94%**。新增 H11–H30（dispatch 题含 G28/M104/M221/M907 等）见 `notes/phase8_symbol_dispatch_audit.md`。
 
 ### 已实施修复（03_search.py）
 
@@ -120,15 +123,17 @@ Player / GcodeDispatch / SerialConsole 的通信入口 chunk（hint 误触发）
 
 ---
 
-## H4 — 回零 / homing / G28 命令在哪里处理？ `open（接受）`
+## H4 — 回零 / homing / G28 命令在哪里处理？ `Phase 8 修复 ✅`
 
 **期望 @5：** Endstops.cpp  
-**当前 @5：** 无（FAIL）；**@10：** PASS
+**Phase 6.1 当时 @5：** 无（FAIL）；**@10：** PASS  
+**Phase 8 后 @5：** Endstops.cpp（**PASS**）
 
 ### 说明
 
-修复 hint 误触发前，裸 `命令` 注入 motion_chain，本题靠「作弊」PASS@5。  
-修后不再误触，暴露 homing 题的真排名缺口。**刻意不为 H4 写规则**——holdout 只报告。
+Phase 6.1：修复 hint 误触发后，暴露 homing 题真排名缺口——`回零`/`homing`/`G28` 找不到同名符号，处理逻辑藏在 `Endstops::on_gcode_received` 函数体内 `gcode->g == 28` 条件分支中，BM25 无法定位。
+
+Phase 8：`05_extract_dispatch_index.py` 静态抽取该证据行，`search_dispatch()` 命中 dispatch_index，直接返回 `Endstops.cpp` 及证据行。不依赖文件名特判。
 
 ---
 

@@ -1,8 +1,8 @@
 # 知识库验收清单 — Smoothieware MVP
 
 > **验收对象**：`industrial-cpp-kb-lab` 最小可演示知识库（rg + ctags + BM25 + LLM）  
-> **验收日期**：2026-06-25  
-> **结论**：**通过** — 可交付 demo / 作为 Phase 7 wire bonder 迁移模板
+> **Phase 6+7 验收日期**：2026-06-25　　**Phase 8 更新**：2026-06-29  
+> **结论**：**通过** — 可交付 demo / 作为 Phase 11 wire bonder 迁移模板
 
 Phase 6.2（向量 / Doxygen / Web UI）**不纳入本次验收**，见 `PLAN.md` 升级决策。
 
@@ -35,12 +35,13 @@ python src/run_regression.py --top-k 8
 `data/` 与 `repos/` 不入库 → Actions 内 shallow clone Smoothieware 并重建索引。  
 本地镜像：`.\scripts\ci_build_and_eval.ps1`（Windows）或 `bash scripts/ci_build_and_eval.sh`。
 
-| 检查项 | 门槛 | 实测（2026-06-25） |
-|--------|------|-------------------|
-| 检索 gate | all **mean cov@5 ≥ 70%** | **73% PASS** |
-| Recall@5 | 分项报告 | 14/15（H4 open，接受） |
-| Bundle（Q1–Q3） | ≥3/3 | **3/3 PASS** |
-| LLM 引用（tune Q1–Q5） | citation 无胡编 | **5/5 PASS** |
+| 检查项 | 门槛 | Phase 6+7（2026-06-25） | Phase 8（2026-06-29） |
+|--------|------|------------------------|----------------------|
+| 检索 gate | all **mean cov@5 ≥ 70%** | **73% PASS**（15 题） | **94% PASS**（35 题） |
+| Recall@5 | 分项报告 | 14/15（H4 open） | **35/35**（H4 PASS，dispatch_index 修复） |
+| Bundle（Q1–Q3） | ≥3/3 | **3/3 PASS** | **3/3 PASS** |
+| LLM 引用（tune Q1–Q5） | citation 无胡编 | **5/5 PASS** | **5/5 PASS** |
+| sym_cov@trim | 报告项 | ~50% | **71%**（Phase 8 基线 54% → 71%） |
 
 可选深层评估：
 
@@ -74,7 +75,7 @@ python src/eval_answer_layer.py --top-k 8 --llm
 
 | 限制 | 说明 |
 |------|------|
-| H4 @5 | holdout 真缺口，戒掉 hint 误触后 FAIL@5，@10 PASS |
+| H4 @5 | Phase 8 dispatch_index 已修复，现 PASS@5 |
 | Q2–Q5 coverage@5 | 多跳/多文件题偏低，Recall@5 仍 PASS |
 | LLM 完整性 | 约 40% 题未列全所有期望文件（见 `phase6_conclusion.md`） |
 | 符号 chunk 对齐 | context sym_cov ~50%，影响深度问答 |
