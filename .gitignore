@@ -68,3 +68,6 @@ desktop.ini
 *.bak
 .cache/
 industrial-cpp-kb-lab/logs/
+
+# ── 索引备份目录（build 时产生，非源码）──
+industrial-cpp-kb-lab/data_backup*/

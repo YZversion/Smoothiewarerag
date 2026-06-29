@@ -135,8 +135,11 @@ def index_build(
     out: Optional[Path] = typer.Option(
         None, "--out", help="manifest 写入目录（默认 data/）"
     ),
+    src_root: Optional[Path] = typer.Option(
+        None, "--src-root", help="实际扫描的源码目录（默认 <repo-root>/src）"
+    ),
 ) -> None:
-    raise typer.Exit(actions.build_index_action(repo_root, out))
+    raise typer.Exit(actions.build_index_action(repo_root, out, src_root))
 
 
 @index_app.command("check")

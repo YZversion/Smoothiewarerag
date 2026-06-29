@@ -277,7 +277,7 @@ def typer_exit() -> SystemExit:
 
 # ── Index management actions ───────────────────────────────────────────────
 
-def build_index_action(repo_root: Path, out: Path | None = None) -> int:
+def build_index_action(repo_root: Path, out: Path | None = None, src_root: Path | None = None) -> int:
     from .manifest import IndexManifest
 
     repo_root = repo_root.resolve()
@@ -285,12 +285,16 @@ def build_index_action(repo_root: Path, out: Path | None = None) -> int:
         render.console.print(f"[red]repo_root 不存在: {repo_root}[/]")
         return 1
 
+    scan_cmd = [sys.executable, str(SRC_DIR / "01_scan_files.py"), "--repo-root", str(repo_root)]
+    if src_root is not None:
+        scan_cmd += ["--src-root", str(src_root.resolve())]
+
     stages = [
-        ("01 scan",      [sys.executable, str(SRC_DIR / "01_scan_files.py"),
-                          "--repo-root", str(repo_root)]),
+        ("01 scan",      scan_cmd),
         ("02 symbols",   [sys.executable, str(SRC_DIR / "02_extract_symbols.py"),
                           "--repo-root", str(repo_root)]),
-        ("03 chunks",    [sys.executable, str(SRC_DIR / "03_build_chunks.py")]),
+        ("03 chunks",    [sys.executable, str(SRC_DIR / "03_build_chunks.py"),
+                          "--repo-root", str(repo_root)]),
         ("03 callgraph", [sys.executable, str(SRC_DIR / "03_build_callgraph.py")]),
         ("05 dispatch",  [sys.executable, str(SRC_DIR / "05_extract_dispatch_index.py"),
                           "--repo-root", str(repo_root)]),

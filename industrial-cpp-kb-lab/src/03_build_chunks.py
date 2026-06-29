@@ -13,6 +13,7 @@ Phase 3.1 — 按符号边界切分源码，输出 chunks.jsonl
     industrial-cpp-kb-lab/data/chunks.jsonl
 """
 
+import argparse
 import json
 import re
 from collections import defaultdict
@@ -286,6 +287,12 @@ def make_file_overview(file: str, lines: list[str],
 # ── 主流程 ────────────────────────────────────────────────
 
 def main():
+    parser = argparse.ArgumentParser(description="按符号边界切分源码，输出 chunks.jsonl")
+    parser.add_argument("--repo-root", default=str(REPO_ROOT),
+                        help="源码仓库根目录（file_manifest 里的 path 相对于此）")
+    args = parser.parse_args()
+    repo_root = Path(args.repo_root).resolve()
+
     with open(MANIFEST_PATH, encoding="utf-8") as f:
         manifest = json.load(f)
     with open(SYMBOLS_PATH, encoding="utf-8") as f:
@@ -307,7 +314,7 @@ def main():
         for rec in manifest:
             file   = rec["path"]           # e.g. "src/modules/robot/Robot.cpp"
             ext    = Path(file).suffix.lower()
-            abs_path = REPO_ROOT / file
+            abs_path = repo_root / file
             lines  = read_lines(abs_path)
             if not lines:
                 continue

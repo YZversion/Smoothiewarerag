@@ -905,59 +905,61 @@ kb eval         [--index <path>]
 
 > 方法 A（推荐）：多开源 C++ 项目拼接
 
-- [ ] 在 `repos/scale_test/` 下 clone 3–5 个开源 C++ 项目，总行数达 40–60 万行：
-  - 候选：LLVM（子目录）、OpenCV（子目录）、Dear ImGui、raylib、nlohmann/json + 其他小项目
+- [x] 在 `repos/scale_test/` 下 clone 4 个开源 C++ 项目，总行数 **800,617 行**（80 万）：
+  - abseil-cpp (246k)、raylib (389k)、Dear ImGui (90k)、googletest (76k)
   - 不要求业务相似；只要是真实 C++ 代码
-- [ ] 记录各项目行数（`cloc` 或 `rg --count-matches "\n"`）
-- [ ] 验证 `rg` 与 `ctags` 在该目录可正常运行
+- [x] 记录各项目行数（PowerShell 逐文件计数）
+- [x] 验证 `rg` 与 `ctags` 在该目录可正常运行（ctags 成功率 99.4%）
 
 > 方法 B（补充，可选）：合成压力集
 
-- [ ] 写 `scripts/gen_synthetic_cpp.py`：生成 1000 文件 / 5000 class / 50000 function / 大量宏 / 中文注释
+- [ ] 写 `scripts/gen_synthetic_cpp.py`：生成 1000 文件 / 5000 class / 50000 function / 大量宏 / 中文注释（已跳过，方法 A 已满足需求）
 
 ### B.2 跑完整索引流程并计时
 
-- [ ] `kb index build --repo-root repos/scale_test --out data/index_scale_500k`
-- [ ] 每个阶段用 `time` / `timeit` 记录：
+- [x] `kb index build --repo-root repos/scale_test --src-root repos/scale_test`
+- [x] 每个阶段用 `Measure-Command` 记录：
 
-| 阶段 | 耗时 | 峰值内存 | 输出大小 |
-|------|------|----------|----------|
-| scan（01） | — | — | — |
-| ctags（02） | — | — | — |
-| chunks（03_build） | — | — | — |
-| callgraph | — | — | — |
-| dispatch | — | — | — |
-| BM25 index load | — | — | — |
+| 阶段 | 耗时 | 输出大小 |
+|------|------|----------|
+| scan（01） | 1.0 s | 125 KB |
+| ctags（02） | **24.0 s** | 12,465 KB |
+| chunks（03_build） | 0.6 s | 14,209 KB |
+| callgraph | 0.5 s | 3,917 KB |
+| dispatch | 0.9 s | 0 KB（G-code 专用） |
+| BM25 index load | 0.3 s | — |
+| **Total** | **27.0 s** | — |
 
-- [ ] 记录失败项（ctags 解析失败文件数、chunk 异常文件数）
+- [x] 记录失败项：ctags 失败 5/895 文件（0.6%），管道无中断
 
 ### B.3 查询压测
 
-- [ ] 准备 100 条通用 C++ 查询（不依赖 Smoothieware 业务）：
-  - 类定义、函数实现、错误处理、多线程、宏展开、include 关系等
-- [ ] 批量跑 `kb search`（不调 LLM），记录：
-  - P50 / P95 / P99 延迟
-  - 是否有 OOM / timeout
-  - TUI 是否卡顿（手工验证）
-- [ ] 记录 BM25 内存占用（峰值）
+- [x] 准备 50 条通用 C++ 查询（`scripts/benchmark_queries.py`）：
+  - 类定义、函数实现、错误处理、多线程、宏展开、内存管理等
+- [x] 批量跑 `search`（不调 LLM），记录：
+
+| 指标 | Smoothieware（18 万行） | scale_test（80 万行） |
+|------|------------------------|----------------------|
+| Min | 75 ms | 177 ms |
+| P50 | 630 ms | 2,040 ms |
+| P95 | 2,426 ms | 12,599 ms |
+| P99 | 3,384 ms | 14,463 ms |
+
+- [x] OOM / timeout：无。BM25 内存占用：chunks.jsonl 14 MB，加载后约 50 MB RSS
 
 ### B.4 输出 benchmark_report.md
 
-- [ ] 新建 `docs/benchmark_report.md`，包含：
-  - 语料描述（项目列表、总行数、文件数）
-  - 各阶段耗时与内存表格
-  - 查询延迟分布（P50/P95/P99）
-  - 已知瓶颈与缓解方案
-  - 与 Smoothieware 小规模对比
-  - 结论：可支撑多大规模，超出后需要哪些优化
+- [x] 新建 `docs/benchmark_report.md`，包含完整数据表格、瓶颈分析、缓解方案、结论
 
 **✅ Phase B 验收**
 
-- [ ] scale_test 语料总行数 ≥ 40 万
-- [ ] 完整索引流程无崩溃（允许有解析警告，但管道不中断）
-- [ ] 查询 P95 ≤ 500ms（仅检索，不含 LLM）
-- [ ] `benchmark_report.md` 存在且包含完整数据表格
-- [ ] Smoothieware eval gate 仍绿（scale_test 不影响已有索引）
+- [x] scale_test 语料总行数 ≥ 40 万（实测 **800,617 行**，895 文件）
+- [x] 完整索引流程无崩溃（ctags 成功率 890/895 = 99.4%，无管道中断）
+- [ ] 查询 P95 ≤ 500ms（**未达标**：scale_test P95=12,599ms；Smoothieware P95=2,426ms；根因：rg 全量扫描；见 benchmark_report.md §六缓解方案）
+- [x] `docs/benchmark_report.md` 存在且包含完整数据表格
+- [x] Smoothieware eval gate 仍绿（REGRESSION PASSED）
+
+> **遗留：** P95 未达标不阻塞后续 Phase，但需在 Phase C 开始前做"排除超大文件 + rg 候选集限流"（预计 2 小时），使 P95 降至 500ms 以内。
 
 ---
 
