@@ -115,6 +115,12 @@ Phase 9 产物，由 `03_build_repomap.py` 构建。图边来源为低噪声 men
 
 ---
 
+## search/ 包 — 融合检索（Phase A 重构后）
+
+`src/search/index.py`：`SearchIndex` 类，包含加载 / 检索 / bundle / eval 全部逻辑。  
+`src/03_search.py`：轻量 CLI shim（`_INSTANCE = SearchIndex()`），向后兼容。  
+`src/search/smart_search.py`：LLM query planner + 多路检索融合（见上方 Smart Search 章节）。
+
 ## 03_search.py — 融合检索
 
 ### 多路召回
@@ -181,7 +187,8 @@ call_graph.json: {mentioned_by: {sym: [chunk_id,...]}, mentions: {chunk_id: [sym
 ### 评估
 
 `eval/eval_questions.json`（35 题：5 tune + 30 holdout）→ Recall@5 / coverage@K / Recall@10。  
-**Gate：** 全体 **mean coverage@5 ≥ 70%**。当前：35/35 Recall@5，mean coverage@5 **94%**。  
+**Gate：** 全体 **mean coverage@5 ≥ 70%**。当前：35/35 Recall@5，mean coverage@5 **95%**。  
+**跨项目泛化：** `eval/scale_test_questions.json`（20 题，4 个开源 C/C++ 项目）→ Recall@5 17/20，mean_cov@5 **75%**（修复 `.cc/.cxx` 扩展 + macro 符号 + 限定名解析后）。  
 **Phase 10 报告项：** `eval_answer_layer.py --llm`（tune expected 5/5）；`scripts/diagnose_retrieval.py` 四层缺口诊断。
 
 ---
@@ -202,6 +209,47 @@ call_graph.json: {mentioned_by: {sym: [chunk_id,...]}, mentions: {chunk_id: [sym
 
 ---
 
+## Smart Search（query_planner + smart_search）
+
+### query_planner.py
+
+`src/query_planner.py`：将自然语言问题拆解为多个源码检索子查询，失败时返回 fallback，不阻断检索。
+
+```python
+@dataclass
+class QueryPlan:
+    intent: str          # symbol_lookup / entry_point / call_flow / error_trace / module_summary / config_lookup / unknown
+    normalized_question: str
+    entities: list[str]  # 问题中提到的模块/类/命令名
+    symbols: list[str]   # 明确提到的符号名
+    search_queries: list[str]  # LLM 生成的多路子查询
+    must_have: list[str] # 必须命中的关键词（用于降权未命中 chunk）
+    target_kinds: list[str]   # function / class / file_overview 等
+```
+
+- 调用 `LLM_PROVIDER` / `LLM_MODEL`（OpenAI 兼容接口）；失败时返回 `fallback_plan(raw)` 退回单路检索
+- Prompt 模板：`prompts/query_planner.md`
+
+### smart_search.py
+
+`src/search/smart_search.py`：多路 `SearchIndex.search()` 调用 + 结果融合。
+
+```
+query → plan_query() → [sub_q1, sub_q2, ..., sym1, sym2]
+    → 每路调 SearchIndex.search(sub_q, top_k)
+    → _merge_hits()：
+        同一 chunk 被多路命中 → score += MULTI_HIT_BOOST × (n-1)  (0.15 per extra)
+        must_have 未命中         → score -= MUST_HAVE_PENALTY (0.25)
+        原始 query 命中          → score += RAW_HIT_BOOST (0.1)
+    → 结果标注 source="+smart"，附 planner_intent
+    → 最多返回 top_k
+```
+
+- 最多 10 条子查询（`MAX_SUB_QUERIES`）
+- 不修改 `SearchIndex.search()` 语义；LLM 只用于拆解 query，不用于事实生成
+
+---
+
 ## CLI
 
 ### kb_cli（新，推荐）
@@ -212,13 +260,19 @@ call_graph.json: {mentioned_by: {sym: [chunk_id,...]}, mentions: {chunk_id: [sym
 |------|------|
 | `.\kb tui` | Textual TUI（5 区布局；j/k 导航；? help；q 退出） |
 | `.\kb search "query"` | 检索表格 + preview |
+| `.\kb smart "query"` | LLM query planner + 多路检索 + 自动解释（需 LLM_API_KEY） |
 | `.\kb ask "question"` | 检索 + LLM 流式回答 |
 | `.\kb sources "query"` | 仅显示来源 |
 | `.\kb symbol "Cls::fn"` | 符号定位 |
+| `.\kb index build/check/stats` | 索引管理（构建 / 验证 / 统计） |
+| `.\kb probe --repo-root <path>` | 新代码库结构扫描与可行性评估 |
+| `.\kb serve` | 最小 HTTP 接口（POST /ask, GET /health） |
 | `.\kb eval` | Recall + coverage dashboard |
 | `.\kb repl` | 交互 REPL |
 
 若 `.\kb` 不在 PATH：`python -m kb_cli <subcmd>`（需在 `industrial-cpp-kb-lab/` 下运行）。
+
+TUI 内部命令：`/smart <q>`、`/ask <q>`、`/copy N`、`/clear`、`↑/↓` 历史导航。
 
 ### app.py（旧，仍兼容）
 
@@ -247,7 +301,9 @@ call_graph.json: {mentioned_by: {sym: [chunk_id,...]}, mentions: {chunk_id: [sym
 | Repomap PageRank | stdlib personalized PageRank，默认关闭 | A/B 不达 +5pp，只保留实验开关 |
 | 不加文件名白名单 | 泛化规则 only | Phase 7 无 golden set |
 | LLM | OpenAI 兼容 SDK | 智谱/OpenAI 可换 |
-| eval 规模 | 35 题 | 5 tune + 30 holdout，含 Phase 8 dispatch 题 |
+| eval 规模 | 35 + 20 题 | Smoothieware 35 题 + scale_test 20 题（4 个 C/C++ 项目） |
+| Smart search | LLM query planner + 多路 BM25 融合 | 自然语言→子查询拆解；失败退回单路；不引入向量库 |
+| 泛化扩展 | `.cc/.cxx/.hh/.hxx` + macro/enum/typedef 符号 | 修复 scale_test 38%→75%；Smoothieware 不回归 |
 
 ---
 
