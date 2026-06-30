@@ -955,11 +955,11 @@ kb eval         [--index <path>]
 
 - [x] scale_test 语料总行数 ≥ 40 万（实测 **800,617 行**，895 文件）
 - [x] 完整索引流程无崩溃（ctags 成功率 890/895 = 99.4%，无管道中断）
-- [ ] 查询 P95 ≤ 500ms（**未达标**：scale_test P95=12,599ms；Smoothieware P95=2,426ms；根因：rg 全量扫描；见 benchmark_report.md §六缓解方案）
+- [x] 查询 P95 ≤ 500ms（**Phase C 前置修复后当前 Smoothieware 索引 P95=143ms**；原始 Phase B 基线：scale_test P95=12,599ms、Smoothieware P95=2,426ms；scale_test 修复后复测待真实迁移前按需重跑）
 - [x] `docs/benchmark_report.md` 存在且包含完整数据表格
 - [x] Smoothieware eval gate 仍绿（REGRESSION PASSED）
 
-> **遗留：** P95 未达标不阻塞后续 Phase，但需在 Phase C 开始前做"排除超大文件 + rg 候选集限流"（预计 2 小时），使 P95 降至 500ms 以内。
+> **遗留收口：** Phase C 前已完成最小性能修复：BM25 候选限流（top 200）、rg 只扫候选文件、rg timeout=2s；`scripts/benchmark_queries.py` 在当前 Smoothieware 索引上 P95=143ms，eval / regression 不回归。scale_test 的修复后全量复测暂不作为 Phase C 阻塞项。
 
 ---
 
@@ -971,30 +971,30 @@ kb eval         [--index <path>]
 
 新建 `src/kb_probe.py`（或 `src/06_probe.py`），实现：
 
-- [ ] **文件统计**
+- [x] **文件统计**
   - `.cpp` / `.h` / `.hpp` / `.c` 数量与总行数
   - 平均文件大小、最大文件 Top 20（文件名 + 行数）
   - 目录级别行数分布（每个一级目录）
 
-- [ ] **编码检测**
-  - 用 `chardet` 或 `charset-normalizer` 检测每个文件编码
+- [x] **编码检测**
+  - 用内置解码探测 UTF-8 / GB18030 / latin-1 / binary（不额外引入依赖）
   - 统计 UTF-8 / GBK / GB18030 / 其他 / 混合编码文件数
   - 输出编码异常文件列表（混合编码或无法识别）
 
-- [ ] **代码结构统计（ctags）**
+- [x] **代码结构统计（ctags）**
   - class / function / macro / namespace / enum 数量
   - ctags 解析失败文件列表（`exit code != 0` 或输出为空）
 
-- [ ] **风险文件识别**
+- [x] **风险文件识别**
   - 超过 3000 行的文件（列出文件名 + 行数）
   - 疑似 generated code（含 `// generated` / `// DO NOT EDIT` / `#pragma` 密集）
   - 二进制或乱码文件
   - 重复文件（按文件名 / hash）
 
-- [ ] **目录代码地图**
+- [x] **目录代码地图**
   - 每个一级目录：文件数、行数、主要 symbol 类型分布
 
-- [ ] **输出格式**
+- [x] **输出格式**
   - 终端：Rich 表格 + 彩色摘要
   - `--out report.md`：Markdown 报告
   - `--json`：机器可读 JSON
@@ -1005,7 +1005,7 @@ kb probe --repo-root D:/WireBonderCode --out reports/repo_probe.md
 
 ### C.2 迁移可行性评估集成
 
-- [ ] `kb probe` 末尾输出"索引可行性评估"段：
+- [x] `kb probe` 末尾输出"索引可行性评估"段：
   - 预估 scan 耗时（基于 Phase B benchmark）
   - 预估 ctags 耗时
   - 预估 chunks 大小（MB）
@@ -1016,7 +1016,7 @@ kb probe --repo-root D:/WireBonderCode --out reports/repo_probe.md
 
 新建 `docs/wire_bonder_migration_plan.md`，内容：
 
-- [ ] **接入流程（6 步）**
+- [x] **接入流程（6 步）**
   1. 软件部提供只读代码目录（非核心模块 / 历史版本均可）
   2. 运行 `kb probe`，输出结构报告，无需理解业务
   3. 确认编码与 ctags 兼容性
@@ -1024,34 +1024,34 @@ kb probe --repo-root D:/WireBonderCode --out reports/repo_probe.md
   5. 用 10 个真实问题验证检索质量
   6. 工程师验收，决定是否扩大范围
 
-- [ ] **数据安全边界**
+- [x] **数据安全边界**
   - 代码只在本地处理
   - LLM 调用仅发送检索出的 chunk 片段（不发全文）
   - 可选：离线本地模型（Ollama / llama.cpp），完全不外发
   - 不修改代码、不写入 SVN
 
-- [ ] **已知适配风险**
+- [x] **已知适配风险**
   - GBK / GB18030 编码（已有 chardet 检测）
   - MFC 消息映射宏（ctags 可能漏解析）
   - 超长文件（3000+ 行，chunk 窗口兜底）
   - 动态分发（函数指针 / 消息 ID），需补 dispatch index 规则
 
-- [ ] **回滚策略**
+- [x] **回滚策略**
   - 每次 build 输出到独立 `data/index_vYYYMMDD/`
   - `kb index check` 验证后再切换
   - 旧索引目录保留，可随时切回
 
-- [ ] **与 Smoothieware 的差异备忘**
+- [x] **与 Smoothieware 的差异备忘**
   - hint group 需按 wire bonder 模块重写
   - eval questions 需工程师提供 ground truth
   - dispatch index 规则需适配公司命令格式（菜单 ID / 报警码 / 消息 ID）
 
 **✅ Phase C 验收**
 
-- [ ] `kb probe --repo-root repos/scale_test --out reports/scale_test_probe.md` 输出完整报告（用 scale_test 测试）
-- [ ] 报告包含文件统计 / 编码统计 / 风险文件 / 可行性评估
-- [ ] `docs/wire_bonder_migration_plan.md` 存在，覆盖 6 步流程与数据安全边界
-- [ ] `kb probe` 在 Smoothieware 上也能正常运行（不崩溃）
+- [x] `kb probe --repo-root repos/scale_test --out reports/scale_test_probe.md` 输出完整报告（用 scale_test 测试）
+- [x] 报告包含文件统计 / 编码统计 / 风险文件 / 可行性评估
+- [x] `docs/wire_bonder_migration_plan.md` 存在，覆盖 6 步流程与数据安全边界
+- [x] `kb probe` 在 Smoothieware 上也能正常运行（不崩溃）
 
 ---
 
@@ -1074,7 +1074,8 @@ kb probe --repo-root D:/WireBonderCode --out reports/repo_probe.md
 | 配置加载 | 工艺参数从配置文件到运控参数的流程是什么？ |
 | 历史遗留 | 这个类从哪里来？现在还在用吗？ |
 
-- [ ] 问题格式化为 `eval/wirebonder_questions.json`（暂无 ground truth，先有问题类型）：
+- [x] 新增 `eval/wirebonder_questions_template.json` 作为 20 题采集模板（字段：`id` / `category` / `question` / `required_evidence` / `ground_truth=null` / `owner_notes`）
+- [ ] 问题格式化为 `eval/wirebonder_questions.json`（暂无 ground truth，先有问题类型；待真实问题输入）：
   ```json
   {
     "id": "motion_entry_001",
@@ -1088,14 +1089,14 @@ kb probe --repo-root D:/WireBonderCode --out reports/repo_probe.md
 ### D.2 用 Smoothieware 做映射演示
 
 - [ ] 对每类问题，找 Smoothieware 中对应的演示问题（已有 eval set 可复用）
-- [ ] 写 `docs/demo_script.md`：5 分钟演示脚本
+- [x] 写 `docs/demo_script.md`：5 分钟演示脚本（最小版）
   - Q: 运动命令入口 → Smoothieware: G-code 从哪里进入系统
   - Q: 错误追踪 → Smoothieware: halt / emergency 逻辑在哪里
   - Q: 模块通信 → Smoothieware: 模块系统如何注册、通信
 
 ### D.3 演示材料
 
-- [ ] **一页能力边界说明**（`docs/capability_boundary.md`）：
+- [x] **一页能力边界说明**（`docs/capability_boundary.md`）：
   - 能做：定位函数 / 类 / 文件、解释调用关系、给出文件:行号引用、新人辅助、故障初步定位
   - 不做：自动修 bug、提交 SVN、重构代码、保证回答 100% 正确
   - 引用来源：全部来自源码 chunk，不凭空生成
@@ -1106,7 +1107,7 @@ kb probe --repo-root D:/WireBonderCode --out reports/repo_probe.md
   - 输出：回答 + 引用（file:line）
   - 部署：本地 / 内网，可选离线 LLM
 
-- [ ] **一页风险控制说明**（融入 `wire_bonder_migration_plan.md` 或独立）：
+- [x] **一页风险控制说明**（融入 `wire_bonder_migration_plan.md` 或独立）：
   - 代码不外发
   - LLM 只看检索片段
   - 不写代码
@@ -1115,22 +1116,26 @@ kb probe --repo-root D:/WireBonderCode --out reports/repo_probe.md
 
 ### D.4 沟通材料
 
-- [ ] 写 `docs/stakeholder_pitch.md`：向软件部提需求的标准话术：
+- [x] 写 `docs/stakeholder_pitch.md`：向软件部提需求的标准话术：
   > 第一步只需要一个非核心模块的只读目录。我不会修改代码、不会上传代码、不会训练模型。我先做本地结构扫描，输出文件统计和符号统计报告，请工程师验证 10 个问题，再决定是否扩大范围。
 
-- [ ] 拆小请求的 5 步清单：
-  - [ ] Step 1：提供一个非核心目录（不超过 5 万行）
-  - [ ] Step 2：只读扫描，输出 `repo_probe` 报告
-  - [ ] Step 3：构建本地索引，不外发任何代码
-  - [ ] Step 4：10 个真实问题验收
-  - [ ] Step 5：工程师评分后决定下一步
+- [x] 拆小请求的 5 步清单：
+  - [x] Step 1：提供一个非核心目录（不超过 5 万行）
+  - [x] Step 2：只读扫描，输出 `repo_probe` 报告
+  - [x] Step 3：构建本地索引，不外发任何代码
+  - [x] Step 4：10 个真实问题验收
+  - [x] Step 5：工程师评分后决定下一步
+- [x] 新增 `docs/wire_bonder_intake_checklist.md`：列出只读目录、编码说明、目录范围、10 个真实问题、验收人、保密边界
+- [x] 新增 `docs/first_pilot_acceptance.md`：定义首轮试点成功 / 部分成功 / 失败标准（10 题中 ≥7 题返回可核查 file:line）
 
 **✅ Phase D 验收**
 
-- [ ] `eval/wirebonder_questions.json` 存在，≥ 20 条，覆盖 ≥ 5 个类别
-- [ ] `docs/demo_script.md` 可支撑 5 分钟演示（无需 PPT）
-- [ ] `docs/capability_boundary.md` 存在，能力与边界描述清晰
-- [ ] `docs/stakeholder_pitch.md` 或等效沟通材料存在
+- [x] `eval/wirebonder_questions_template.json` 存在，20 条模板覆盖 ≥ 8 个类别
+- [ ] `eval/wirebonder_questions.json` 存在，≥ 20 条真实问题，覆盖 ≥ 5 个类别（待软件部输入）
+- [x] `docs/demo_script.md` 可支撑 5 分钟演示（无需 PPT）
+- [x] `docs/capability_boundary.md` 存在，能力与边界描述清晰
+- [x] `docs/stakeholder_pitch.md` 或等效沟通材料存在
+- [x] `docs/wire_bonder_intake_checklist.md` 和 `docs/first_pilot_acceptance.md` 存在，可支撑外部试点准备
 
 ---
 

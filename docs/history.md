@@ -384,4 +384,98 @@
 **结论**
 - 两阶段 LLM 不需要；下一步 **Phase 11 wire bonder** 迁移探针。
 
+## 2026-06-30 — Session 9
+
+### 第二阶段 Phase C 完成：repo_probe 与迁移文档
+
+**实现与产物**
+- 新增 `industrial-cpp-kb-lab/src/kb_probe.py`，接入 `kb probe --repo-root <path> --out <report.md> --json`。
+- `kb probe` 输出：文件统计、编码统计、ctags 结构统计、风险文件、目录代码地图、索引可行性评估。
+- 生成验收报告：
+  - `industrial-cpp-kb-lab/reports/scale_test_probe.md`
+  - `industrial-cpp-kb-lab/reports/smoothieware_probe.md`
+- 新增 `industrial-cpp-kb-lab/docs/wire_bonder_migration_plan.md`，覆盖 6 步接入流程、数据安全边界、已知适配风险和回滚策略。
+
+**probe 结果摘要**
+
+| 目标 | 文件 | 行数 | 风险 | ctags 空/失败率 |
+|------|-----:|-----:|------|----------------:|
+| scale_test | 895 | 677,811 | 中 | 1.8% |
+| Smoothieware | 617 | 116,897 | 中 | 1.1% |
+
+说明：Smoothieware probe 扫描的是 repo 根目录，包含 `mbed` / `mri` 等目录；正式索引仍按现有 `file_manifest.json` 的过滤规则保留 269 个源码文件。
+
+### Phase B P95 遗留收口
+
+**问题**
+- 原始 Phase B benchmark：Smoothieware P95=2,426ms，scale_test P95=12,599ms。
+- 根因不是 BM25 本身，而是通用查询会让 BM25 返回上千候选，后续融合排序和 rg 全量扫描放大延迟。
+
+**修复**
+- BM25 候选限制为 top 200。
+- rg 只扫描候选文件，不再全量扫 `src_root`。
+- rg timeout 降为 2s，超时退回 BM25 / symbol / dispatch 结果。
+
+**复测**
+- `python scripts/benchmark_queries.py`：Smoothieware P95=143.1ms，PASS。
+- `python src/03_search.py --eval`：35/35 PASS，mean_cov@5=94%。
+- `python src/run_regression.py --skip-llm`：REGRESSION PASSED。
+
+scale_test 的修复后全量复测未在本 session 重建索引执行；真实 wire bonder 接入前应按实际排除策略重跑 benchmark。
+
+### Phase D 最小演示材料启动
+
+新增文档：
+- `industrial-cpp-kb-lab/docs/capability_boundary.md`
+- `industrial-cpp-kb-lab/docs/stakeholder_pitch.md`
+- `industrial-cpp-kb-lab/docs/demo_script.md`
+
+覆盖内容：
+- 代码不外发、不改 SVN、不生成 patch。
+- LLM 只看检索片段，可切换离线模型。
+- 索引可版本化，可用 `kb index check` 验证后切换，旧索引可回滚。
+- 5 分钟 Smoothieware 演示脚本覆盖入口定位、错误追踪、状态机/流程、报警码/命令码、模块边界。
+
+### 下一步
+
+- 向软件部申请一个非核心只读目录（建议不超过 5 万行）。
+- 收集 10 个真实问题做首轮人工验收，问题至少覆盖入口、错误、状态机/流程、报警码/命令码、模块边界。
+- 拿到真实目录后先跑 `kb probe`，不要直接做 edit-plan。
+
+## 2026-06-30 — Session 10
+
+### Phase D 外部试点准备包完成
+
+**目标**
+- 不进入 Phase E。
+- 不做 edit-plan。
+- 不生成 patch。
+- 为向软件部申请真实 wire bonder 只读目录和真实问题做准备。
+
+**新增产物**
+- `industrial-cpp-kb-lab/eval/wirebonder_questions_template.json`
+  - 20 条问题模板。
+  - 覆盖入口定位、错误追踪、状态机/流程、回零、报警码/命令码、模块边界、配置加载、历史遗留。
+  - 每条包含 `id`、`category`、`question`、`required_evidence`、`ground_truth=null`、`owner_notes`。
+- `industrial-cpp-kb-lab/docs/wire_bonder_intake_checklist.md`
+  - 可直接发给软件部。
+  - 明确需要：只读目录、编码说明、目录范围、10 个真实问题、验收人、保密边界。
+- `industrial-cpp-kb-lab/docs/first_pilot_acceptance.md`
+  - 定义成功 / 部分成功 / 失败标准。
+  - 成功线：10 个真实问题中至少 7 个返回工程师认可的可核查 `file:line`。
+  - 明确代码不外发、不改 SVN、LLM 只看检索片段、索引可回滚。
+
+**同步文档**
+- `AGENTS.md`：Phase D 状态更新为外部试点准备包完成，待真实目录 + 10 题。
+- `PLAN.md`：Phase D 增加问题模板、intake checklist、first pilot acceptance 的完成状态；真实 `wirebonder_questions.json` 仍待外部输入。
+
+**验证**
+- `python src/03_search.py --eval`：35/35 PASS，mean_cov@5=94%。
+- `python src/run_regression.py --skip-llm`：REGRESSION PASSED。
+
+**下一步**
+- 向软件部发送 `docs/wire_bonder_intake_checklist.md` / `docs/stakeholder_pitch.md`。
+- 拿到一个非核心只读目录和 10 个真实问题后，先跑 `kb probe`，再决定是否构建索引。
+- 继续禁止自动修改代码、生成 patch 或进入 Phase E。
+
 <!-- 新 Session 在此追加，格式：## YYYY-MM-DD — Session N -->

@@ -1,0 +1,307 @@
+{
+  "version": 1,
+  "description": "Generalization audit eval for repos/scale_test. File-level Recall@K is the automated metric; expected_symbols are audit hints and are not used to tune retrieval.",
+  "metrics": {
+    "coverage": "coverage@K = |hit expected_files| / |expected_files|",
+    "recall": "Recall@K = at least one expected file is present in top K"
+  },
+  "questions": [
+    {
+      "id": "ABSL-01",
+      "split": "holdout",
+      "project": "abseil-cpp",
+      "category": "class_or_struct_definition",
+      "question": "Where is absl::Status defined, including its public status-code API?",
+      "expected_files": [
+        "abseil-cpp/absl/status/status.h"
+      ],
+      "expected_symbols": [
+        "Status",
+        "StatusCode"
+      ],
+      "notes": "Class definition and status-code enum live in the public status header."
+    },
+    {
+      "id": "ABSL-02",
+      "split": "holdout",
+      "project": "abseil-cpp",
+      "category": "function_implementation",
+      "question": "Where is absl::Status converted to a debug string for non-ok status values?",
+      "expected_files": [
+        "abseil-cpp/absl/status/status.cc",
+        "abseil-cpp/absl/status/status.h"
+      ],
+      "expected_symbols": [
+        "Status::ToStringSlow",
+        "Status::ToString"
+      ],
+      "notes": "Implementation is in status.cc; inline public wrapper is in status.h."
+    },
+    {
+      "id": "ABSL-03",
+      "split": "holdout",
+      "project": "abseil-cpp",
+      "category": "macro_or_constant_definition",
+      "question": "Where is the ABSL_ATTRIBUTE_NORETURN macro defined for compiler-specific no-return annotations?",
+      "expected_files": [
+        "abseil-cpp/absl/base/attributes.h"
+      ],
+      "expected_symbols": [
+        "ABSL_ATTRIBUTE_NORETURN"
+      ],
+      "notes": "Compiler branch macro definitions are in absl/base/attributes.h."
+    },
+    {
+      "id": "ABSL-04",
+      "split": "holdout",
+      "project": "abseil-cpp",
+      "category": "initialization_or_configuration_flow",
+      "question": "Where does Abseil parse command line flags and define ParseCommandLine?",
+      "expected_files": [
+        "abseil-cpp/absl/flags/parse.cc",
+        "abseil-cpp/absl/flags/parse.h"
+      ],
+      "expected_symbols": [
+        "ParseCommandLine",
+        "ParseCommandLineImpl"
+      ],
+      "notes": "Public declaration is in parse.h; parsing implementation is in parse.cc."
+    },
+    {
+      "id": "ABSL-05",
+      "split": "holdout",
+      "project": "abseil-cpp",
+      "category": "error_or_assert_logic",
+      "question": "Where are Abseil ABSL_CHECK assertions defined?",
+      "expected_files": [
+        "abseil-cpp/absl/log/absl_check.h"
+      ],
+      "expected_symbols": [
+        "ABSL_CHECK",
+        "ABSL_CHECK_EQ"
+      ],
+      "notes": "The public ABSL_CHECK macro family is declared in absl_check.h."
+    },
+    {
+      "id": "RAYLIB-01",
+      "split": "holdout",
+      "project": "raylib",
+      "category": "class_or_struct_definition",
+      "question": "Where is raylib Camera3D defined?",
+      "expected_files": [
+        "raylib/src/raylib.h"
+      ],
+      "expected_symbols": [
+        "Camera3D"
+      ],
+      "notes": "Camera3D is a public typedef struct in raylib.h."
+    },
+    {
+      "id": "RAYLIB-02",
+      "split": "holdout",
+      "project": "raylib",
+      "category": "function_implementation",
+      "question": "Where is raylib InitWindow implemented?",
+      "expected_files": [
+        "raylib/src/rcore.c"
+      ],
+      "expected_symbols": [
+        "InitWindow"
+      ],
+      "notes": "Window creation and OpenGL context initialization start in rcore.c."
+    },
+    {
+      "id": "RAYLIB-03",
+      "split": "holdout",
+      "project": "raylib",
+      "category": "macro_or_constant_definition",
+      "question": "Where are raylib version constants and RAYLIB_VERSION defined?",
+      "expected_files": [
+        "raylib/src/raylib.h"
+      ],
+      "expected_symbols": [
+        "RAYLIB_VERSION",
+        "RAYLIB_VERSION_MAJOR"
+      ],
+      "notes": "Version macros are in the public raylib.h header."
+    },
+    {
+      "id": "RAYLIB-04",
+      "split": "holdout",
+      "project": "raylib",
+      "category": "initialization_or_configuration_flow",
+      "question": "Where does raylib store configuration flags before window initialization?",
+      "expected_files": [
+        "raylib/src/rcore.c",
+        "raylib/src/raylib.h"
+      ],
+      "expected_symbols": [
+        "SetConfigFlags",
+        "FLAG_FULLSCREEN_MODE"
+      ],
+      "notes": "SetConfigFlags is implemented in rcore.c; flag values are declared in raylib.h."
+    },
+    {
+      "id": "RAYLIB-05",
+      "split": "holdout",
+      "project": "raylib",
+      "category": "error_or_assert_logic",
+      "question": "Where is raylib TraceLog implemented for warning and error messages?",
+      "expected_files": [
+        "raylib/src/rcore.c",
+        "raylib/src/raylib.h"
+      ],
+      "expected_symbols": [
+        "TraceLog"
+      ],
+      "notes": "TraceLog is declared in raylib.h and implemented in rcore.c."
+    },
+    {
+      "id": "IMGUI-01",
+      "split": "holdout",
+      "project": "imgui",
+      "category": "class_or_struct_definition",
+      "question": "Where is ImGuiIO defined for application configuration and IO state?",
+      "expected_files": [
+        "imgui/imgui.h"
+      ],
+      "expected_symbols": [
+        "ImGuiIO"
+      ],
+      "notes": "ImGuiIO public struct lives in imgui.h."
+    },
+    {
+      "id": "IMGUI-02",
+      "split": "holdout",
+      "project": "imgui",
+      "category": "function_implementation",
+      "question": "Where is ImGui::Begin implemented?",
+      "expected_files": [
+        "imgui/imgui.cpp"
+      ],
+      "expected_symbols": [
+        "ImGui::Begin"
+      ],
+      "notes": "The main window begin implementation is in imgui.cpp."
+    },
+    {
+      "id": "IMGUI-03",
+      "split": "holdout",
+      "project": "imgui",
+      "category": "macro_or_constant_definition",
+      "question": "Where are IMGUI_VERSION and IMGUI_VERSION_NUM defined?",
+      "expected_files": [
+        "imgui/imgui.h"
+      ],
+      "expected_symbols": [
+        "IMGUI_VERSION",
+        "IMGUI_VERSION_NUM"
+      ],
+      "notes": "Version macros are at the top of imgui.h."
+    },
+    {
+      "id": "IMGUI-04",
+      "split": "holdout",
+      "project": "imgui",
+      "category": "initialization_or_configuration_flow",
+      "question": "Where does Dear ImGui create a context with ImGui::CreateContext?",
+      "expected_files": [
+        "imgui/imgui.cpp",
+        "imgui/imgui.h"
+      ],
+      "expected_symbols": [
+        "ImGui::CreateContext",
+        "CreateContext"
+      ],
+      "notes": "Public declaration is in imgui.h; context allocation is implemented in imgui.cpp."
+    },
+    {
+      "id": "IMGUI-05",
+      "split": "holdout",
+      "project": "imgui",
+      "category": "error_or_assert_logic",
+      "question": "Where are Dear ImGui user-error assertions defined?",
+      "expected_files": [
+        "imgui/imgui_internal.h",
+        "imgui/imgui.h"
+      ],
+      "expected_symbols": [
+        "IM_ASSERT_USER_ERROR",
+        "IM_ASSERT"
+      ],
+      "notes": "Recoverable user-error macros live in imgui_internal.h; base IM_ASSERT is in imgui.h."
+    },
+    {
+      "id": "GTEST-01",
+      "split": "holdout",
+      "project": "googletest",
+      "category": "class_or_struct_definition",
+      "question": "Where is the testing::Test fixture base class defined?",
+      "expected_files": [
+        "googletest/googletest/include/gtest/gtest.h"
+      ],
+      "expected_symbols": [
+        "Test"
+      ],
+      "notes": "The public fixture base class is defined in gtest.h."
+    },
+    {
+      "id": "GTEST-02",
+      "split": "holdout",
+      "project": "googletest",
+      "category": "function_implementation",
+      "question": "Where is testing::UnitTest::Run implemented?",
+      "expected_files": [
+        "googletest/googletest/src/gtest.cc"
+      ],
+      "expected_symbols": [
+        "UnitTest::Run"
+      ],
+      "notes": "The main test runner implementation is in gtest.cc."
+    },
+    {
+      "id": "GTEST-03",
+      "split": "holdout",
+      "project": "googletest",
+      "category": "macro_or_constant_definition",
+      "question": "Where is the EXPECT_EQ assertion macro defined?",
+      "expected_files": [
+        "googletest/googletest/include/gtest/gtest.h"
+      ],
+      "expected_symbols": [
+        "EXPECT_EQ"
+      ],
+      "notes": "EXPECT_EQ is part of the public assertion macro set in gtest.h."
+    },
+    {
+      "id": "GTEST-04",
+      "split": "holdout",
+      "project": "googletest",
+      "category": "initialization_or_configuration_flow",
+      "question": "Where does GoogleTest initialize itself with InitGoogleTest?",
+      "expected_files": [
+        "googletest/googletest/src/gtest.cc",
+        "googletest/googletest/include/gtest/gtest.h"
+      ],
+      "expected_symbols": [
+        "InitGoogleTest",
+        "InitGoogleTestImpl"
+      ],
+      "notes": "Public overloads are declared in gtest.h and implemented through InitGoogleTestImpl in gtest.cc."
+    },
+    {
+      "id": "GTEST-05",
+      "split": "holdout",
+      "project": "googletest",
+      "category": "error_or_assert_logic",
+      "question": "Where is the internal GTEST_CHECK_ fatal check macro defined?",
+      "expected_files": [
+        "googletest/googletest/include/gtest/internal/gtest-port.h"
+      ],
+      "expected_symbols": [
+        "GTEST_CHECK_"
+      ],
+      "notes": "GTEST_CHECK_ is an internal all-mode assertion macro in gtest-port.h."
+    }
+  ]
+}

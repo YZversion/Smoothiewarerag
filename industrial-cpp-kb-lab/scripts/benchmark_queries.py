@@ -2,6 +2,7 @@
 B.3 查询压测：50 条通用 C++ 查询，测量 P50/P95/P99 检索延迟。
 用法：python scripts/benchmark_queries.py
 """
+import argparse
 import sys, time, statistics, json
 from pathlib import Path
 
@@ -70,12 +71,26 @@ QUERIES = [
     "timer interrupt signal",
 ]
 
-def run_benchmark():
+def parse_args():
+    parser = argparse.ArgumentParser(description="Benchmark retrieval query latency.")
+    parser.add_argument("--repo-root", default=None)
+    parser.add_argument("--src-root", default=None)
+    parser.add_argument("--out", default=None)
+    return parser.parse_args()
+
+
+def run_benchmark(repo_root=None, src_root=None):
     from search.index import SearchIndex
     idx = SearchIndex()
     idx.load_index()
+    repo = Path(repo_root).resolve() if repo_root else None
+    src = Path(src_root).resolve() if src_root else (repo / "src" if repo else None)
     sym_count = sum(len(v) for v in idx._SYMBOL_BY_NAME.values())
     print(f"Index loaded: {len(idx._CHUNKS)} chunks, {sym_count} symbols")
+    if repo is not None:
+        print(f"Repo root: {repo}")
+    if src is not None:
+        print(f"Source root: {src}")
     print(f"Running {len(QUERIES)} queries...")
 
     latencies = []
@@ -84,7 +99,7 @@ def run_benchmark():
     for q in QUERIES:
         t0 = time.perf_counter()
         try:
-            results = idx.search(q, top_k=8)
+            results = idx.search(q, top_k=8, repo_root=repo, src_root=src)
         except Exception as e:
             errors += 1
             results = []
@@ -128,7 +143,10 @@ def run_benchmark():
     }
 
 if __name__ == "__main__":
-    result = run_benchmark()
-    out = Path(__file__).parent.parent / "data" / "benchmark_latency.json"
+    args = parse_args()
+    result = run_benchmark(repo_root=args.repo_root, src_root=args.src_root)
+    out = Path(args.out) if args.out else Path(__file__).parent.parent / "data" / "benchmark_latency.json"
+    if not out.is_absolute():
+        out = Path(__file__).parent.parent / out
     out.write_text(json.dumps(result, indent=2, ensure_ascii=False), encoding="utf-8")
     print(f"\nSaved → {out}")

@@ -1,0 +1,166 @@
+{
+  "version": "template-v1",
+  "purpose": "Wire bonder first pilot question intake template. Replace question text and ground_truth after engineers provide real cases.",
+  "questions": [
+    {
+      "id": "entry_point_001",
+      "category": "entry_point",
+      "question": "运动命令从界面下发后，进入运控模块的第一个代码入口在哪里？",
+      "required_evidence": ["source_file", "function", "line", "caller_or_sender"],
+      "ground_truth": null,
+      "owner_notes": "请工程师确认 UI/上位机下发路径、命令对象名称或关键日志关键词。"
+    },
+    {
+      "id": "entry_point_002",
+      "category": "entry_point",
+      "question": "设备启动后，主控制流程从哪个 main/init 函数开始加载模块？",
+      "required_evidence": ["source_file", "function", "line", "initialization_order"],
+      "ground_truth": null,
+      "owner_notes": "适合验证系统启动入口、模块注册和初始化顺序。"
+    },
+    {
+      "id": "entry_point_003",
+      "category": "entry_point",
+      "question": "外部通信收到命令后，解析和分发入口分别在哪里？",
+      "required_evidence": ["source_file", "function", "line", "dispatch_target"],
+      "ground_truth": null,
+      "owner_notes": "请注明通信方式：串口、TCP、共享内存、消息队列或设备总线。"
+    },
+    {
+      "id": "error_trace_001",
+      "category": "error_trace",
+      "question": "轴运动超时错误在哪里产生，哪里处理，最终如何通知上层？",
+      "required_evidence": ["source_file", "function", "line", "error_code_or_message"],
+      "ground_truth": null,
+      "owner_notes": "请提供真实报警文本、错误码或日志片段。"
+    },
+    {
+      "id": "error_trace_002",
+      "category": "error_trace",
+      "question": "急停或 stop 信号触发后，软件停机链路经过哪些关键函数？",
+      "required_evidence": ["source_file", "function", "line", "call_chain"],
+      "ground_truth": null,
+      "owner_notes": "请说明是硬件急停、软件 stop、门禁、真空异常还是视觉异常。"
+    },
+    {
+      "id": "error_trace_003",
+      "category": "error_trace",
+      "question": "某个错误从底层模块抛出后，在哪里转换成用户可见报警？",
+      "required_evidence": ["source_file", "function", "line", "error_mapping"],
+      "ground_truth": null,
+      "owner_notes": "请给出一个具体错误码或界面报警文字。"
+    },
+    {
+      "id": "state_flow_001",
+      "category": "state_machine",
+      "question": "设备状态机有哪些主要状态，状态定义和切换逻辑在哪里？",
+      "required_evidence": ["source_file", "enum_or_class", "line", "transition_condition"],
+      "ground_truth": null,
+      "owner_notes": "优先选择工程师熟悉的状态，如 idle/run/pause/error/recover。"
+    },
+    {
+      "id": "state_flow_002",
+      "category": "state_machine",
+      "question": "从待机进入自动运行的条件在哪里判断？",
+      "required_evidence": ["source_file", "function", "line", "condition"],
+      "ground_truth": null,
+      "owner_notes": "请说明自动运行入口是 UI 按钮、脚本、配方还是上位机命令。"
+    },
+    {
+      "id": "state_flow_003",
+      "category": "state_machine",
+      "question": "报警恢复或 reset 后，状态机如何回到安全状态？",
+      "required_evidence": ["source_file", "function", "line", "reset_path"],
+      "ground_truth": null,
+      "owner_notes": "适合验证错误处理和状态恢复链路。"
+    },
+    {
+      "id": "homing_001",
+      "category": "homing",
+      "question": "回零动作的完整流程从命令入口到电机执行经过哪些关键函数？",
+      "required_evidence": ["source_file", "function", "line", "call_chain"],
+      "ground_truth": null,
+      "owner_notes": "请说明是单轴回零、全轴回零还是 bond head / table 特定回零。"
+    },
+    {
+      "id": "homing_002",
+      "category": "homing",
+      "question": "回零过程中限位或传感器信号在哪里读取和判断？",
+      "required_evidence": ["source_file", "function", "line", "sensor_name"],
+      "ground_truth": null,
+      "owner_notes": "请提供传感器名称、IO 名称或日志关键词。"
+    },
+    {
+      "id": "alarm_command_001",
+      "category": "alarm_or_command_code",
+      "question": "报警码 0x1234 在哪里定义，在哪里抛出，哪里转换成界面文字？",
+      "required_evidence": ["source_file", "line", "definition", "producer", "handler"],
+      "ground_truth": null,
+      "owner_notes": "把 0x1234 替换成真实报警码；如果不是十六进制，请保留原格式。"
+    },
+    {
+      "id": "alarm_command_002",
+      "category": "alarm_or_command_code",
+      "question": "菜单命令 ID 或动作码如何映射到处理函数？",
+      "required_evidence": ["source_file", "line", "command_id", "handler"],
+      "ground_truth": null,
+      "owner_notes": "请提供一个真实菜单 ID、动作码或消息 ID。"
+    },
+    {
+      "id": "alarm_command_003",
+      "category": "alarm_or_command_code",
+      "question": "某条运动控制命令的参数在哪里解析，在哪里校验范围？",
+      "required_evidence": ["source_file", "function", "line", "parameter_name"],
+      "ground_truth": null,
+      "owner_notes": "请提供命令名、参数名或配置项名。"
+    },
+    {
+      "id": "module_boundary_001",
+      "category": "module_boundary",
+      "question": "视觉模块和运控模块之间通过什么接口或消息通信？",
+      "required_evidence": ["source_file", "class_or_interface", "line", "message_or_api"],
+      "ground_truth": null,
+      "owner_notes": "请注明视觉和运控模块的目录名、类名前缀或进程名。"
+    },
+    {
+      "id": "module_boundary_002",
+      "category": "module_boundary",
+      "question": "配方管理模块如何把参数传给运动控制模块？",
+      "required_evidence": ["source_file", "function", "line", "data_object"],
+      "ground_truth": null,
+      "owner_notes": "请提供配方文件名、参数名或数据结构名。"
+    },
+    {
+      "id": "module_boundary_003",
+      "category": "module_boundary",
+      "question": "日志模块或报警模块被哪些业务模块调用？",
+      "required_evidence": ["source_file", "function", "line", "caller"],
+      "ground_truth": null,
+      "owner_notes": "适合验证跨模块调用和公共服务边界。"
+    },
+    {
+      "id": "config_loading_001",
+      "category": "config_loading",
+      "question": "工艺参数从配置文件加载到内存对象的流程是什么？",
+      "required_evidence": ["source_file", "function", "line", "config_key"],
+      "ground_truth": null,
+      "owner_notes": "请提供配置文件名、字段名或界面参数名。"
+    },
+    {
+      "id": "config_loading_002",
+      "category": "config_loading",
+      "question": "某个安全阈值或速度限制参数在哪里读取、缓存和使用？",
+      "required_evidence": ["source_file", "function", "line", "parameter_name"],
+      "ground_truth": null,
+      "owner_notes": "请替换成真实参数名，例如速度、压力、温度、真空或位置阈值。"
+    },
+    {
+      "id": "legacy_001",
+      "category": "legacy",
+      "question": "这个历史遗留类或模块现在还有哪些调用点，是否仍在主流程中使用？",
+      "required_evidence": ["source_file", "class_or_function", "line", "call_site"],
+      "ground_truth": null,
+      "owner_notes": "请提供具体类名、文件名或函数名；本工具只做定位，不判断能否删除。"
+    }
+  ]
+}
