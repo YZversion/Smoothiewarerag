@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 import sys
+from functools import lru_cache
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -70,6 +71,23 @@ def model_label() -> str:
 
 def repo_file(path: str) -> Path:
     return REPO_ROOT / path.replace("\\", "/")
+
+
+@lru_cache(maxsize=64)
+def _read_lines_cached(repo_relative_path: str) -> tuple[str, ...]:
+    path = repo_file(repo_relative_path)
+    if not path.is_file():
+        raise FileNotFoundError(f"file not found: {repo_relative_path}")
+    try:
+        text = path.read_text(encoding="utf-8", errors="replace")
+    except OSError as exc:
+        raise OSError(f"cannot read {repo_relative_path}: {exc}") from exc
+    return tuple(text.splitlines())
+
+
+def read_lines(repo_relative_path: str) -> list[str]:
+    """Read a repo file by relative path; cache the most recent 64 files."""
+    return list(_read_lines_cached(repo_relative_path))
 
 
 def index_stats(search_mod: "SearchIndex | None" = None) -> dict[str, int | str]:

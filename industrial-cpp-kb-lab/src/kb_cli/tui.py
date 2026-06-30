@@ -6,7 +6,7 @@ from pathlib import Path
 from types import ModuleType
 
 from . import render
-from .runtime import answer_module, repo_file, search_module
+from .runtime import REPL_HISTORY, answer_module, read_lines, search_module
 
 # ── helpers ───────────────────────────────────────────────────────────────────
 
@@ -16,13 +16,10 @@ def _short_path(file: str) -> str:
 
 
 def _snippet_lines(hit: dict, context: int = 4) -> list[tuple[int, str, bool]]:
-    path = repo_file(hit["file"])
     focus = int(hit.get("line_start") or 1)
-    if not path.is_file():
-        return []
     try:
-        raw = path.read_text(encoding="utf-8", errors="replace").splitlines()
-    except OSError:
+        raw = read_lines(hit["file"])
+    except (FileNotFoundError, OSError):
         return []
     start = max(1, focus - context)
     end = min(len(raw), focus + context)
@@ -30,11 +27,10 @@ def _snippet_lines(hit: dict, context: int = 4) -> list[tuple[int, str, bool]]:
 
 
 def _read_chunk(hit: dict) -> str:
-    path = repo_file(hit["file"])
-    if not path.is_file():
-        return f"# file not found: {hit['file']}"
     try:
-        lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
+        lines = read_lines(hit["file"])
+    except FileNotFoundError:
+        return f"# file not found: {hit['file']}"
     except OSError as exc:
         return str(exc)
     m = re.search(r"::(\d+)-(\d+)$", hit.get("chunk_id", ""))
@@ -205,6 +201,7 @@ def run_tui() -> None:
             self._history: list[str] = []
             self._hist_pos: int = -1
             self._last_hits: list[dict] = []
+            self._search_gen: int = 0
 
         def compose(self) -> ComposeResult:
             yield RichLog(id="log", highlight=True, markup=True, wrap=True)
@@ -222,6 +219,7 @@ def run_tui() -> None:
                 "[bold]Smoothieware Code KB[/bold]  "
                 "[dim]rg + BM25 + ctags · /help for commands[/dim]\n"
             )
+            self._load_history()
             self.query_one(Input).focus()
             try:
                 self._mod = search_module()
@@ -229,13 +227,55 @@ def run_tui() -> None:
             except Exception as exc:
                 log.write(f"[red]✗ index load failed: {exc}[/red]\n")
 
+        def _load_history(self) -> None:
+            try:
+                REPL_HISTORY.parent.mkdir(parents=True, exist_ok=True)
+                if not REPL_HISTORY.is_file():
+                    return
+                self._history = [
+                    line
+                    for line in REPL_HISTORY.read_text(encoding="utf-8").splitlines()
+                    if line
+                ]
+            except Exception as exc:
+                self.query_one(RichLog).write(
+                    f"[dim]⚠ history unavailable: {exc}[/dim]\n"
+                )
+
+        def _record_history(self, raw: str) -> None:
+            if self._history and self._history[-1] == raw:
+                return
+            self._history.append(raw)
+            try:
+                REPL_HISTORY.parent.mkdir(parents=True, exist_ok=True)
+                with REPL_HISTORY.open("a", encoding="utf-8", newline="\n") as fh:
+                    fh.write(raw + "\n")
+            except Exception as exc:
+                self.query_one(RichLog).write(
+                    f"[dim]⚠ history write failed: {exc}[/dim]\n"
+                )
+
+        def _set_input_busy(self, busy: bool) -> None:
+            self.query_one(Input).disabled = busy
+
+        def _finish_input(self) -> None:
+            inp = self.query_one(Input)
+            inp.disabled = False
+            inp.focus()
+
+        def _set_last_hits(self, hits: list[dict]) -> None:
+            self._last_hits = hits
+
+        def _ask_log_write(self, line: str) -> None:
+            self.query_one(RichLog).write(line)
+
         # ── input ─────────────────────────────────────────────────────────────
 
         def on_input_submitted(self, event: Input.Submitted) -> None:
             raw = event.value.strip()
             if not raw:
                 return
-            self._history.append(raw)
+            self._record_history(raw)
             self._hist_pos = -1
             event.input.clear()
 
@@ -331,32 +371,68 @@ def run_tui() -> None:
                 log.write("[red]✗ index not loaded[/red]\n")
                 return
 
+            self._search_gen += 1
+            gen = self._search_gen
+
             log.write(f"\n[bold cyan]> {_safe(query)}[/bold cyan]")
-
-            t0 = time.perf_counter()
-            try:
-                hits = self._mod.search(query, top_k=10, bundle=False)
-            except Exception as exc:
-                log.write(f"[red]✗ search error: {exc}[/red]\n")
-                return
-            ms = (time.perf_counter() - t0) * 1000
-
-            if not hits:
-                self._last_hits = []
-                log.write("[dim]  no results[/dim]\n")
-                return
-
-            self._last_hits = hits
-            for i, hit in enumerate(hits, 1):
-                self._render_hit(log, i, hit)
-
-            log.write(
-                f"\n[dim]── {len(hits)} result{'s' if len(hits) != 1 else ''}"
-                f" · {ms:.0f} ms"
-                f"  ·  press [bold]1–9[/bold] to open code view ──[/dim]\n"
+            log.write("[dim]  ▸ searching…[/dim]")
+            self._set_input_busy(True)
+            self.run_worker(
+                lambda: self._search_thread(query, gen), thread=True, name="search"
             )
 
-        def _render_hit(self, log, idx: int, hit: dict) -> None:
+        def _search_thread(self, query: str, gen: int) -> None:
+            try:
+                t0 = time.perf_counter()
+                hits = self._mod.search(query, top_k=10, bundle=False)
+                ms = (time.perf_counter() - t0) * 1000
+                rendered = [(hit, _snippet_lines(hit)) for hit in hits]
+            except Exception as exc:
+                self.call_from_thread(self._search_done, gen, None, 0.0, exc)
+                return
+            self.call_from_thread(self._search_done, gen, rendered, ms, None)
+
+        def _search_done(
+            self,
+            gen: int,
+            hits: list[tuple[dict, list[tuple[int, str, bool]]]] | None,
+            ms: float,
+            error: Exception | None,
+        ) -> None:
+            if gen != self._search_gen:
+                return
+
+            log = self.query_one(RichLog)
+            try:
+                if error is not None:
+                    log.write(f"[red]✗ search error: {error}[/red]\n")
+                    return
+
+                if not hits:
+                    self._last_hits = []
+                    log.write("[dim]  no results[/dim]\n")
+                    return
+
+                self._last_hits = [hit for hit, _ in hits]
+                for i, (hit, snippets) in enumerate(hits, 1):
+                    self._render_hit(log, i, hit, snippets)
+
+                log.write(
+                    f"\n[dim]── {len(hits)} result{'s' if len(hits) != 1 else ''}"
+                    f" · {ms:.0f} ms"
+                    f"  ·  press [bold]1–9[/bold] to open code view ──[/dim]\n"
+                )
+            finally:
+                if gen == self._search_gen:
+                    self._finish_input()
+
+        def _render_hit(
+            self,
+            log,
+            idx: int,
+            hit: dict,
+            snippets: list[tuple[int, str, bool]],
+        ) -> None:
             file_short = _short_path(hit.get("file", ""))
             line   = hit.get("line_start", "")
             symbol = hit.get("symbol", "")
@@ -376,7 +452,7 @@ def run_tui() -> None:
             if full and full != file_short:
                 log.write(f"      [dim]{_safe(full)}[/dim]")
 
-            for lineno, text, focused in _snippet_lines(hit):
+            for lineno, text, focused in snippets:
                 marker = "[bold green]▶[/bold green]" if focused else " "
                 style  = "bold white" if focused else "dim"
                 log.write(
@@ -393,20 +469,14 @@ def run_tui() -> None:
                 return
             log.write(f"\n[bold magenta]? {_safe(query)}[/bold magenta]")
             log.write("[dim]  ▸ searching context…[/dim]")
-            self.query_one(Input).disabled = True
+            self._set_input_busy(True)
             self.run_worker(lambda: self._ask_thread(query), thread=True, name="ask")
 
         def _ask_thread(self, query: str) -> None:
             """Background thread: buffers tokens into lines before writing."""
-            log = self.query_one(RichLog)
 
             def w(line: str) -> None:
-                self.call_from_thread(log.write, line)
-
-            def done() -> None:
-                inp = self.query_one(Input)
-                inp.disabled = False
-                self.call_from_thread(inp.focus)
+                self.call_from_thread(self._ask_log_write, line)
 
             try:
                 answer = answer_module()
@@ -414,9 +484,7 @@ def run_tui() -> None:
 
                 import os
                 if not os.environ.get("LLM_API_KEY"):
-                    w("[yellow]  LLM_API_KEY not set in .env — falling back to search[/yellow]")
-                    self.call_from_thread(self._do_search, query)
-                    done()
+                    w("[yellow]  LLM_API_KEY not set; use plain search instead.[/yellow]")
                     return
 
                 hits = self._mod.search(query, top_k=8, bundle=True)
@@ -445,10 +513,10 @@ def run_tui() -> None:
                 w("")  # blank line after answer
 
                 # Store hits so digit keys open CodeViewScreen
-                self._last_hits = hits[:9]
-                n = len(self._last_hits)
+                self.call_from_thread(self._set_last_hits, hits[:9])
+                n = min(len(hits), 9)
                 w(f"[dim]── sources  ·  press 1–{n} to view code ──[/dim]")
-                for i, h in enumerate(self._last_hits, 1):
+                for i, h in enumerate(hits[:9], 1):
                     fs  = _short_path(h.get("file", ""))
                     ln  = h.get("line_start", "")
                     sy  = h.get("symbol", "")
@@ -459,6 +527,6 @@ def run_tui() -> None:
             except Exception as exc:
                 w(f"[red]✗ {exc}[/red]")
             finally:
-                done()
+                self.call_from_thread(self._finish_input)
 
     KBCLI().run()
