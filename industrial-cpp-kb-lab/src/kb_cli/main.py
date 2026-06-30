@@ -23,7 +23,7 @@ app = typer.Typer(
 app.add_typer(index_app, name="index")
 
 COMMANDS = {
-    "ask", "search", "sources", "symbol", "repl", "eval", "demo",
+    "ask", "search", "smart", "sources", "symbol", "repl", "eval", "demo",
     "history", "export", "tui", "index", "serve", "probe",
 }
 
@@ -31,11 +31,11 @@ COMMANDS = {
 @app.callback(invoke_without_command=True)
 def callback(
     ctx: typer.Context,
-    top_k: int = typer.Option(8, "--top-k", "-k", help="检索返回数量"),
+    top_k: int = typer.Option(8, "--top-k", "-k", help="检索返回数量（仅 kb repl 使用）"),
 ) -> None:
     if ctx.invoked_subcommand is not None:
         return
-    repl.run_repl(top_k=top_k)
+    tui.run_tui()
 
 
 @app.command("ask")
@@ -63,6 +63,21 @@ def search(
 ) -> None:
     actions.search_action(query, top_k=top_k, preview=preview, explain=explain,
                           show_context=show_context, json_out=json_out)
+
+
+@app.command("smart")
+def smart_cmd(
+    query: str = typer.Argument(..., help="自然语言问题（LLM 拆解为多路检索）"),
+    top_k: int = typer.Option(8, "--top-k", "-k"),
+    preview: bool = typer.Option(True, "--preview/--no-preview"),
+    explain: bool = typer.Option(True, "--explain/--no-explain"),
+    show_context: bool = typer.Option(False, "--show-context"),
+    json_out: bool = typer.Option(False, "--json", help="JSON 输出"),
+) -> None:
+    actions.smart_search_action(
+        query, top_k=top_k, preview=preview, explain=explain,
+        show_context=show_context, json_out=json_out,
+    )
 
 
 @app.command("sources")

@@ -100,18 +100,129 @@ def search_action(
     return hits
 
 
+def _render_plan_panel(query: str, plan_dict: dict) -> None:
+    intent = plan_dict.get("intent", "unknown")
+    lines = [f"[bold]intent[/]: {intent}"]
+    if plan_dict.get("normalized_question"):
+        lines.append(f"[bold]question[/]: {plan_dict['normalized_question']}")
+    if plan_dict.get("planner_fallback"):
+        lines.append(f"[yellow]{plan_dict.get('notes', 'planner fallback')}[/yellow]")
+    sq = plan_dict.get("search_queries") or []
+    if sq:
+        lines.append("[bold]search_queries[/]:")
+        lines.extend(f"  · {q}" for q in sq)
+    syms = plan_dict.get("symbols") or []
+    if syms:
+        lines.append("[bold]symbols[/]: " + ", ".join(syms))
+    render.console.print(
+        Panel("\n".join(lines), title=f"Smart Plan  {query}", border_style="magenta")
+    )
+
+
+def smart_search_action(
+    query: str,
+    *,
+    top_k: int = 8,
+    preview: bool = True,
+    explain: bool = False,
+    show_context: bool = False,
+    json_out: bool = False,
+) -> tuple[dict, list[dict]]:
+    import os
+
+    from query_planner import load_dotenv
+    from search.smart_search import smart_search
+
+    search = search_module()
+    load_dotenv()
+    t0 = time.monotonic()
+
+    if not os.environ.get("LLM_API_KEY", "").strip():
+        render.console.print(
+            "[yellow]LLM_API_KEY not set — planner unavailable, using plain search[/yellow]"
+        )
+        hits = search.search(query, top_k=top_k, bundle=False)
+        plan_dict = {
+            "intent": "unknown",
+            "normalized_question": query,
+            "search_queries": [query],
+            "planner_fallback": True,
+            "notes": "LLM_API_KEY not set",
+        }
+        llm_called = False
+    else:
+        with render.pipeline_progress() as progress:
+            task = progress.add_task("Planner -> multi-search -> merge", total=3)
+            progress.advance(task)
+            plan, hits = smart_search(search, query, top_k=top_k)
+            progress.advance(task, 2)
+        plan_dict = plan.to_dict()
+        llm_called = not plan.planner_fallback
+
+    latency_ms = int((time.monotonic() - t0) * 1000)
+    if json_out:
+        print(json.dumps({"query": query, "plan": plan_dict, "hits": hits}, ensure_ascii=False, indent=2))
+    else:
+        _render_plan_panel(query, plan_dict)
+        render.render_search_results(
+            query, hits, preview=preview, explain=explain, show_context=show_context
+        )
+
+    ask_question = (plan_dict.get("normalized_question") or query).strip()
+    if hits and os.environ.get("LLM_API_KEY", "").strip() and not json_out:
+        render.console.print(
+            "[dim]Smart search complete — generating LLM answer…[/dim]"
+        )
+        ask_action(ask_question, top_k=top_k, hits=hits, show_context=show_context)
+
+    store.append({"kind": "smart", "query": query, "top_k": top_k, "plan": plan_dict, "hits": hits})
+    _log_query({
+        "ts": datetime.now(timezone.utc).isoformat(),
+        "kind": "smart",
+        "question": query,
+        "top_k": top_k,
+        "hits_count": len(hits),
+        "latency_ms": latency_ms,
+        "llm_called": llm_called,
+        "planner_intent": plan_dict.get("intent"),
+        "citation_ok": None,
+    })
+    return plan_dict, hits
+
+
 def ask_action(
     question: str,
     *,
     top_k: int = 8,
+    hits: list[dict] | None = None,
     json_out: bool = False,
     show_context: bool = False,
     stream: bool = True,
 ) -> dict | None:
     search = search_module()
     answer = answer_module()
+    if hits is not None:
+        hits = search.expand_bundle(hits[:top_k]) if hits else []
     if json_out or not stream:
-        result = answer.answer(question, top_k=top_k, search_mod=search)
+        if hits is not None:
+            template = answer.load_prompt_template()
+            prompt = answer.build_prompt(template, question, hits)
+            provider, api_key, model, base_url = answer.llm_config()
+            text = answer.call_llm(prompt, provider, api_key, model, base_url)
+            cites = answer.validate_citations(text, hits, search._CHUNK_BY_ID)
+            coverage = answer.validate_answer_coverage(text, hits)
+            result = {
+                "question": question,
+                "top_k": top_k,
+                "hits": hits,
+                "answer": text,
+                "provider": provider,
+                "model": model,
+                "citations": cites,
+                "coverage": coverage,
+            }
+        else:
+            result = answer.answer(question, top_k=top_k, search_mod=search)
         if json_out:
             answer_json(result)
         else:
@@ -146,7 +257,8 @@ def ask_action(
 
     with render.pipeline_progress() as progress:
         task = progress.add_task("Search -> bundle context -> build prompt", total=3)
-        hits = search.search(question, top_k=top_k, bundle=True)
+        if hits is None:
+            hits = search.search(question, top_k=top_k, bundle=True)
         progress.advance(task)
         template = answer.load_prompt_template()
         prompt = answer.build_prompt(template, question, hits)

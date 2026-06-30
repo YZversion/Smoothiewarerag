@@ -48,43 +48,105 @@ def _safe(text: str) -> str:
     return text.expandtabs(4).replace("[", "\\[")
 
 
+def _format_result_label(idx: int, hit: dict) -> str:
+    file_short = _short_path(hit.get("file", ""))
+    line = hit.get("line_start", "")
+    symbol = hit.get("symbol", "")
+    source = hit.get("source", "")
+    score = float(hit.get("score", 0))
+    sym = f" {_safe(symbol)}" if symbol else ""
+    src = f" [{source}]" if source else ""
+    return (
+        f"{idx:>2}  {_safe(file_short)}:{line}{sym}{src}  {score:.1f}"
+    )
+
+
 # ── help text ─────────────────────────────────────────────────────────────────
 
 _HELP = """\
 [bold]Search[/bold]
   [cyan]<query>[/cyan]         search the index
+  [cyan]/smart <query>[/cyan] LLM plan + search + answer
   [cyan]/ask <query>[/cyan]    LLM answer  (requires LLM_API_KEY)
-  [cyan]/clear[/cyan]  Ctrl+L  clear the screen
+  [cyan]/clear[/cyan]  Ctrl+L  clear results
   [cyan]Escape  Ctrl+C[/cyan]  quit
 
-[bold]Copy code[/bold]
-  [cyan]1 – 9[/cyan]  (input empty) open result in full-screen code view
-             mouse-select any text, then [bold]Ctrl+C[/bold] to copy
-             [bold]Escape / q[/bold] to close code view
+[bold]Results[/bold]
+  click            preview code on the right
+  double-click     open full-screen code view
+  [cyan]1 – 9[/cyan]  (input empty) open code view by number
+  [cyan]Enter[/cyan]  (results focused) open selected code view
 
-[bold]Quick clipboard[/bold]
-  [cyan]/copy N[/cyan]         copy result N's file:line to clipboard
+[bold]Clipboard[/bold]
+  [cyan]/copy N[/cyan]         copy result N's file:line
 
 [bold]History[/bold]
   [cyan]↑ / ↓[/cyan]           cycle previous queries
 """
+
+_EMPTY_PREVIEW = """\
+[bold]Smoothieware Code KB[/bold]
+[dim]rg + BM25 + ctags[/dim]
+
+[dim]Type a query to search[/dim]
+[dim]Click a result to preview[/dim]
+[dim]Press 1–9 to open code view[/dim]
+[dim]/ask <q> for LLM answer[/dim]
+[dim]/smart <q> plan + search + LLM answer[/dim]
+[dim]/help for commands[/dim]
+"""
+
+
+def _format_plan_preview(plan_dict: dict, ms: float | None = None) -> str:
+    lines = [
+        "[bold magenta]Smart Search Plan[/bold magenta]",
+        f"intent: [cyan]{_safe(str(plan_dict.get('intent', 'unknown')))}[/cyan]",
+    ]
+    if plan_dict.get("normalized_question"):
+        lines.append(f"question: {_safe(str(plan_dict['normalized_question']))}")
+    if plan_dict.get("planner_fallback"):
+        lines.append(f"[yellow]{_safe(str(plan_dict.get('notes', 'planner fallback')))}[/yellow]")
+    sq = plan_dict.get("search_queries") or []
+    if sq:
+        lines.append("[bold]search_queries[/bold]")
+        for q in sq:
+            lines.append(f"  · {_safe(str(q))}")
+    syms = plan_dict.get("symbols") or []
+    if syms:
+        lines.append("[bold]symbols[/bold] " + ", ".join(_safe(str(s)) for s in syms))
+    if ms is not None:
+        lines.append(f"[dim]{ms:.0f} ms[/dim]")
+    return "\n".join(lines)
 
 
 # ── TUI ───────────────────────────────────────────────────────────────────────
 
 def run_tui() -> None:
     try:
+        from textual import events
         from textual.app import App, ComposeResult
         from textual.binding import Binding
         from textual.containers import Horizontal, Vertical
         from textual.screen import ModalScreen
-        from textual.widgets import Footer, Input, Label, RichLog, TextArea
+        from textual.widgets import (
+            Footer,
+            Header,
+            Input,
+            Label,
+            ListItem,
+            ListView,
+            RichLog,
+            Static,
+            TextArea,
+        )
     except ImportError:
         render.console.print(
             "[yellow]Textual not installed.[/]\n"
             "Run `pip install -r requirements.txt` to enable tui."
         )
         return
+
+    SnippetLines = list[tuple[int, str, bool]]
 
     # ── code viewer modal ─────────────────────────────────────────────────────
 
@@ -128,7 +190,7 @@ def run_tui() -> None:
         def compose(self) -> ComposeResult:
             file = self._hit.get("file", "")
             line = self._hit.get("line_start", "")
-            sym  = self._hit.get("symbol", "")
+            sym = self._hit.get("symbol", "")
             code = _read_chunk(self._hit)
 
             with Vertical(id="cv-panel"):
@@ -148,24 +210,83 @@ def run_tui() -> None:
         def on_mount(self) -> None:
             self.query_one("#cv-code").focus()
 
+    # ── result list item ──────────────────────────────────────────────────────
+
+    class HitListItem(ListItem):
+        def __init__(self, idx: int, hit: dict, snippets: SnippetLines) -> None:
+            self.idx = idx
+            self.hit = hit
+            self.snippets = snippets
+            super().__init__(Label(_format_result_label(idx, hit)))
+
+        def on_click(self, event: events.Click) -> None:
+            app = self.app
+            if not isinstance(app, KBCLI):
+                return
+            if event.chain >= 2:
+                app.push_screen(CodeViewScreen(self.hit))
+            else:
+                app._show_hit_preview(self.hit, self.snippets)
+
     # ── main app ──────────────────────────────────────────────────────────────
 
     class KBCLI(App):
+        TITLE = "Smoothieware Code KB"
         CSS = """
         Screen {
             background: $background;
         }
-        RichLog {
+        #status-bar {
+            height: 1;
+            padding: 0 2;
+            background: $primary-darken-3;
+            color: $text-muted;
+        }
+        #main {
             height: 1fr;
-            padding: 1 3;
+        }
+        #results-panel {
+            width: 42%;
+            border-right: solid $primary-darken-3;
+        }
+        #results-header {
+            height: 1;
+            padding: 0 1;
+            background: $surface;
+            color: $text-muted;
+            text-style: bold;
+        }
+        ListView {
+            height: 1fr;
+            background: $background;
+            scrollbar-gutter: stable;
+        }
+        ListView > ListItem {
+            padding: 0 1;
+        }
+        ListView > ListItem.--highlight {
+            background: $primary-darken-2;
+        }
+        #preview-panel {
+            width: 58%;
+        }
+        #preview-header {
+            height: 1;
+            padding: 0 1;
+            background: $surface;
+            color: $text-muted;
+            text-style: bold;
+        }
+        #preview {
+            height: 1fr;
+            padding: 0 1;
             border: none;
             scrollbar-gutter: stable;
-            scrollbar-color: $primary-darken-3 $background;
         }
         #input-row {
             height: 3;
             border-top: solid $primary-darken-3;
-            padding: 0 3;
+            padding: 0 2;
             align: left middle;
         }
         #prompt {
@@ -193,6 +314,7 @@ def run_tui() -> None:
             Binding("ctrl+c", "quit", "Quit"),
             Binding("ctrl+l", "clear_log", "Clear"),
             Binding("escape", "quit", "Quit", show=False),
+            Binding("enter", "open_selected_code", "Open", show=False),
         ]
 
         def __init__(self) -> None:
@@ -202,30 +324,110 @@ def run_tui() -> None:
             self._hist_pos: int = -1
             self._last_hits: list[dict] = []
             self._search_gen: int = 0
+            self._index_ok: bool = False
+            self._suppress_result_preview: bool = False
 
         def compose(self) -> ComposeResult:
-            yield RichLog(id="log", highlight=True, markup=True, wrap=True)
+            yield Header(show_clock=False)
+            yield Static("Ready", id="status-bar")
+            with Horizontal(id="main"):
+                with Vertical(id="results-panel"):
+                    yield Static("Results", id="results-header")
+                    yield ListView(id="results")
+                with Vertical(id="preview-panel"):
+                    yield Static("Preview", id="preview-header")
+                    yield RichLog(id="preview", highlight=True, markup=True, wrap=True)
             with Horizontal(id="input-row"):
                 yield Label("❯", id="prompt")
                 yield Input(
-                    placeholder="search…   1-9 open code view   /ask <q>   /help   Escape quit",
+                    placeholder="search…  click result  1-9 code view  /ask <q>  /help",
                     id="query",
                 )
             yield Footer()
 
         def on_mount(self) -> None:
-            log = self.query_one(RichLog)
-            log.write(
-                "[bold]Smoothieware Code KB[/bold]  "
-                "[dim]rg + BM25 + ctags · /help for commands[/dim]\n"
-            )
             self._load_history()
+            self._show_empty_preview()
             self.query_one(Input).focus()
             try:
                 self._mod = search_module()
-                log.write("[dim green]✓ index loaded[/dim green]\n")
+                self._index_ok = True
+                self._set_status("[green]✓ index loaded[/green] — type a query to search")
             except Exception as exc:
-                log.write(f"[red]✗ index load failed: {exc}[/red]\n")
+                self._index_ok = False
+                self._set_status(f"[red]✗ index load failed: {exc}[/red]")
+                self._show_message_preview(f"[red]✗ index load failed: {exc}[/red]")
+
+        def _set_status(self, text: str) -> None:
+            self.query_one("#status-bar", Static).update(text)
+
+        def _show_empty_preview(self) -> None:
+            preview = self.query_one("#preview", RichLog)
+            preview.clear()
+            preview.write(_EMPTY_PREVIEW)
+
+        def _show_message_preview(self, text: str) -> None:
+            preview = self.query_one("#preview", RichLog)
+            preview.clear()
+            preview.write(text)
+
+        def _show_hit_preview(self, hit: dict, snippets: SnippetLines) -> None:
+            preview = self.query_one("#preview", RichLog)
+            preview.clear()
+            file = hit.get("file", "")
+            line = hit.get("line_start", "")
+            symbol = hit.get("symbol", "")
+            source = hit.get("source", "")
+            score = float(hit.get("score", 0))
+
+            preview.write(f"[bold cyan]{_safe(file)}[/bold cyan]:[yellow]{line}[/yellow]")
+            if symbol:
+                preview.write(f"[green]{_safe(symbol)}[/green]")
+            if source:
+                preview.write(f"[dim]source: {_safe(source)}  score: {score:.1f}[/dim]")
+            else:
+                preview.write(f"[dim]score: {score:.1f}[/dim]")
+
+            if not snippets:
+                preview.write("[dim yellow]  (source file unavailable)[/dim yellow]")
+                return
+
+            preview.write("")
+            for lineno, text, focused in snippets:
+                marker = "[bold green]▶[/bold green]" if focused else " "
+                style = "bold white" if focused else "dim"
+                preview.write(
+                    f"{marker} [dim]{lineno:>4}[/dim] [dim]│[/dim]"
+                    f" [{style}]{_safe(text)}[/{style}]"
+                )
+
+        def _clear_results(self) -> None:
+            self.query_one("#results", ListView).clear()
+            self._last_hits = []
+
+        def _populate_results(
+            self,
+            rendered: list[tuple[dict, SnippetLines]],
+            *,
+            focus_preview: bool = True,
+        ) -> None:
+            self._last_hits = [hit for hit, _ in rendered]
+            list_view = self.query_one("#results", ListView)
+            list_view.clear()
+            for i, (hit, snippets) in enumerate(rendered, 1):
+                list_view.append(HitListItem(i, hit, snippets))
+            if rendered:
+                if focus_preview:
+                    list_view.index = 0
+                    self._show_hit_preview(rendered[0][0], rendered[0][1])
+                else:
+                    self._suppress_result_preview = True
+                    try:
+                        list_view.index = 0
+                    finally:
+                        self._suppress_result_preview = False
+            rh = self.query_one("#results-header", Static)
+            rh.update(f"Results ({len(rendered)})")
 
         def _load_history(self) -> None:
             try:
@@ -238,9 +440,7 @@ def run_tui() -> None:
                     if line
                 ]
             except Exception as exc:
-                self.query_one(RichLog).write(
-                    f"[dim]⚠ history unavailable: {exc}[/dim]\n"
-                )
+                self.notify(f"History unavailable: {exc}", severity="warning", timeout=3)
 
         def _record_history(self, raw: str) -> None:
             if self._history and self._history[-1] == raw:
@@ -251,9 +451,7 @@ def run_tui() -> None:
                 with REPL_HISTORY.open("a", encoding="utf-8", newline="\n") as fh:
                     fh.write(raw + "\n")
             except Exception as exc:
-                self.query_one(RichLog).write(
-                    f"[dim]⚠ history write failed: {exc}[/dim]\n"
-                )
+                self.notify(f"History write failed: {exc}", severity="warning", timeout=3)
 
         def _set_input_busy(self, busy: bool) -> None:
             self.query_one(Input).disabled = busy
@@ -263,11 +461,18 @@ def run_tui() -> None:
             inp.disabled = False
             inp.focus()
 
-        def _set_last_hits(self, hits: list[dict]) -> None:
-            self._last_hits = hits
+        def _ask_preview_write(self, line: str) -> None:
+            self.query_one("#preview", RichLog).write(line)
 
-        def _ask_log_write(self, line: str) -> None:
-            self.query_one(RichLog).write(line)
+        def _ask_preview_clear(self) -> None:
+            self.query_one("#preview", RichLog).clear()
+
+        def _ask_set_sources(
+            self,
+            rendered: list[tuple[dict, SnippetLines]],
+        ) -> None:
+            self._populate_results(rendered, focus_preview=False)
+            self.query_one("#results-header", Static).update(f"Sources ({len(rendered)})")
 
         # ── input ─────────────────────────────────────────────────────────────
 
@@ -282,13 +487,23 @@ def run_tui() -> None:
             if raw in ("/clear", "/c"):
                 self.action_clear_log()
             elif raw in ("/help", "/h", "?"):
-                self.query_one(RichLog).write(_HELP)
+                self._show_message_preview(_HELP)
+                self._set_status("Help")
             elif raw.startswith("/ask "):
                 self._do_ask(raw[5:].strip())
+            elif raw.startswith("/smart "):
+                self._do_smart_search(raw[7:].strip())
             elif raw.startswith("/copy "):
                 self._do_copy_cmd(raw[6:].strip())
             else:
                 self._do_search(raw)
+
+        def on_list_view_selected(self, event: ListView.Selected) -> None:
+            if self._suppress_result_preview:
+                return
+            item = event.item
+            if isinstance(item, HitListItem):
+                self._show_hit_preview(item.hit, item.snippets)
 
         def on_key(self, event) -> None:
             inp = self.query_one(Input)
@@ -313,7 +528,6 @@ def run_tui() -> None:
                 event.stop()
                 return
 
-            # digit 1-9 (empty input) → open code view
             if (
                 not inp.value
                 and event.character
@@ -326,7 +540,21 @@ def run_tui() -> None:
                     event.stop()
 
         def action_clear_log(self) -> None:
-            self.query_one(RichLog).clear()
+            self._clear_results()
+            self._show_empty_preview()
+            self.query_one("#results-header", Static).update("Results")
+            self._set_status(
+                "[green]✓ index loaded[/green] — ready"
+                if self._index_ok
+                else "[red]✗ index not loaded[/red]"
+            )
+
+        def action_open_selected_code(self) -> None:
+            list_view = self.query_one("#results", ListView)
+            if list_view.has_focus and list_view.highlighted_child is not None:
+                item = list_view.highlighted_child
+                if isinstance(item, HitListItem):
+                    self.push_screen(CodeViewScreen(item.hit))
 
         # ── clipboard ─────────────────────────────────────────────────────────
 
@@ -344,17 +572,20 @@ def run_tui() -> None:
                 return False
 
         def _do_copy_cmd(self, arg: str) -> None:
-            log = self.query_one(RichLog)
             try:
                 n = int(arg)
             except ValueError:
-                log.write("[red]✗ /copy needs a number, e.g. /copy 2[/red]\n")
+                self.notify("/copy needs a number, e.g. /copy 2", severity="error", timeout=3)
                 return
             if not self._last_hits:
-                log.write("[dim]  no results to copy[/dim]\n")
+                self.notify("No results to copy", severity="warning", timeout=2)
                 return
             if not (1 <= n <= len(self._last_hits)):
-                log.write(f"[red]✗ result {n} out of range (1–{len(self._last_hits)})[/red]\n")
+                self.notify(
+                    f"Result {n} out of range (1–{len(self._last_hits)})",
+                    severity="error",
+                    timeout=3,
+                )
                 return
             hit = self._last_hits[n - 1]
             text = f"{hit['file']}:{hit.get('line_start', '')}"
@@ -366,16 +597,16 @@ def run_tui() -> None:
         # ── search ────────────────────────────────────────────────────────────
 
         def _do_search(self, query: str) -> None:
-            log = self.query_one(RichLog)
             if not self._mod:
-                log.write("[red]✗ index not loaded[/red]\n")
+                self._set_status("[red]✗ index not loaded[/red]")
+                self._show_message_preview("[red]✗ index not loaded[/red]")
                 return
 
             self._search_gen += 1
             gen = self._search_gen
 
-            log.write(f"\n[bold cyan]> {_safe(query)}[/bold cyan]")
-            log.write("[dim]  ▸ searching…[/dim]")
+            self._set_status(f"[cyan]Searching[/cyan]: {_safe(query)}")
+            self._show_message_preview("[dim]▸ searching…[/dim]")
             self._set_input_busy(True)
             self.run_worker(
                 lambda: self._search_thread(query, gen), thread=True, name="search"
@@ -395,88 +626,162 @@ def run_tui() -> None:
         def _search_done(
             self,
             gen: int,
-            hits: list[tuple[dict, list[tuple[int, str, bool]]]] | None,
+            hits: list[tuple[dict, SnippetLines]] | None,
             ms: float,
             error: Exception | None,
         ) -> None:
             if gen != self._search_gen:
                 return
 
-            log = self.query_one(RichLog)
             try:
                 if error is not None:
-                    log.write(f"[red]✗ search error: {error}[/red]\n")
+                    self._clear_results()
+                    self._set_status(f"[red]✗ search error: {error}[/red]")
+                    self._show_message_preview(f"[red]✗ search error: {error}[/red]")
                     return
 
                 if not hits:
-                    self._last_hits = []
-                    log.write("[dim]  no results[/dim]\n")
+                    self._clear_results()
+                    self.query_one("#results-header", Static).update("Results")
+                    self._set_status("[dim]No results[/dim]")
+                    self._show_message_preview("[dim]no results[/dim]")
                     return
 
-                self._last_hits = [hit for hit, _ in hits]
-                for i, (hit, snippets) in enumerate(hits, 1):
-                    self._render_hit(log, i, hit, snippets)
-
-                log.write(
-                    f"\n[dim]── {len(hits)} result{'s' if len(hits) != 1 else ''}"
+                self._populate_results(hits)
+                n = len(hits)
+                self._set_status(
+                    f"[cyan]{n} result{'s' if n != 1 else ''}[/cyan]"
                     f" · {ms:.0f} ms"
-                    f"  ·  press [bold]1–9[/bold] to open code view ──[/dim]\n"
+                    f" · click to preview · 1–9 open code view"
                 )
             finally:
                 if gen == self._search_gen:
                     self._finish_input()
 
-        def _render_hit(
-            self,
-            log,
-            idx: int,
-            hit: dict,
-            snippets: list[tuple[int, str, bool]],
-        ) -> None:
-            file_short = _short_path(hit.get("file", ""))
-            line   = hit.get("line_start", "")
-            symbol = hit.get("symbol", "")
-            source = hit.get("source", "")
-            score  = float(hit.get("score", 0))
+        # ── /smart ───────────────────────────────────────────────────────────
 
-            src_tag  = f" [dim]\\[{source}][/dim]" if source else ""
-            sym_part = f"  [green]{_safe(symbol)}[/green]" if symbol else ""
+        def _do_smart_search(self, query: str) -> None:
+            if not self._mod:
+                self._set_status("[red]✗ index not loaded[/red]")
+                self._show_message_preview("[red]✗ index not loaded[/red]")
+                return
 
-            log.write(
-                f"\n [dim]{idx:>2}[/dim]  "
-                f"[cyan]{_safe(file_short)}[/cyan]:[yellow]{line}[/yellow]"
-                f"{sym_part}{src_tag}  [dim]{score:.1f}[/dim]"
+            import os
+            from query_planner import load_dotenv
+
+            load_dotenv()
+            if not os.environ.get("LLM_API_KEY", "").strip():
+                self.notify(
+                    "LLM_API_KEY not set — using plain search",
+                    severity="warning",
+                    timeout=3,
+                )
+                self._do_search(query)
+                return
+
+            self._search_gen += 1
+            gen = self._search_gen
+            self._set_status(f"[magenta]Smart[/magenta]: {_safe(query)}")
+            self._show_message_preview("[dim]▸ planning queries…[/dim]")
+            self._set_input_busy(True)
+            self.run_worker(
+                lambda: self._smart_search_thread(query, gen), thread=True, name="smart"
             )
 
-            full = hit.get("file", "")
-            if full and full != file_short:
-                log.write(f"      [dim]{_safe(full)}[/dim]")
+        def _smart_search_thread(self, query: str, gen: int) -> None:
+            from search.smart_search import smart_search
 
-            for lineno, text, focused in snippets:
-                marker = "[bold green]▶[/bold green]" if focused else " "
-                style  = "bold white" if focused else "dim"
-                log.write(
-                    f"      {marker} [dim]{lineno:>4}[/dim] [dim]│[/dim]"
-                    f" [{style}]{_safe(text)}[/{style}]"
+            try:
+                t0 = time.perf_counter()
+                plan, hits = smart_search(self._mod, query, top_k=10)
+                ms = (time.perf_counter() - t0) * 1000
+                rendered = [(hit, _snippet_lines(hit)) for hit in hits]
+                self.call_from_thread(
+                    self._smart_search_done, gen, query, plan.to_dict(), rendered, ms, None
                 )
+            except Exception as exc:
+                self.call_from_thread(
+                    self._smart_search_done, gen, query, None, None, 0.0, exc
+                )
+
+        def _smart_search_done(
+            self,
+            gen: int,
+            query: str,
+            plan_dict: dict | None,
+            hits: list[tuple[dict, SnippetLines]] | None,
+            ms: float,
+            error: Exception | None,
+        ) -> None:
+            if gen != self._search_gen:
+                return
+
+            chain_ask = False
+            try:
+                if error is not None:
+                    self._clear_results()
+                    self._set_status(f"[red]✗ smart search error: {error}[/red]")
+                    self._show_message_preview(f"[red]✗ smart search error: {error}[/red]")
+                    return
+
+                plan_dict = plan_dict or {}
+                intent = plan_dict.get("intent", "unknown")
+                sq = plan_dict.get("search_queries") or []
+                status = f"[magenta]smart/{intent}[/magenta]"
+                if plan_dict.get("planner_fallback"):
+                    status += " [yellow](fallback)[/yellow]"
+                if sq:
+                    short = "; ".join(_safe(str(q)) for q in sq[:3])
+                    if len(sq) > 3:
+                        short += "…"
+                    status += f" · {short}"
+
+                if not hits:
+                    self._clear_results()
+                    self.query_one("#results-header", Static).update("Results")
+                    self._set_status(f"{status} · [dim]no results[/dim]")
+                    self._show_message_preview(_format_plan_preview(plan_dict, ms))
+                    return
+
+                self._populate_results(hits)
+                n = len(hits)
+                ask_question = (plan_dict.get("normalized_question") or query).strip()
+                hit_dicts = [hit for hit, _ in hits]
+                chain_ask = True
+                self._set_status(
+                    f"{status} · {n} result{'s' if n != 1 else ''} · {ms:.0f} ms"
+                    f" · answering…"
+                )
+                self._ask_preview_clear()
+                self._ask_preview_write("[dim]▸ generating answer from smart results…[/dim]")
+                self.run_worker(
+                    lambda: self._ask_thread(ask_question, hit_dicts),
+                    thread=True,
+                    name="ask",
+                )
+            finally:
+                if gen == self._search_gen and not chain_ask:
+                    self._finish_input()
 
         # ── /ask ─────────────────────────────────────────────────────────────
 
         def _do_ask(self, query: str) -> None:
-            log = self.query_one(RichLog)
             if not self._mod:
-                log.write("[red]✗ index not loaded[/red]\n")
+                self._set_status("[red]✗ index not loaded[/red]")
+                self._show_message_preview("[red]✗ index not loaded[/red]")
                 return
-            log.write(f"\n[bold magenta]? {_safe(query)}[/bold magenta]")
-            log.write("[dim]  ▸ searching context…[/dim]")
+            self._set_status(f"[magenta]Asking[/magenta]: {_safe(query)}")
+            self._ask_preview_clear()
+            self._ask_preview_write("[dim]▸ searching context…[/dim]")
             self._set_input_busy(True)
             self.run_worker(lambda: self._ask_thread(query), thread=True, name="ask")
 
-        def _ask_thread(self, query: str) -> None:
-            """Background thread: buffers tokens into lines before writing."""
-
+        def _ask_thread(self, query: str, hits: list[dict] | None = None) -> None:
             def w(line: str) -> None:
-                self.call_from_thread(self._ask_log_write, line)
+                self.call_from_thread(self._ask_preview_write, line)
+
+            keep_results = hits is not None
+            source_count = len(hits) if hits else 0
 
             try:
                 answer = answer_module()
@@ -484,48 +789,65 @@ def run_tui() -> None:
 
                 import os
                 if not os.environ.get("LLM_API_KEY"):
-                    w("[yellow]  LLM_API_KEY not set; use plain search instead.[/yellow]")
+                    self.call_from_thread(self._ask_preview_clear)
+                    w("[yellow]LLM_API_KEY not set; use plain search instead.[/yellow]")
+                    self.call_from_thread(
+                        self._set_status,
+                        "[yellow]LLM_API_KEY not set[/yellow] — use plain search",
+                    )
                     return
 
-                hits = self._mod.search(query, top_k=8, bundle=True)
-                w(f"[dim]  ▸ {len(hits)} chunks · building prompt…[/dim]")
+                if hits is None:
+                    hits = self._mod.search(query, top_k=8, bundle=True)
+                else:
+                    hits = self._mod.expand_bundle(hits[:8]) if hits else []
+
+                self.call_from_thread(self._ask_preview_clear)
+                w(f"[dim]▸ {len(hits)} chunks · {answer.llm_config()[2]}[/dim]")
+                w("")
 
                 template = answer.load_prompt_template()
                 prompt = answer.build_prompt(template, query, hits)
                 provider, api_key, model, base_url = answer.llm_config()
-                w(f"[dim]  ▸ {provider} / {model}[/dim]")
-                w("")  # blank line before answer
 
-                # Buffer tokens into complete lines before writing.
-                # RichLog.write() creates a new visual row per call — writing
-                # each token separately stacks them vertically.
                 line_buf: list[str] = []
                 for token in answer.call_llm_stream(prompt, provider, api_key, model, base_url):
                     parts = token.split("\n")
                     for i, part in enumerate(parts):
                         line_buf.append(part)
-                        if i < len(parts) - 1:          # newline in this token
+                        if i < len(parts) - 1:
                             w(_safe("".join(line_buf)))
                             line_buf = []
-                if line_buf:                              # flush last partial line
+                if line_buf:
                     w(_safe("".join(line_buf)))
 
-                w("")  # blank line after answer
-
-                # Store hits so digit keys open CodeViewScreen
-                self.call_from_thread(self._set_last_hits, hits[:9])
-                n = min(len(hits), 9)
-                w(f"[dim]── sources  ·  press 1–{n} to view code ──[/dim]")
-                for i, h in enumerate(hits[:9], 1):
-                    fs  = _short_path(h.get("file", ""))
-                    ln  = h.get("line_start", "")
-                    sy  = h.get("symbol", "")
-                    sym = f"  [green]{_safe(sy)}[/green]" if sy else ""
-                    w(f" [dim]{i:>2}[/dim]  [cyan]{_safe(fs)}[/cyan]:[yellow]{ln}[/yellow]{sym}")
                 w("")
+                if keep_results:
+                    self.call_from_thread(
+                        self._set_status,
+                        f"[magenta]Answer complete[/magenta]"
+                        f" · {source_count} source{'s' if source_count != 1 else ''}"
+                        f" · answer in preview · click result for code",
+                    )
+                else:
+                    primaries = [
+                        h for h in hits if h.get("bundle_role", "primary") == "primary"
+                    ][:9]
+                    source_hits = primaries or hits[:9]
+                    rendered = [(h, _snippet_lines(h)) for h in source_hits]
+                    self.call_from_thread(self._ask_set_sources, rendered)
+                    n = len(rendered)
+                    self.call_from_thread(
+                        self._set_status,
+                        f"[magenta]Answer complete[/magenta]"
+                        f" · {n} source{'s' if n != 1 else ''}"
+                        f" · answer in preview · click result for code",
+                    )
 
             except Exception as exc:
+                self.call_from_thread(self._ask_preview_clear)
                 w(f"[red]✗ {exc}[/red]")
+                self.call_from_thread(self._set_status, f"[red]✗ {exc}[/red]")
             finally:
                 self.call_from_thread(self._finish_input)
 

@@ -10,25 +10,56 @@
 
 ## 快速上手
 
+**第一次安装（Windows）：**
+
+```powershell
+# 仓库根目录（Smoothiewarerag/）或 industrial-cpp-kb-lab/ 均可
+.\scripts\setup_dev.ps1
+```
+
+**日常启动 TUI：**
+
+```powershell
+# 仓库根目录
+.\scripts\start_kb.ps1
+
+# 或进入子目录后
+cd industrial-cpp-kb-lab
+.\scripts\start_kb.ps1
+.\kb              # 默认进入 TUI（等价于 .\kb tui）
+```
+
+**高级用法：**
+
+```powershell
+.\kb search "G-code 从哪里进入系统？"
+.\kb smart "gcode运行流程"              # LLM plan + 多路检索 + 自动解释
+.\kb ask "halt emergency 在哪里处理？"
+.\kb eval                                # Recall@5 / coverage@K 报告
+.\kb repl                                # Rich REPL（旧式交互）
+```
+
+**手动安装（无脚本时）：**
+
 ```powershell
 cd industrial-cpp-kb-lab
 pip install -r requirements.txt
+```
 
-# 重建索引管道
+**重建索引管道：**
+
+```powershell
 python src/01_scan_files.py
 python src/02_extract_symbols.py
 python src/03_build_chunks.py
 python src/05_extract_dispatch_index.py # dispatch index（Phase 8）
 python src/03_build_callgraph.py        # mention graph（Phase 3.4）
 python src/03_build_repomap.py          # optional PageRank A/B（Phase 9）
+```
 
-# 新 CLI（推荐）
-.\kb tui                                 # Textual TUI 全屏检索台
-.\kb search "G-code 从哪里进入系统？"
-.\kb ask "halt emergency 在哪里处理？"
-.\kb eval                                # Recall@5 / coverage@K 报告
+**旧入口仍兼容：**
 
-# 旧入口仍兼容
+```powershell
 python src/app.py                        # Rich REPL
 python src/app.py "G-code 从哪里进入系统？"
 python src/app.py --test                 # 检索回归
