@@ -34,8 +34,8 @@ FALLBACK_WIN_SIZE  = 100
 FALLBACK_OVERLAP   = 20
 OVERVIEW_HEAD_LINES = 40   # file overview 取文件头部行数
 
-IMPL_EXTS   = {".cpp", ".c"}    # 按 function 切分
-HEADER_EXTS = {".h", ".hpp"}    # 按 class/struct 切分
+IMPL_EXTS   = {".c", ".cc", ".cpp", ".cxx"}    # 按 function 切分
+HEADER_EXTS = {".h", ".hh", ".hpp", ".hxx"}    # 按 class/struct 切分
 
 # ── 工具函数 ──────────────────────────────────────────────
 

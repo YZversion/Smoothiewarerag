@@ -34,7 +34,7 @@ DEFAULT_SKIP_DIRS = {
 }
 
 # 只收集这些扩展名
-SOURCE_EXTS = {".cpp", ".h", ".hpp", ".c"}
+SOURCE_EXTS = {".c", ".cc", ".cpp", ".cxx", ".h", ".hh", ".hpp", ".hxx"}
 
 
 def parse_args() -> argparse.Namespace:

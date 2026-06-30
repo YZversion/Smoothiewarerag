@@ -911,10 +911,6 @@ kb eval         [--index <path>]
 - [x] 记录各项目行数（PowerShell 逐文件计数）
 - [x] 验证 `rg` 与 `ctags` 在该目录可正常运行（ctags 成功率 99.4%）
 
-> 方法 B（补充，可选）：合成压力集
-
-- [ ] 写 `scripts/gen_synthetic_cpp.py`：生成 1000 文件 / 5000 class / 50000 function / 大量宏 / 中文注释（已跳过，方法 A 已满足需求）
-
 ### B.2 跑完整索引流程并计时
 
 - [x] `kb index build --repo-root repos/scale_test --src-root repos/scale_test`
@@ -1074,8 +1070,7 @@ kb probe --repo-root D:/WireBonderCode --out reports/repo_probe.md
 | 配置加载 | 工艺参数从配置文件到运控参数的流程是什么？ |
 | 历史遗留 | 这个类从哪里来？现在还在用吗？ |
 
-- [x] 新增 `eval/wirebonder_questions_template.json` 作为 20 题采集模板（字段：`id` / `category` / `question` / `required_evidence` / `ground_truth=null` / `owner_notes`）
-- [ ] 问题格式化为 `eval/wirebonder_questions.json`（暂无 ground truth，先有问题类型；待真实问题输入）：
+- [ ] 问题格式化为 `eval/wirebonder_questions.json`（暂无 ground truth，先有问题类型）：
   ```json
   {
     "id": "motion_entry_001",
@@ -1119,23 +1114,19 @@ kb probe --repo-root D:/WireBonderCode --out reports/repo_probe.md
 - [x] 写 `docs/stakeholder_pitch.md`：向软件部提需求的标准话术：
   > 第一步只需要一个非核心模块的只读目录。我不会修改代码、不会上传代码、不会训练模型。我先做本地结构扫描，输出文件统计和符号统计报告，请工程师验证 10 个问题，再决定是否扩大范围。
 
-- [x] 拆小请求的 5 步清单：
-  - [x] Step 1：提供一个非核心目录（不超过 5 万行）
-  - [x] Step 2：只读扫描，输出 `repo_probe` 报告
-  - [x] Step 3：构建本地索引，不外发任何代码
-  - [x] Step 4：10 个真实问题验收
-  - [x] Step 5：工程师评分后决定下一步
-- [x] 新增 `docs/wire_bonder_intake_checklist.md`：列出只读目录、编码说明、目录范围、10 个真实问题、验收人、保密边界
-- [x] 新增 `docs/first_pilot_acceptance.md`：定义首轮试点成功 / 部分成功 / 失败标准（10 题中 ≥7 题返回可核查 file:line）
+- [ ] 拆小请求的 5 步清单：
+  - [ ] Step 1：提供一个非核心目录（不超过 5 万行）
+  - [ ] Step 2：只读扫描，输出 `repo_probe` 报告
+  - [ ] Step 3：构建本地索引，不外发任何代码
+  - [ ] Step 4：10 个真实问题验收
+  - [ ] Step 5：工程师评分后决定下一步
 
 **✅ Phase D 验收**
 
-- [x] `eval/wirebonder_questions_template.json` 存在，20 条模板覆盖 ≥ 8 个类别
-- [ ] `eval/wirebonder_questions.json` 存在，≥ 20 条真实问题，覆盖 ≥ 5 个类别（待软件部输入）
+- [ ] `eval/wirebonder_questions.json` 存在，≥ 20 条，覆盖 ≥ 5 个类别
 - [x] `docs/demo_script.md` 可支撑 5 分钟演示（无需 PPT）
 - [x] `docs/capability_boundary.md` 存在，能力与边界描述清晰
 - [x] `docs/stakeholder_pitch.md` 或等效沟通材料存在
-- [x] `docs/wire_bonder_intake_checklist.md` 和 `docs/first_pilot_acceptance.md` 存在，可支撑外部试点准备
 
 ---
 

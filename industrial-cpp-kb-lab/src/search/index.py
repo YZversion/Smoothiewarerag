@@ -77,6 +77,12 @@ GENERIC_EVENT_HANDLERS = frozenset({
     "on_main_loop", "on_idle", "on_second_tick", "on_module_loaded",
     "on_enable", "on_get_public_data", "on_set_public_data",
 })
+SYMBOL_LOAD_KINDS = {
+    "function", "prototype", "class", "struct",
+    "macro", "enum", "typedef",
+}
+IMPL_FILE_EXTS = {".c", ".cc", ".cpp", ".cxx"}
+HEADER_FILE_EXTS = {".h", ".hh", ".hpp", ".hxx"}
 
 # ── 中文 Hint groups（模块级，不依赖实例） ─────────────────────
 
@@ -98,7 +104,7 @@ def _hint_motion_structure(query: str, ql: str) -> bool:
 
 
 def _hint_halt(query: str, ql: str) -> bool:
-    keys = ("halt", "stop", "emergency", "error", "停止", "报警")
+    keys = ("halt", "stop", "emergency", "停止", "报警")
     return any(k in ql or k in query for k in keys)
 
 
@@ -230,6 +236,7 @@ class SearchIndex:
         self._SYMBOL_BY_QUAL: dict[str, list[dict]] = defaultdict(list)
         self._SYMBOL_BY_NAME: dict[str, list[dict]] = defaultdict(list)
         self._SYMBOL_NAME_FREQ: dict[str, int] = {}
+        self._CHUNK_MODULE_STEMS: set[str] = set()
         self._BM25: BM25Okapi | None = None
         self._BM25_CHUNK_IDS: list[str] = []
         self._RG_BIN: str = ""
@@ -268,6 +275,7 @@ class SearchIndex:
             self._CHUNKS_BY_FILE[c["file"]].append(c)
         for flist in self._CHUNKS_BY_FILE.values():
             flist.sort(key=lambda x: (x["start_line"], -(x["end_line"] - x["start_line"])))
+        self._CHUNK_MODULE_STEMS = {Path(f).stem.lower() for f in self._CHUNKS_BY_FILE}
 
     def _load_symbols(self, path: Path) -> None:
         self._SYMBOL_BY_QUAL = defaultdict(list)
@@ -275,12 +283,12 @@ class SearchIndex:
         symbols = json.loads(path.read_text(encoding="utf-8"))
         freq: dict[str, int] = {}
         for s in symbols:
-            if s["kind"] not in ("function", "prototype", "class", "struct"):
+            if s["kind"] not in SYMBOL_LOAD_KINDS:
                 continue
             freq[s["name"]] = freq.get(s["name"], 0) + 1
         self._SYMBOL_NAME_FREQ = freq
         for s in symbols:
-            if s["kind"] not in ("function", "prototype", "class", "struct"):
+            if s["kind"] not in SYMBOL_LOAD_KINDS:
                 continue
             name = s["name"]
             cls = s.get("class") or ""
@@ -368,12 +376,16 @@ class SearchIndex:
             c = self.chunk_at_line(file, sym["line"])
             if c:
                 hits.append(c)
+        if not hits and sym.get("kind") in ("macro", "enum", "typedef"):
+            overview = self._overview_chunk(file)
+            if overview:
+                hits.append(overview)
         type_rank = {"function": 0, "class": 1, "file_overview": 2, "fallback": 3}
         hits.sort(key=lambda c: (type_rank.get(c["type"], 9), c["start_line"]))
         return hits
 
     def _is_impl_function(self, chunk: dict) -> bool:
-        return chunk["type"] == "function" and chunk["file"].endswith((".cpp", ".c"))
+        return chunk["type"] == "function" and Path(chunk["file"]).suffix in IMPL_FILE_EXTS
 
     def _is_constructor_chunk(self, chunk: dict) -> bool:
         sym = chunk.get("symbol") or ""
@@ -456,7 +468,7 @@ class SearchIndex:
         return {t for t in tokens if t in classes}
 
     def _chunk_module_stems(self) -> set[str]:
-        return {Path(f).stem.lower() for f in self._CHUNKS_BY_FILE}
+        return self._CHUNK_MODULE_STEMS
 
     def _query_module_tokens(self, tokens: list[str]) -> set[str]:
         stems = self._chunk_module_stems()
@@ -486,6 +498,8 @@ class SearchIndex:
     ) -> float:
         weight = W_SYMBOL * 0.85
         name = sym["name"]
+        if sym.get("kind") in ("macro", "enum", "typedef"):
+            return W_SYMBOL * 1.1
         if self.hint_coherent_symbol(sym, tokens):
             if flow_entry_query(query) and name == "on_main_loop":
                 weight = max(weight, W_SYMBOL * 0.92)
@@ -528,7 +542,7 @@ class SearchIndex:
         ql = _query_lower(query)
         if not _hint_module(query, ql):
             return 0.0
-        if not chunk["file"].endswith((".h", ".hpp")):
+        if Path(chunk["file"]).suffix not in HEADER_FILE_EXTS:
             return 0.0
         stem = Path(chunk["file"]).stem.lower()
         if stem in ("module", "kernel"):
@@ -537,9 +551,10 @@ class SearchIndex:
 
     def chunk_score_bonus(self, chunk: dict) -> float:
         bonus = TYPE_BONUS.get(chunk["type"], 0)
-        if chunk["file"].endswith((".cpp", ".c")) and chunk["type"] == "function":
+        suffix = Path(chunk["file"]).suffix
+        if suffix in IMPL_FILE_EXTS and chunk["type"] == "function":
             bonus += 4.0
-        elif chunk["file"].endswith((".h", ".hpp")) and chunk["type"] == "class":
+        elif suffix in HEADER_FILE_EXTS and chunk["type"] == "class":
             bonus -= 3.0
         sym = chunk.get("symbol") or ""
         cls = chunk.get("class") or ""
@@ -555,9 +570,10 @@ class SearchIndex:
         scores: dict[str, float] = {}
         seen: set[str] = set()
 
-        for cls, name in re.findall(
-            r"\b([A-Za-z_][\w]*)\s*(?:::|\.)\s*([A-Za-z_][\w]*)\b", query
+        for prefix, name in re.findall(
+            r"\b((?:[A-Za-z_][\w]*::)+)([A-Za-z_][\w]*)\b", query
         ):
+            cls = prefix[:-2]
             for sym in self._SYMBOL_BY_QUAL.get(f"{cls}::{name}".lower(), []):
                 key = self._symbol_key(sym)
                 if key in seen:
@@ -569,9 +585,18 @@ class SearchIndex:
         for tok in tokens:
             if len(tok) < 4:
                 continue
+            if (
+                "defined" in tokens
+                and "implemented" not in tokens
+                and any(
+                    s.get("kind") in ("class", "struct")
+                    for s in self._SYMBOL_BY_NAME.get(tok, [])
+                )
+            ):
+                continue
             impl_syms = [
                 s for s in self._SYMBOL_BY_NAME.get(tok, [])
-                if s.get("kind") == "function" and s["file"].endswith((".cpp", ".c"))
+                if s.get("kind") == "function" and Path(s["file"]).suffix in IMPL_FILE_EXTS
             ]
             if len({self._symbol_key(s) for s in impl_syms}) != 1:
                 continue
@@ -586,6 +611,8 @@ class SearchIndex:
 
     def search_class(self, query: str, tokens: list[str]) -> dict[str, float]:
         scores: dict[str, float] = {}
+        if not multi_file_structure_query(query):
+            return scores
         for cls_l in self._class_tokens(tokens):
             for symbols in self._SYMBOL_BY_NAME.values():
                 for sym in symbols:
@@ -788,9 +815,9 @@ class SearchIndex:
 
     def _header_path_for_impl(self, file: str) -> str | None:
         p = Path(file)
-        if p.suffix not in {".cpp", ".c"}:
+        if p.suffix not in IMPL_FILE_EXTS:
             return None
-        for ext in (".h", ".hpp"):
+        for ext in (".h", ".hh", ".hpp", ".hxx"):
             candidate = str(p.with_suffix(ext)).replace("\\", "/")
             if candidate in self._CHUNKS_BY_FILE:
                 return candidate
