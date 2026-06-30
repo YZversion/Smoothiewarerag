@@ -1,0 +1,4445 @@
+{
+  "created_at": "2026-06-30T01:34:03.112677+00:00",
+  "repo_root": "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\scale_test",
+  "file_stats": {
+    "file_count": 895,
+    "total_lines": 677811,
+    "avg_lines_per_file": 757.3,
+    "by_extension": {
+      ".h": 555,
+      ".c": 287,
+      ".cpp": 53
+    },
+    "largest_files": [
+      {
+        "path": "raylib/src/external/miniaudio.h",
+        "lines": 95844,
+        "size_bytes": 4203409
+      },
+      {
+        "path": "imgui/imgui.cpp",
+        "lines": 18408,
+        "size_bytes": 986443
+      },
+      {
+        "path": "raylib/src/external/RGFW/RGFW.h",
+        "lines": 16103,
+        "size_bytes": 593801
+      },
+      {
+        "path": "raylib/src/external/dr_flac.h",
+        "lines": 12698,
+        "size_bytes": 542900
+      },
+      {
+        "path": "imgui/imgui_demo.cpp",
+        "lines": 11216,
+        "size_bytes": 599508
+      },
+      {
+        "path": "imgui/imgui_widgets.cpp",
+        "lines": 10998,
+        "size_bytes": 563129
+      },
+      {
+        "path": "raylib/src/external/stb_image_resize2.h",
+        "lines": 10679,
+        "size_bytes": 468518
+      },
+      {
+        "path": "raylib/examples/others/resources/image_data.h",
+        "lines": 9848,
+        "size_bytes": 1138650
+      },
+      {
+        "path": "raylib/src/external/dr_wav.h",
+        "lines": 9105,
+        "size_bytes": 375509
+      },
+      {
+        "path": "raylib/src/external/glad.h",
+        "lines": 8682,
+        "size_bytes": 566141
+      },
+      {
+        "path": "raylib/src/external/stb_image.h",
+        "lines": 7988,
+        "size_bytes": 290998
+      },
+      {
+        "path": "raylib/src/rmodels.c",
+        "lines": 7334,
+        "size_bytes": 349398
+      },
+      {
+        "path": "raylib/src/external/cgltf.h",
+        "lines": 7240,
+        "size_bytes": 212994
+      },
+      {
+        "path": "imgui/imgui_draw.cpp",
+        "lines": 6809,
+        "size_bytes": 388441
+      },
+      {
+        "path": "raylib/src/external/m3d.h",
+        "lines": 6574,
+        "size_bytes": 313257
+      },
+      {
+        "path": "raylib/src/external/glfw/include/GLFW/glfw3.h",
+        "lines": 6547,
+        "size_bytes": 248373
+      },
+      {
+        "path": "raylib/src/external/glfw/deps/glad/vulkan.h",
+        "lines": 6330,
+        "size_bytes": 342527
+      },
+      {
+        "path": "googletest/googlemock/include/gmock/gmock-matchers.h",
+        "lines": 6112,
+        "size_bytes": 236874
+      },
+      {
+        "path": "raylib/src/external/rlsw.h",
+        "lines": 6108,
+        "size_bytes": 231679
+      },
+      {
+        "path": "raylib/examples/models/raygui.h",
+        "lines": 6053,
+        "size_bytes": 299805
+      }
+    ]
+  },
+  "encoding": {
+    "counts": {
+      "utf-8": 895
+    },
+    "anomalies": []
+  },
+  "ctags": {
+    "available": true,
+    "exit_code": 0,
+    "symbol_counts": {
+      "function": 17354,
+      "macro": 21372,
+      "enum": 957,
+      "struct": 2002,
+      "class": 749,
+      "namespace": 832
+    },
+    "symbols_by_file": {
+      "googletest/googlemock/include/gmock/gmock-matchers.h": {
+        "function": 518,
+        "macro": 31,
+        "class": 101,
+        "struct": 10,
+        "enum": 1,
+        "namespace": 8
+      },
+      "abseil-cpp/absl/base/thread_annotations.h": {
+        "macro": 42,
+        "namespace": 2,
+        "function": 2
+      },
+      "abseil-cpp/absl/base/dynamic_annotations.h": {
+        "macro": 47,
+        "function": 2,
+        "namespace": 3
+      },
+      "abseil-cpp/absl/algorithm/algorithm.h": {
+        "macro": 1,
+        "function": 6,
+        "namespace": 1
+      },
+      "abseil-cpp/absl/algorithm/container.h": {
+        "macro": 1,
+        "function": 140,
+        "struct": 10,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/random/internal/platform.h": {
+        "macro": 19
+      },
+      "abseil-cpp/absl/base/macros.h": {
+        "macro": 24,
+        "function": 1,
+        "namespace": 3
+      },
+      "abseil-cpp/absl/status/status_matchers.h": {
+        "macro": 5,
+        "function": 4,
+        "namespace": 1
+      },
+      "abseil-cpp/absl/status/status_macros.h": {
+        "macro": 29,
+        "function": 17,
+        "struct": 2,
+        "class": 2,
+        "namespace": 4
+      },
+      "abseil-cpp/absl/base/optimization.h": {
+        "macro": 38
+      },
+      "abseil-cpp/absl/base/attributes.h": {
+        "macro": 143,
+        "struct": 1,
+        "function": 1
+      },
+      "abseil-cpp/absl/base/call_once.h": {
+        "macro": 1,
+        "function": 7,
+        "class": 2,
+        "enum": 1,
+        "namespace": 3
+      },
+      "abseil-cpp/absl/base/casts.h": {
+        "macro": 1,
+        "function": 7,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/base/config.h": {
+        "macro": 101
+      },
+      "abseil-cpp/absl/base/const_init.h": {
+        "macro": 1,
+        "enum": 1,
+        "namespace": 1
+      },
+      "abseil-cpp/absl/base/fast_type_id.h": {
+        "macro": 1,
+        "function": 5,
+        "class": 1,
+        "struct": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/base/internal/atomic_hook.h": {
+        "macro": 7,
+        "function": 12,
+        "class": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/base/internal/atomic_hook_test_helper.h": {
+        "macro": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/base/internal/cpu_detect.h": {
+        "macro": 1,
+        "enum": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/base/internal/cycleclock_config.h": {
+        "macro": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/base/internal/cycleclock.h": {
+        "macro": 1,
+        "class": 2,
+        "function": 3,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/base/internal/direct_mmap.h": {
+        "macro": 4,
+        "function": 4,
+        "namespace": 4
+      },
+      "abseil-cpp/absl/base/internal/dynamic_annotations.h": {
+        "macro": 74
+      },
+      "abseil-cpp/absl/base/internal/endian.h": {
+        "macro": 1,
+        "function": 70,
+        "namespace": 3
+      },
+      "abseil-cpp/absl/base/internal/errno_saver.h": {
+        "macro": 1,
+        "function": 3,
+        "class": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/base/internal/exception_safety_testing.h": {
+        "macro": 1,
+        "enum": 2,
+        "function": 120,
+        "struct": 10,
+        "class": 10,
+        "namespace": 4
+      },
+      "abseil-cpp/absl/base/internal/exception_testing.h": {
+        "macro": 4
+      },
+      "abseil-cpp/absl/base/internal/hardening.h": {
+        "macro": 1,
+        "function": 11,
+        "class": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/base/internal/hide_ptr.h": {
+        "macro": 1,
+        "function": 3,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/base/internal/iterator_traits.h": {
+        "macro": 1,
+        "struct": 4,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/base/internal/iterator_traits_test_helper.h": {
+        "macro": 1,
+        "function": 6,
+        "class": 1,
+        "namespace": 2,
+        "struct": 1
+      },
+      "abseil-cpp/absl/base/internal/low_level_alloc.h": {
+        "macro": 3,
+        "class": 1,
+        "enum": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/base/internal/low_level_scheduling.h": {
+        "macro": 1,
+        "function": 7,
+        "class": 2,
+        "struct": 1,
+        "namespace": 3
+      },
+      "abseil-cpp/absl/base/internal/nullability_traits.h": {
+        "macro": 1,
+        "struct": 4,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/base/internal/per_thread_tls.h": {
+        "macro": 7
+      },
+      "abseil-cpp/absl/base/internal/poison.h": {
+        "macro": 1,
+        "function": 2,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/base/internal/pretty_function.h": {
+        "macro": 3
+      },
+      "abseil-cpp/absl/base/internal/raw_logging.h": {
+        "macro": 21,
+        "function": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/base/internal/scheduling_mode.h": {
+        "macro": 1,
+        "enum": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/base/internal/scoped_set_env.h": {
+        "macro": 1,
+        "class": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/base/internal/spinlock.h": {
+        "macro": 1,
+        "function": 22,
+        "class": 2,
+        "namespace": 4
+      },
+      "abseil-cpp/absl/base/internal/spinlock_wait.h": {
+        "macro": 1,
+        "function": 2,
+        "struct": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/base/internal/strerror.h": {
+        "macro": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/base/internal/sysinfo.h": {
+        "macro": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/base/internal/thread_identity.h": {
+        "macro": 10,
+        "function": 3,
+        "struct": 4,
+        "enum": 2,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/base/internal/tracing.h": {
+        "macro": 1,
+        "enum": 1,
+        "function": 4,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/base/internal/tsan_mutex_interface.h": {
+        "macro": 22
+      },
+      "abseil-cpp/absl/base/internal/unaligned_access.h": {
+        "macro": 7,
+        "function": 6,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/base/internal/unscaledcycleclock_config.h": {
+        "macro": 7
+      },
+      "abseil-cpp/absl/base/internal/unscaledcycleclock.h": {
+        "macro": 1,
+        "function": 2,
+        "class": 1,
+        "namespace": 4
+      },
+      "abseil-cpp/absl/base/log_severity.h": {
+        "macro": 2,
+        "function": 4,
+        "enum": 3,
+        "namespace": 1
+      },
+      "abseil-cpp/absl/base/no_destructor.h": {
+        "macro": 1,
+        "function": 15,
+        "class": 3,
+        "namespace": 1
+      },
+      "abseil-cpp/absl/base/nullability.h": {
+        "macro": 10
+      },
+      "abseil-cpp/absl/base/options.h": {
+        "macro": 7
+      },
+      "abseil-cpp/absl/base/policy_checks.h": {
+        "macro": 1
+      },
+      "abseil-cpp/absl/base/port.h": {
+        "macro": 1
+      },
+      "abseil-cpp/absl/base/prefetch.h": {
+        "macro": 3,
+        "function": 9,
+        "namespace": 1
+      },
+      "abseil-cpp/absl/base/throw_delegate.h": {
+        "macro": 1,
+        "namespace": 1
+      },
+      "abseil-cpp/absl/log/absl_check.h": {
+        "macro": 38
+      },
+      "abseil-cpp/ci/absl_alternate_options.h": {
+        "macro": 7
+      },
+      "abseil-cpp/absl/cleanup/cleanup.h": {
+        "macro": 1,
+        "function": 5,
+        "class": 1,
+        "namespace": 1
+      },
+      "abseil-cpp/absl/cleanup/internal/cleanup.h": {
+        "macro": 1,
+        "function": 9,
+        "class": 1,
+        "struct": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/container/btree_map.h": {
+        "macro": 1,
+        "namespace": 3,
+        "function": 11,
+        "class": 2,
+        "struct": 2
+      },
+      "abseil-cpp/absl/container/btree_set.h": {
+        "macro": 1,
+        "namespace": 3,
+        "function": 15,
+        "class": 2,
+        "struct": 3
+      },
+      "abseil-cpp/absl/container/btree_test.h": {
+        "macro": 1,
+        "function": 15,
+        "struct": 11,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/container/chunked_queue.h": {
+        "macro": 1,
+        "function": 64,
+        "struct": 1,
+        "namespace": 1,
+        "class": 3
+      },
+      "abseil-cpp/absl/container/fixed_array.h": {
+        "macro": 1,
+        "function": 65,
+        "class": 4,
+        "struct": 1,
+        "namespace": 1
+      },
+      "abseil-cpp/absl/container/flat_hash_map.h": {
+        "macro": 1,
+        "struct": 2,
+        "namespace": 5,
+        "function": 15,
+        "class": 1
+      },
+      "abseil-cpp/absl/container/flat_hash_set.h": {
+        "macro": 1,
+        "struct": 2,
+        "namespace": 5,
+        "function": 12,
+        "class": 1
+      },
+      "abseil-cpp/absl/container/hash_container_defaults.h": {
+        "macro": 1,
+        "namespace": 1
+      },
+      "abseil-cpp/absl/container/inlined_vector.h": {
+        "macro": 1,
+        "function": 78,
+        "class": 1,
+        "namespace": 1
+      },
+      "abseil-cpp/absl/container/internal/btree_container.h": {
+        "macro": 3,
+        "function": 97,
+        "namespace": 2,
+        "class": 5,
+        "struct": 1
+      },
+      "abseil-cpp/absl/container/internal/btree.h": {
+        "macro": 1,
+        "function": 242,
+        "struct": 24,
+        "enum": 3,
+        "namespace": 2,
+        "class": 6
+      },
+      "abseil-cpp/absl/container/internal/chunked_queue.h": {
+        "macro": 1,
+        "function": 14,
+        "class": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/container/internal/common.h": {
+        "macro": 17,
+        "struct": 13,
+        "function": 22,
+        "namespace": 2,
+        "class": 3
+      },
+      "abseil-cpp/absl/container/internal/common_policy_traits.h": {
+        "macro": 1,
+        "struct": 6,
+        "namespace": 2,
+        "function": 10
+      },
+      "abseil-cpp/absl/container/internal/compressed_tuple.h": {
+        "macro": 3,
+        "function": 21,
+        "class": 2,
+        "struct": 9,
+        "namespace": 3
+      },
+      "abseil-cpp/absl/container/internal/container_memory.h": {
+        "macro": 5,
+        "struct": 10,
+        "function": 42,
+        "namespace": 4
+      },
+      "abseil-cpp/absl/container/internal/hashtablez_sampler.h": {
+        "macro": 1,
+        "struct": 2,
+        "function": 23,
+        "class": 2,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/container/internal/hashtable_control_bytes.h": {
+        "macro": 1,
+        "function": 43,
+        "class": 2,
+        "struct": 3,
+        "namespace": 2,
+        "enum": 1
+      },
+      "abseil-cpp/absl/container/internal/hashtable_debug_hooks.h": {
+        "macro": 1,
+        "function": 3,
+        "struct": 1,
+        "namespace": 3
+      },
+      "abseil-cpp/absl/container/internal/hashtable_debug.h": {
+        "macro": 1,
+        "function": 4,
+        "struct": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/container/internal/hash_function_defaults.h": {
+        "macro": 1,
+        "struct": 30,
+        "function": 15,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/container/internal/hash_generator_testing.h": {
+        "macro": 1,
+        "enum": 2,
+        "struct": 13,
+        "namespace": 3,
+        "function": 9
+      },
+      "abseil-cpp/absl/container/internal/hash_policy_testing.h": {
+        "macro": 1,
+        "function": 25,
+        "struct": 6,
+        "namespace": 3
+      },
+      "abseil-cpp/absl/container/internal/hash_policy_traits.h": {
+        "macro": 1,
+        "struct": 6,
+        "function": 12,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/container/internal/heterogeneous_lookup_testing.h": {
+        "macro": 1,
+        "function": 10,
+        "class": 2,
+        "struct": 2,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/container/internal/inlined_vector.h": {
+        "macro": 1,
+        "function": 76,
+        "struct": 11,
+        "class": 6,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/container/internal/layout.h": {
+        "macro": 1,
+        "function": 28,
+        "struct": 8,
+        "class": 3,
+        "enum": 1,
+        "namespace": 4
+      },
+      "abseil-cpp/absl/container/internal/node_slot_policy.h": {
+        "macro": 1,
+        "namespace": 2,
+        "function": 7,
+        "struct": 1
+      },
+      "abseil-cpp/absl/container/internal/raw_hash_map.h": {
+        "macro": 2,
+        "struct": 1,
+        "namespace": 2,
+        "function": 13,
+        "class": 1
+      },
+      "abseil-cpp/absl/container/internal/raw_hash_set.h": {
+        "macro": 1,
+        "function": 427,
+        "class": 16,
+        "struct": 18,
+        "enum": 2,
+        "namespace": 3
+      },
+      "abseil-cpp/absl/container/internal/raw_hash_set_resize_impl.h": {
+        "macro": 1,
+        "function": 1,
+        "struct": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/container/internal/test_allocator.h": {
+        "macro": 1,
+        "function": 20,
+        "struct": 8,
+        "class": 2,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/container/internal/test_instance_tracker.h": {
+        "macro": 1,
+        "function": 34,
+        "class": 5,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/container/internal/tracked.h": {
+        "macro": 1,
+        "function": 11,
+        "class": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/container/internal/unordered_map_constructor_test.h": {
+        "macro": 1,
+        "function": 34,
+        "class": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/container/internal/unordered_map_lookup_test.h": {
+        "macro": 1,
+        "class": 1,
+        "function": 5,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/container/internal/unordered_map_members_test.h": {
+        "macro": 1,
+        "class": 1,
+        "function": 4,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/container/internal/unordered_map_modifiers_test.h": {
+        "macro": 1,
+        "struct": 3,
+        "class": 2,
+        "function": 20,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/container/internal/unordered_set_constructor_test.h": {
+        "macro": 1,
+        "function": 34,
+        "class": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/container/internal/unordered_set_lookup_test.h": {
+        "macro": 1,
+        "class": 1,
+        "function": 3,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/container/internal/unordered_set_members_test.h": {
+        "macro": 1,
+        "class": 1,
+        "function": 4,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/container/internal/unordered_set_modifiers_test.h": {
+        "macro": 1,
+        "struct": 1,
+        "class": 1,
+        "function": 14,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/container/linked_hash_map.h": {
+        "macro": 1,
+        "function": 111,
+        "struct": 1,
+        "class": 3,
+        "namespace": 1
+      },
+      "abseil-cpp/absl/container/linked_hash_set.h": {
+        "macro": 1,
+        "function": 90,
+        "struct": 1,
+        "class": 3,
+        "namespace": 1
+      },
+      "abseil-cpp/absl/container/node_hash_map.h": {
+        "macro": 1,
+        "struct": 1,
+        "class": 2,
+        "namespace": 5,
+        "function": 13
+      },
+      "abseil-cpp/absl/container/node_hash_set.h": {
+        "macro": 1,
+        "struct": 2,
+        "namespace": 5,
+        "function": 11,
+        "class": 1
+      },
+      "abseil-cpp/absl/strings/internal/cord_internal.h": {
+        "macro": 3,
+        "function": 93,
+        "struct": 11,
+        "enum": 6,
+        "class": 2,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/crc/crc32c.h": {
+        "macro": 1,
+        "function": 8,
+        "namespace": 2,
+        "class": 1
+      },
+      "abseil-cpp/absl/crc/internal/crc32c.h": {
+        "macro": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/crc/internal/crc32c_inline.h": {
+        "macro": 1,
+        "function": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/crc/internal/crc32_x86_arm_combined_simd.h": {
+        "macro": 4,
+        "function": 38,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/crc/internal/crc_cord_state.h": {
+        "macro": 1,
+        "class": 1,
+        "function": 7,
+        "struct": 3,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/crc/internal/crc.h": {
+        "macro": 1,
+        "class": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/crc/internal/crc_internal.h": {
+        "macro": 1,
+        "class": 2,
+        "function": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/crc/internal/crc_memcpy.h": {
+        "macro": 3,
+        "struct": 1,
+        "function": 2,
+        "class": 5,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/crc/internal/non_temporal_arm_intrinsics.h": {
+        "macro": 4,
+        "function": 4
+      },
+      "abseil-cpp/absl/crc/internal/non_temporal_memcpy.h": {
+        "macro": 2,
+        "namespace": 2,
+        "function": 2
+      },
+      "abseil-cpp/absl/debugging/failure_signal_handler.h": {
+        "macro": 1,
+        "struct": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/debugging/internal/addresses.h": {
+        "macro": 2,
+        "function": 2,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/debugging/internal/address_is_readable.h": {
+        "macro": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/debugging/internal/bounded_utf8_length_sequence.h": {
+        "macro": 1,
+        "class": 1,
+        "function": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/debugging/internal/decode_rust_punycode.h": {
+        "macro": 1,
+        "struct": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/debugging/internal/demangle.h": {
+        "macro": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/debugging/internal/demangle_rust.h": {
+        "macro": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/debugging/internal/elf_mem_image.h": {
+        "macro": 3,
+        "class": 2,
+        "function": 1,
+        "struct": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/debugging/internal/examine_stack.h": {
+        "macro": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/debugging/internal/stacktrace_config.h": {
+        "macro": 14
+      },
+      "abseil-cpp/absl/debugging/internal/stack_consumption.h": {
+        "macro": 2,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/debugging/internal/symbolize.h": {
+        "macro": 4,
+        "class": 2,
+        "namespace": 4
+      },
+      "abseil-cpp/absl/debugging/internal/utf8_for_code_point.h": {
+        "macro": 1,
+        "struct": 1,
+        "namespace": 2,
+        "function": 1
+      },
+      "abseil-cpp/absl/debugging/internal/vdso_support.h": {
+        "macro": 2,
+        "function": 3,
+        "class": 1,
+        "enum": 2,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/debugging/leak_check.h": {
+        "macro": 1,
+        "function": 1,
+        "class": 1,
+        "namespace": 1
+      },
+      "abseil-cpp/absl/debugging/stacktrace.h": {
+        "macro": 1,
+        "namespace": 4
+      },
+      "abseil-cpp/absl/debugging/symbolize.h": {
+        "macro": 1,
+        "namespace": 1
+      },
+      "abseil-cpp/absl/flags/declare.h": {
+        "macro": 4,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/synchronization/mutex.h": {
+        "function": 66,
+        "macro": 1,
+        "class": 8,
+        "struct": 2,
+        "enum": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/utility/utility.h": {
+        "function": 7,
+        "macro": 1,
+        "namespace": 1,
+        "struct": 1
+      },
+      "abseil-cpp/absl/log/die_if_null.h": {
+        "macro": 2,
+        "function": 2,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/log/absl_log.h": {
+        "macro": 37
+      },
+      "abseil-cpp/absl/flags/flag.h": {
+        "macro": 19,
+        "function": 4,
+        "namespace": 1
+      },
+      "abseil-cpp/absl/flags/commandlineflag.h": {
+        "macro": 1,
+        "class": 1,
+        "function": 4,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/flags/config.h": {
+        "macro": 8
+      },
+      "abseil-cpp/absl/flags/internal/commandlineflag.h": {
+        "macro": 1,
+        "enum": 2,
+        "class": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/flags/internal/flag.h": {
+        "macro": 2,
+        "struct": 15,
+        "function": 67,
+        "class": 5,
+        "enum": 4,
+        "namespace": 3
+      },
+      "abseil-cpp/absl/flags/internal/parse.h": {
+        "macro": 1,
+        "enum": 2,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/flags/internal/path_util.h": {
+        "macro": 1,
+        "function": 2,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/flags/internal/private_handle_accessor.h": {
+        "macro": 1,
+        "class": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/flags/internal/program_name.h": {
+        "macro": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/flags/internal/registry.h": {
+        "macro": 1,
+        "function": 1,
+        "class": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/flags/internal/sequence_lock.h": {
+        "macro": 1,
+        "function": 9,
+        "class": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/flags/internal/usage.h": {
+        "macro": 1,
+        "enum": 2,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/flags/marshalling.h": {
+        "macro": 1,
+        "function": 6,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/flags/parse.h": {
+        "macro": 1,
+        "enum": 1,
+        "function": 2,
+        "struct": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/flags/reflection.h": {
+        "macro": 1,
+        "class": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/flags/usage_config.h": {
+        "macro": 1,
+        "struct": 1,
+        "namespace": 3
+      },
+      "abseil-cpp/absl/flags/usage.h": {
+        "macro": 1,
+        "namespace": 1
+      },
+      "abseil-cpp/absl/strings/internal/str_format/constexpr_parser.h": {
+        "macro": 2,
+        "function": 22,
+        "class": 2,
+        "struct": 2,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/functional/any_invocable.h": {
+        "macro": 1,
+        "function": 14,
+        "class": 1,
+        "namespace": 1
+      },
+      "abseil-cpp/absl/functional/any_invocable_test.h": {
+        "macro": 3,
+        "class": 7,
+        "enum": 5,
+        "struct": 23,
+        "function": 92,
+        "namespace": 1
+      },
+      "abseil-cpp/absl/functional/bind_back.h": {
+        "macro": 1,
+        "namespace": 1
+      },
+      "abseil-cpp/absl/functional/bind_front.h": {
+        "macro": 1,
+        "namespace": 1
+      },
+      "abseil-cpp/absl/functional/function_ref.h": {
+        "macro": 1,
+        "class": 2,
+        "function": 12,
+        "namespace": 1
+      },
+      "abseil-cpp/absl/functional/internal/any_invocable.h": {
+        "macro": 5,
+        "function": 26,
+        "struct": 12,
+        "class": 4,
+        "enum": 2,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/functional/internal/back_binder.h": {
+        "macro": 1,
+        "function": 6,
+        "class": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/functional/internal/front_binder.h": {
+        "macro": 1,
+        "function": 6,
+        "class": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/functional/internal/function_ref.h": {
+        "macro": 1,
+        "function": 9,
+        "struct": 3,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/functional/overload.h": {
+        "macro": 1,
+        "function": 1,
+        "struct": 1,
+        "namespace": 1
+      },
+      "abseil-cpp/absl/strings/internal/cordz_info.h": {
+        "function": 12,
+        "macro": 1,
+        "class": 1,
+        "struct": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/hash/hash.h": {
+        "macro": 1,
+        "function": 14,
+        "struct": 1,
+        "class": 1,
+        "namespace": 1
+      },
+      "abseil-cpp/absl/hash/hash_testing.h": {
+        "macro": 1,
+        "struct": 12,
+        "function": 14,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/hash/internal/city.h": {
+        "macro": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/hash/internal/hash.h": {
+        "macro": 17,
+        "function": 85,
+        "struct": 25,
+        "class": 3,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/hash/internal/hash_test.h": {
+        "macro": 1,
+        "function": 8,
+        "class": 2,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/hash/internal/spy_hash_state.h": {
+        "macro": 1,
+        "function": 18,
+        "enum": 1,
+        "struct": 3,
+        "class": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/hash/internal/weakly_mixed_integer.h": {
+        "macro": 1,
+        "struct": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/strings/internal/str_format/extension.h": {
+        "macro": 8,
+        "function": 51,
+        "enum": 3,
+        "struct": 3,
+        "class": 3,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/numeric/internal/bits.h": {
+        "macro": 15,
+        "function": 16,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/strings/internal/cordz_functions.h": {
+        "macro": 2,
+        "struct": 1,
+        "namespace": 2,
+        "function": 3
+      },
+      "abseil-cpp/absl/meta/type_traits.h": {
+        "macro": 3,
+        "function": 5,
+        "struct": 28,
+        "namespace": 7
+      },
+      "abseil-cpp/absl/strings/internal/str_format/checker.h": {
+        "macro": 2,
+        "function": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/strings/internal/str_format/arg.h": {
+        "macro": 4,
+        "struct": 13,
+        "function": 29,
+        "class": 1,
+        "enum": 2,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/strings/resize_and_overwrite.h": {
+        "macro": 2,
+        "function": 4,
+        "namespace": 2,
+        "struct": 8
+      },
+      "abseil-cpp/absl/synchronization/internal/futex.h": {
+        "macro": 10,
+        "class": 2,
+        "function": 5,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/synchronization/internal/futex_waiter.h": {
+        "macro": 2,
+        "function": 1,
+        "class": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/synchronization/internal/pthread_waiter.h": {
+        "macro": 2,
+        "class": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/synchronization/internal/sem_waiter.h": {
+        "macro": 2,
+        "class": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/synchronization/internal/stdcpp_waiter.h": {
+        "macro": 2,
+        "class": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/synchronization/internal/win32_waiter.h": {
+        "macro": 2,
+        "class": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/strings/str_cat.h": {
+        "macro": 3,
+        "function": 46,
+        "class": 1,
+        "struct": 3,
+        "enum": 1,
+        "namespace": 3
+      },
+      "abseil-cpp/absl/time/time.h": {
+        "macro": 2,
+        "function": 125,
+        "struct": 5,
+        "enum": 2,
+        "class": 4,
+        "namespace": 3
+      },
+      "abseil-cpp/absl/random/internal/wide_multiply.h": {
+        "macro": 2,
+        "function": 7,
+        "namespace": 2,
+        "struct": 2
+      },
+      "abseil-cpp/absl/numeric/int128.h": {
+        "macro": 3,
+        "function": 134,
+        "namespace": 8,
+        "class": 4
+      },
+      "abseil-cpp/absl/log/absl_vlog_is_on.h": {
+        "macro": 4
+      },
+      "abseil-cpp/absl/log/check.h": {
+        "macro": 38
+      },
+      "abseil-cpp/absl/log/flags.h": {
+        "macro": 1
+      },
+      "abseil-cpp/absl/log/globals.h": {
+        "macro": 1,
+        "class": 2,
+        "function": 3,
+        "namespace": 5
+      },
+      "abseil-cpp/absl/log/initialize.h": {
+        "macro": 1,
+        "namespace": 1
+      },
+      "abseil-cpp/absl/log/internal/append_truncated.h": {
+        "macro": 1,
+        "function": 3,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/log/internal/strip.h": {
+        "macro": 29
+      },
+      "abseil-cpp/absl/log/internal/check_impl.h": {
+        "macro": 50
+      },
+      "abseil-cpp/absl/log/internal/check_op.h": {
+        "macro": 14,
+        "function": 21,
+        "class": 3,
+        "struct": 3,
+        "namespace": 4
+      },
+      "abseil-cpp/absl/log/internal/conditions.h": {
+        "macro": 22,
+        "function": 6,
+        "class": 4,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/log/internal/config.h": {
+        "macro": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/log/internal/container.h": {
+        "macro": 1,
+        "function": 35,
+        "class": 4,
+        "struct": 10,
+        "namespace": 4
+      },
+      "abseil-cpp/absl/log/internal/log_impl.h": {
+        "macro": 48
+      },
+      "abseil-cpp/absl/log/internal/flags.h": {
+        "macro": 1
+      },
+      "abseil-cpp/absl/log/internal/fnmatch.h": {
+        "macro": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/log/internal/globals.h": {
+        "macro": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/log/internal/log_format.h": {
+        "macro": 1,
+        "enum": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/log/internal/log_message.h": {
+        "macro": 1,
+        "function": 28,
+        "struct": 3,
+        "class": 7,
+        "enum": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/log/internal/log_sink_set.h": {
+        "macro": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/log/internal/nullguard.h": {
+        "macro": 1,
+        "function": 8,
+        "struct": 8,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/log/internal/nullstream.h": {
+        "macro": 1,
+        "function": 19,
+        "class": 3,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/log/internal/proto.h": {
+        "macro": 1,
+        "function": 32,
+        "class": 1,
+        "enum": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/log/internal/structured.h": {
+        "macro": 1,
+        "function": 12,
+        "class": 3,
+        "enum": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/log/internal/structured_proto.h": {
+        "macro": 1,
+        "function": 5,
+        "struct": 2,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/log/internal/test_actions.h": {
+        "macro": 1,
+        "function": 6,
+        "struct": 3,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/log/internal/test_helpers.h": {
+        "macro": 1,
+        "class": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/log/internal/test_matchers.h": {
+        "macro": 2,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/log/internal/vlog_config.h": {
+        "macro": 1,
+        "function": 2,
+        "class": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/log/internal/voidify.h": {
+        "macro": 1,
+        "class": 1,
+        "namespace": 2,
+        "function": 1
+      },
+      "abseil-cpp/absl/log/log_entry.h": {
+        "macro": 1,
+        "class": 1,
+        "namespace": 2,
+        "function": 15
+      },
+      "abseil-cpp/absl/log/log.h": {
+        "macro": 37
+      },
+      "abseil-cpp/absl/log/log_sink.h": {
+        "macro": 1,
+        "function": 1,
+        "class": 1,
+        "namespace": 1
+      },
+      "abseil-cpp/absl/log/log_sink_registry.h": {
+        "macro": 1,
+        "function": 3,
+        "namespace": 1
+      },
+      "abseil-cpp/absl/log/log_streamer.h": {
+        "macro": 1,
+        "function": 16,
+        "class": 1,
+        "namespace": 1
+      },
+      "abseil-cpp/absl/log/scoped_mock_log.h": {
+        "macro": 1,
+        "function": 3,
+        "class": 2,
+        "enum": 1,
+        "namespace": 1
+      },
+      "abseil-cpp/absl/log/structured.h": {
+        "macro": 1,
+        "function": 1,
+        "namespace": 1
+      },
+      "abseil-cpp/absl/log/vlog_is_on.h": {
+        "macro": 2
+      },
+      "abseil-cpp/absl/memory/memory.h": {
+        "macro": 1,
+        "function": 9,
+        "struct": 9,
+        "namespace": 4
+      },
+      "abseil-cpp/absl/meta/internal/constexpr_testing.h": {
+        "macro": 1,
+        "function": 3,
+        "namespace": 3
+      },
+      "abseil-cpp/absl/meta/internal/requires.h": {
+        "macro": 1,
+        "function": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/numeric/bits.h": {
+        "macro": 1,
+        "namespace": 1,
+        "function": 10,
+        "enum": 1
+      },
+      "abseil-cpp/absl/numeric/internal/representation.h": {
+        "macro": 1,
+        "function": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/profiling/hashtable.h": {
+        "macro": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/profiling/internal/exponential_biased.h": {
+        "macro": 1,
+        "class": 1,
+        "function": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/profiling/internal/periodic_sampler.h": {
+        "macro": 1,
+        "class": 2,
+        "function": 4,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/profiling/internal/profile_builder.h": {
+        "macro": 1,
+        "function": 1,
+        "struct": 9,
+        "enum": 3,
+        "class": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/profiling/internal/sample_recorder.h": {
+        "macro": 1,
+        "function": 11,
+        "struct": 1,
+        "class": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/random/bernoulli_distribution.h": {
+        "macro": 1,
+        "function": 20,
+        "namespace": 1,
+        "class": 2
+      },
+      "abseil-cpp/absl/random/beta_distribution.h": {
+        "macro": 3,
+        "function": 28,
+        "enum": 1,
+        "namespace": 1,
+        "class": 2
+      },
+      "abseil-cpp/absl/random/bit_gen_ref.h": {
+        "macro": 1,
+        "function": 9,
+        "class": 1,
+        "namespace": 1,
+        "struct": 2
+      },
+      "abseil-cpp/absl/random/discrete_distribution.h": {
+        "macro": 1,
+        "namespace": 2,
+        "function": 26,
+        "class": 2
+      },
+      "abseil-cpp/absl/random/distributions.h": {
+        "macro": 1,
+        "function": 12,
+        "namespace": 1
+      },
+      "abseil-cpp/absl/random/exponential_distribution.h": {
+        "macro": 1,
+        "namespace": 1,
+        "function": 19,
+        "class": 2
+      },
+      "abseil-cpp/absl/random/gaussian_distribution.h": {
+        "macro": 1,
+        "struct": 1,
+        "namespace": 3,
+        "function": 23,
+        "class": 3
+      },
+      "abseil-cpp/absl/random/internal/chi_square.h": {
+        "macro": 1,
+        "function": 2,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/random/internal/distribution_caller.h": {
+        "macro": 1,
+        "function": 3,
+        "struct": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/random/internal/distribution_test_util.h": {
+        "macro": 1,
+        "struct": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/random/internal/entropy_pool.h": {
+        "macro": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/random/internal/explicit_seed_seq.h": {
+        "macro": 1,
+        "function": 6,
+        "class": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/random/internal/fastmath.h": {
+        "macro": 1,
+        "function": 3,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/random/internal/fast_uniform_bits.h": {
+        "macro": 1,
+        "class": 1,
+        "function": 10,
+        "struct": 2,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/random/internal/generate_real.h": {
+        "macro": 1,
+        "struct": 3,
+        "function": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/random/internal/iostream_state_saver.h": {
+        "macro": 3,
+        "namespace": 2,
+        "function": 15,
+        "class": 3,
+        "struct": 7
+      },
+      "abseil-cpp/absl/random/internal/mock_helpers.h": {
+        "macro": 1,
+        "struct": 2,
+        "function": 4,
+        "class": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/random/internal/mock_overload_set.h": {
+        "macro": 1,
+        "struct": 4,
+        "namespace": 2,
+        "function": 2
+      },
+      "abseil-cpp/absl/random/internal/mock_validators.h": {
+        "macro": 1,
+        "function": 13,
+        "class": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/random/internal/nanobenchmark.h": {
+        "macro": 1,
+        "function": 2,
+        "struct": 2,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/random/internal/nonsecure_base.h": {
+        "macro": 1,
+        "struct": 2,
+        "function": 15,
+        "class": 2,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/random/internal/pcg_engine.h": {
+        "macro": 1,
+        "namespace": 2,
+        "function": 23,
+        "class": 3,
+        "struct": 2
+      },
+      "abseil-cpp/absl/random/internal/randen_detect.h": {
+        "macro": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/random/internal/randen_engine.h": {
+        "macro": 1,
+        "namespace": 2,
+        "function": 18,
+        "class": 1
+      },
+      "abseil-cpp/absl/random/internal/randen_hwaes.h": {
+        "macro": 1,
+        "class": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/random/internal/randen.h": {
+        "macro": 1,
+        "function": 2,
+        "class": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/random/internal/randen_slow.h": {
+        "macro": 1,
+        "class": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/random/internal/randen_traits.h": {
+        "macro": 1,
+        "struct": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/random/internal/salted_seed_seq.h": {
+        "macro": 1,
+        "struct": 4,
+        "function": 9,
+        "class": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/random/internal/seed_material.h": {
+        "macro": 1,
+        "function": 2,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/random/internal/sequence_urbg.h": {
+        "macro": 1,
+        "namespace": 2,
+        "function": 6,
+        "class": 1
+      },
+      "abseil-cpp/absl/random/internal/traits.h": {
+        "macro": 1,
+        "function": 2,
+        "struct": 19,
+        "namespace": 2,
+        "class": 1
+      },
+      "abseil-cpp/absl/random/internal/uniform_helper.h": {
+        "macro": 1,
+        "struct": 6,
+        "function": 14,
+        "namespace": 3
+      },
+      "abseil-cpp/absl/random/log_uniform_int_distribution.h": {
+        "macro": 1,
+        "function": 24,
+        "namespace": 1,
+        "class": 2
+      },
+      "abseil-cpp/absl/random/mocking_access.h": {
+        "macro": 1,
+        "function": 1,
+        "class": 1,
+        "namespace": 1,
+        "struct": 2
+      },
+      "abseil-cpp/absl/random/mocking_bit_gen.h": {
+        "macro": 1,
+        "function": 7,
+        "class": 3,
+        "struct": 1,
+        "namespace": 1
+      },
+      "abseil-cpp/absl/random/mock_distributions.h": {
+        "macro": 1,
+        "namespace": 1
+      },
+      "abseil-cpp/absl/random/poisson_distribution.h": {
+        "macro": 1,
+        "namespace": 1,
+        "function": 19,
+        "class": 2
+      },
+      "abseil-cpp/absl/random/random.h": {
+        "macro": 1,
+        "class": 2,
+        "namespace": 1
+      },
+      "abseil-cpp/absl/random/seed_gen_exception.h": {
+        "macro": 1,
+        "class": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/random/seed_sequences.h": {
+        "macro": 1,
+        "function": 1,
+        "namespace": 1
+      },
+      "abseil-cpp/absl/random/uniform_int_distribution.h": {
+        "macro": 1,
+        "function": 23,
+        "namespace": 1,
+        "class": 2
+      },
+      "abseil-cpp/absl/random/uniform_real_distribution.h": {
+        "macro": 1,
+        "function": 21,
+        "namespace": 1,
+        "class": 2
+      },
+      "abseil-cpp/absl/random/zipf_distribution.h": {
+        "macro": 1,
+        "namespace": 1,
+        "function": 27,
+        "class": 2
+      },
+      "abseil-cpp/absl/status/internal/statusor_internal.h": {
+        "macro": 1,
+        "function": 44,
+        "enum": 1,
+        "struct": 19,
+        "class": 4,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/status/internal/status_internal.h": {
+        "macro": 1,
+        "struct": 2,
+        "function": 5,
+        "class": 1,
+        "namespace": 3
+      },
+      "abseil-cpp/absl/status/internal/status_matchers.h": {
+        "macro": 1,
+        "function": 25,
+        "class": 8,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/status/statusor.h": {
+        "macro": 1,
+        "function": 43,
+        "class": 2,
+        "namespace": 1
+      },
+      "abseil-cpp/absl/status/status_builder.h": {
+        "macro": 1,
+        "function": 67,
+        "class": 3,
+        "enum": 2,
+        "struct": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/status/status.h": {
+        "macro": 1,
+        "function": 66,
+        "class": 1,
+        "enum": 2,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/status/status_payload_printer.h": {
+        "macro": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/strings/ascii.h": {
+        "macro": 1,
+        "function": 25,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/strings/charconv.h": {
+        "macro": 1,
+        "namespace": 1,
+        "enum": 1,
+        "struct": 1,
+        "function": 7
+      },
+      "abseil-cpp/absl/strings/charset.h": {
+        "macro": 1,
+        "function": 23,
+        "class": 1,
+        "namespace": 1
+      },
+      "abseil-cpp/absl/strings/cordz_test_helpers.h": {
+        "macro": 1,
+        "function": 7,
+        "class": 1,
+        "struct": 2,
+        "namespace": 1
+      },
+      "abseil-cpp/absl/strings/cord_analysis.h": {
+        "macro": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/strings/cord_buffer.h": {
+        "macro": 1,
+        "function": 34,
+        "class": 1,
+        "struct": 5,
+        "namespace": 1
+      },
+      "abseil-cpp/absl/strings/cord.h": {
+        "macro": 1,
+        "function": 128,
+        "class": 7,
+        "enum": 1,
+        "namespace": 4
+      },
+      "abseil-cpp/absl/strings/cord_test_helpers.h": {
+        "macro": 1,
+        "function": 5,
+        "enum": 1,
+        "namespace": 1
+      },
+      "abseil-cpp/absl/strings/escaping.h": {
+        "macro": 1,
+        "function": 3,
+        "namespace": 1
+      },
+      "abseil-cpp/absl/strings/has_absl_stringify.h": {
+        "macro": 1,
+        "struct": 2,
+        "class": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/strings/has_ostream_operator.h": {
+        "macro": 1,
+        "struct": 2,
+        "namespace": 1
+      },
+      "abseil-cpp/absl/strings/internal/append_and_overwrite.h": {
+        "macro": 1,
+        "function": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/strings/internal/charconv_bigint.h": {
+        "macro": 1,
+        "function": 26,
+        "class": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/strings/internal/charconv_parse.h": {
+        "macro": 1,
+        "enum": 1,
+        "struct": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/strings/internal/cordz_handle.h": {
+        "macro": 1,
+        "function": 3,
+        "class": 2,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/strings/internal/cordz_sample_token.h": {
+        "macro": 1,
+        "class": 2,
+        "namespace": 2,
+        "function": 2
+      },
+      "abseil-cpp/absl/strings/internal/cordz_statistics.h": {
+        "macro": 1,
+        "struct": 2,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/strings/internal/cordz_update_scope.h": {
+        "macro": 1,
+        "function": 4,
+        "class": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/strings/internal/cordz_update_tracker.h": {
+        "macro": 1,
+        "function": 7,
+        "class": 2,
+        "enum": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/strings/internal/cord_data_edge.h": {
+        "macro": 1,
+        "function": 2,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/strings/internal/cord_rep_btree.h": {
+        "macro": 1,
+        "enum": 2,
+        "function": 47,
+        "struct": 3,
+        "class": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/strings/internal/cord_rep_btree_navigator.h": {
+        "macro": 1,
+        "class": 1,
+        "function": 13,
+        "struct": 2,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/strings/internal/cord_rep_btree_reader.h": {
+        "macro": 1,
+        "class": 1,
+        "function": 10,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/strings/internal/cord_rep_consume.h": {
+        "macro": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/strings/internal/cord_rep_crc.h": {
+        "macro": 1,
+        "struct": 1,
+        "function": 5,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/strings/internal/cord_rep_flat.h": {
+        "macro": 1,
+        "function": 17,
+        "struct": 2,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/strings/internal/cord_rep_test_util.h": {
+        "macro": 1,
+        "function": 16,
+        "class": 1,
+        "struct": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/strings/internal/damerau_levenshtein_distance.h": {
+        "macro": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/strings/internal/escaping.h": {
+        "macro": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/strings/internal/escaping_test_common.h": {
+        "macro": 1,
+        "namespace": 2,
+        "function": 1,
+        "struct": 1
+      },
+      "abseil-cpp/absl/strings/internal/generic_printer.h": {
+        "macro": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/strings/internal/generic_printer_internal.h": {
+        "macro": 1,
+        "struct": 4,
+        "function": 22,
+        "class": 2,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/strings/internal/memutil.h": {
+        "macro": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/strings/internal/numbers_test_common.h": {
+        "macro": 1,
+        "function": 3,
+        "namespace": 2,
+        "struct": 2
+      },
+      "abseil-cpp/absl/strings/internal/ostringstream.h": {
+        "macro": 1,
+        "function": 10,
+        "class": 2,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/strings/internal/pow10_helper.h": {
+        "macro": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/strings/internal/resize_uninitialized.h": {
+        "macro": 1,
+        "function": 5,
+        "struct": 2,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/strings/internal/stl_type_traits.h": {
+        "macro": 1,
+        "struct": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/strings/internal/stringify_sink.h": {
+        "macro": 1,
+        "function": 3,
+        "class": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/strings/internal/stringify_stream.h": {
+        "macro": 1,
+        "function": 7,
+        "struct": 3,
+        "class": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/strings/internal/string_constant.h": {
+        "macro": 1,
+        "function": 3,
+        "struct": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/strings/internal/str_format/bind.h": {
+        "macro": 1,
+        "class": 5,
+        "function": 19,
+        "struct": 2,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/strings/internal/str_format/float_conversion.h": {
+        "macro": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/strings/internal/str_format/output.h": {
+        "macro": 1,
+        "function": 10,
+        "class": 2,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/strings/internal/str_format/parser.h": {
+        "macro": 1,
+        "struct": 1,
+        "function": 13,
+        "class": 2,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/strings/internal/str_join_internal.h": {
+        "macro": 1,
+        "struct": 11,
+        "function": 19,
+        "class": 3,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/strings/internal/str_split_internal.h": {
+        "macro": 1,
+        "function": 36,
+        "struct": 20,
+        "class": 3,
+        "enum": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/strings/internal/utf8.h": {
+        "macro": 1,
+        "struct": 1,
+        "enum": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/strings/match.h": {
+        "macro": 1,
+        "function": 4,
+        "namespace": 1
+      },
+      "abseil-cpp/absl/strings/numbers.h": {
+        "macro": 1,
+        "function": 10,
+        "namespace": 3
+      },
+      "abseil-cpp/absl/strings/string_view.h": {
+        "macro": 1,
+        "function": 2,
+        "namespace": 1
+      },
+      "abseil-cpp/absl/strings/strip.h": {
+        "macro": 1,
+        "function": 4,
+        "namespace": 1
+      },
+      "abseil-cpp/absl/strings/str_format.h": {
+        "macro": 1,
+        "function": 30,
+        "enum": 2,
+        "class": 5,
+        "struct": 1,
+        "namespace": 1
+      },
+      "abseil-cpp/absl/strings/str_join.h": {
+        "macro": 1,
+        "function": 16,
+        "namespace": 1
+      },
+      "abseil-cpp/absl/strings/str_replace.h": {
+        "macro": 1,
+        "function": 5,
+        "struct": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/strings/str_split.h": {
+        "macro": 1,
+        "struct": 9,
+        "class": 6,
+        "function": 11,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/strings/substitute.h": {
+        "macro": 1,
+        "function": 43,
+        "class": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/synchronization/barrier.h": {
+        "macro": 1,
+        "function": 1,
+        "class": 1,
+        "namespace": 1
+      },
+      "abseil-cpp/absl/synchronization/blocking_counter.h": {
+        "macro": 1,
+        "class": 1,
+        "function": 1,
+        "namespace": 1
+      },
+      "abseil-cpp/absl/synchronization/internal/create_thread_identity.h": {
+        "macro": 1,
+        "function": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/synchronization/internal/graphcycles.h": {
+        "macro": 1,
+        "class": 1,
+        "struct": 1,
+        "function": 3,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/synchronization/internal/kernel_timeout.h": {
+        "macro": 1,
+        "function": 7,
+        "class": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/synchronization/internal/per_thread_sem.h": {
+        "macro": 1,
+        "function": 3,
+        "class": 1,
+        "namespace": 3
+      },
+      "abseil-cpp/absl/synchronization/internal/thread_pool.h": {
+        "macro": 1,
+        "function": 5,
+        "class": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/synchronization/internal/waiter_base.h": {
+        "macro": 1,
+        "function": 1,
+        "class": 2,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/synchronization/internal/waiter.h": {
+        "macro": 12,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/synchronization/notification.h": {
+        "macro": 1,
+        "function": 5,
+        "class": 1,
+        "namespace": 1
+      },
+      "abseil-cpp/absl/time/civil_time.h": {
+        "macro": 1,
+        "function": 10,
+        "namespace": 3,
+        "struct": 6
+      },
+      "abseil-cpp/absl/time/clock.h": {
+        "macro": 1,
+        "function": 1,
+        "namespace": 1
+      },
+      "abseil-cpp/absl/time/clock_interface.h": {
+        "macro": 1,
+        "class": 1,
+        "namespace": 1
+      },
+      "abseil-cpp/absl/time/internal/cctz/include/cctz/civil_time_detail.h": {
+        "macro": 7,
+        "function": 71,
+        "namespace": 7,
+        "class": 1,
+        "struct": 7,
+        "enum": 1
+      },
+      "abseil-cpp/absl/time/internal/cctz/include/cctz/civil_time.h": {
+        "macro": 1,
+        "namespace": 3
+      },
+      "abseil-cpp/absl/time/internal/cctz/src/test_time_zone_names.h": {
+        "macro": 1,
+        "namespace": 3
+      },
+      "abseil-cpp/absl/time/internal/cctz/src/time_zone_fixed.h": {
+        "macro": 1,
+        "namespace": 3
+      },
+      "abseil-cpp/absl/time/internal/cctz/include/cctz/time_zone.h": {
+        "macro": 1,
+        "function": 18,
+        "namespace": 6,
+        "struct": 3,
+        "enum": 1,
+        "class": 1
+      },
+      "abseil-cpp/absl/time/internal/cctz/src/time_zone_if.h": {
+        "macro": 1,
+        "function": 2,
+        "class": 1,
+        "namespace": 3
+      },
+      "abseil-cpp/absl/time/internal/cctz/src/time_zone_impl.h": {
+        "macro": 1,
+        "function": 7,
+        "class": 1,
+        "namespace": 3
+      },
+      "abseil-cpp/absl/time/internal/cctz/src/time_zone_info.h": {
+        "macro": 1,
+        "struct": 4,
+        "class": 1,
+        "namespace": 3,
+        "function": 2
+      },
+      "abseil-cpp/absl/time/internal/cctz/src/time_zone_libc.h": {
+        "macro": 1,
+        "class": 1,
+        "namespace": 3
+      },
+      "abseil-cpp/absl/time/internal/cctz/src/time_zone_name_win.h": {
+        "macro": 1,
+        "namespace": 3
+      },
+      "abseil-cpp/absl/time/internal/cctz/src/time_zone_posix.h": {
+        "macro": 1,
+        "struct": 7,
+        "enum": 1,
+        "namespace": 3
+      },
+      "abseil-cpp/absl/time/internal/cctz/include/cctz/zone_info_source.h": {
+        "macro": 1,
+        "class": 1,
+        "namespace": 6
+      },
+      "abseil-cpp/absl/time/internal/test_util.h": {
+        "macro": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/time/simulated_clock.h": {
+        "macro": 1,
+        "function": 1,
+        "class": 1,
+        "namespace": 1
+      },
+      "abseil-cpp/absl/types/any.h": {
+        "macro": 1,
+        "namespace": 1,
+        "function": 3
+      },
+      "abseil-cpp/absl/types/any_span.h": {
+        "macro": 1,
+        "function": 87,
+        "class": 5,
+        "struct": 3,
+        "namespace": 3
+      },
+      "abseil-cpp/absl/types/compare.h": {
+        "macro": 1,
+        "namespace": 2,
+        "function": 7
+      },
+      "abseil-cpp/absl/types/internal/any_span.h": {
+        "macro": 1,
+        "function": 22,
+        "struct": 16,
+        "class": 1,
+        "namespace": 3
+      },
+      "abseil-cpp/absl/types/internal/span.h": {
+        "macro": 1,
+        "struct": 4,
+        "function": 5,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/types/optional.h": {
+        "macro": 1,
+        "namespace": 1,
+        "function": 3
+      },
+      "abseil-cpp/absl/types/optional_ref.h": {
+        "macro": 1,
+        "namespace": 2,
+        "function": 24,
+        "class": 1
+      },
+      "abseil-cpp/absl/types/source_location.h": {
+        "macro": 1,
+        "struct": 1,
+        "function": 9,
+        "class": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/types/span.h": {
+        "macro": 2,
+        "function": 70,
+        "class": 1,
+        "namespace": 2
+      },
+      "abseil-cpp/absl/types/variant.h": {
+        "macro": 1,
+        "struct": 1,
+        "function": 8,
+        "namespace": 2
+      },
+      "googletest/googlemock/include/gmock/gmock-actions.h": {
+        "macro": 32,
+        "function": 158,
+        "class": 33,
+        "struct": 46,
+        "namespace": 4
+      },
+      "googletest/googlemock/test/gmock_link_test.h": {
+        "function": 60,
+        "class": 4,
+        "macro": 1,
+        "namespace": 3
+      },
+      "googletest/googlemock/include/gmock/gmock-more-actions.h": {
+        "macro": 111,
+        "function": 3,
+        "struct": 1,
+        "namespace": 2
+      },
+      "googletest/googletest/include/gtest/gtest.h": {
+        "macro": 68,
+        "function": 105,
+        "class": 18,
+        "struct": 4,
+        "namespace": 4
+      },
+      "raylib/src/external/jar_xm.h": {
+        "macro": 43,
+        "function": 65,
+        "struct": 9,
+        "enum": 3
+      },
+      "raylib/projects/VS2019-Android/raylib_android/raylib_android.NativeActivity/android_native_app_glue.c": {
+        "function": 4
+      },
+      "imgui/backends/imgui_impl_opengl3_loader.h": {
+        "macro": 162,
+        "struct": 2,
+        "function": 11
+      },
+      "imgui/examples/libs/glfw/include/GLFW/glfw3.h": {
+        "macro": 242,
+        "struct": 3
+      },
+      "raylib/examples/others/external/include/GLFW/glfw3.h": {
+        "macro": 303,
+        "struct": 4
+      },
+      "raylib/examples/others/external/include/glad.h": {
+        "macro": 2195,
+        "function": 48,
+        "struct": 1
+      },
+      "raylib/src/external/glfw/include/GLFW/glfw3.h": {
+        "macro": 343,
+        "struct": 5
+      },
+      "raylib/src/rlgl.h": {
+        "macro": 171,
+        "struct": 8,
+        "enum": 12,
+        "function": 193
+      },
+      "raylib/src/external/par_shapes.h": {
+        "macro": 23,
+        "struct": 6,
+        "function": 69
+      },
+      "googletest/googletest/include/gtest/gtest-death-test.h": {
+        "macro": 14,
+        "class": 2,
+        "namespace": 2
+      },
+      "googletest/googletest/include/gtest/gtest_pred_impl.h": {
+        "macro": 32,
+        "function": 5,
+        "namespace": 1
+      },
+      "raylib/examples/others/resources/audio_data.h": {
+        "macro": 4
+      },
+      "googletest/googletest/include/gtest/internal/gtest-death-test-internal.h": {
+        "enum": 2,
+        "class": 5,
+        "macro": 5,
+        "function": 12,
+        "namespace": 2
+      },
+      "googletest/googletest/src/gtest-internal-inl.h": {
+        "class": 12,
+        "function": 69,
+        "struct": 2,
+        "macro": 1,
+        "enum": 1,
+        "namespace": 2
+      },
+      "imgui/imgui.cpp": {
+        "function": 595
+      },
+      "googletest/googlemock/include/gmock/gmock-spec-builders.h": {
+        "struct": 6,
+        "function": 112,
+        "enum": 3,
+        "class": 18,
+        "macro": 4,
+        "namespace": 4
+      },
+      "imgui/imgui_internal.h": {
+        "function": 299,
+        "macro": 115,
+        "namespace": 4,
+        "struct": 86,
+        "enum": 40
+      },
+      "imgui/imgui_draw.cpp": {
+        "function": 217
+      },
+      "imgui/imgui.h": {
+        "function": 193,
+        "macro": 48,
+        "struct": 44,
+        "enum": 43,
+        "namespace": 2
+      },
+      "googletest/googletest/include/gtest/internal/gtest-internal.h": {
+        "function": 71,
+        "struct": 20,
+        "enum": 1,
+        "class": 16,
+        "macro": 26,
+        "namespace": 7
+      },
+      "googletest/googletest/include/gtest/internal/gtest-param-util.h": {
+        "function": 89,
+        "class": 22,
+        "struct": 9,
+        "macro": 1,
+        "namespace": 3
+      },
+      "googletest/googlemock/include/gmock/gmock-function-mocker.h": {
+        "function": 6,
+        "macro": 139,
+        "struct": 1,
+        "namespace": 2
+      },
+      "raylib/src/external/glfw/src/win32_platform.h": {
+        "macro": 127,
+        "struct": 15,
+        "enum": 2
+      },
+      "imgui/imgui_widgets.cpp": {
+        "function": 267
+      },
+      "googletest/googletest/include/gtest/gtest-assertion-result.h": {
+        "function": 8,
+        "class": 1,
+        "macro": 1,
+        "namespace": 1
+      },
+      "googletest/googlemock/include/gmock/internal/gmock-internal-utils.h": {
+        "function": 16,
+        "class": 5,
+        "enum": 4,
+        "struct": 6,
+        "macro": 10,
+        "namespace": 2
+      },
+      "googletest/googletest/include/gtest/gtest-printers.h": {
+        "function": 86,
+        "struct": 16,
+        "class": 24,
+        "macro": 3,
+        "namespace": 3
+      },
+      "googletest/googletest/include/gtest/internal/gtest-port.h": {
+        "function": 118,
+        "class": 38,
+        "struct": 3,
+        "macro": 155,
+        "enum": 3,
+        "namespace": 7
+      },
+      "raylib/src/raudio.c": {
+        "function": 78
+      },
+      "raylib/src/raylib.h": {
+        "struct": 35,
+        "macro": 60,
+        "enum": 22
+      },
+      "raylib/src/external/glfw/deps/mingw/xinput.h": {
+        "macro": 76,
+        "struct": 6
+      },
+      "raylib/src/external/win32_clipboard.h": {
+        "macro": 34,
+        "function": 3,
+        "struct": 3
+      },
+      "raylib/examples/audio/raygui.h": {
+        "macro": 78,
+        "function": 82,
+        "struct": 9,
+        "enum": 21
+      },
+      "raylib/examples/core/raygui.h": {
+        "macro": 78,
+        "function": 82,
+        "struct": 9,
+        "enum": 21
+      },
+      "raylib/examples/models/raygui.h": {
+        "macro": 78,
+        "function": 82,
+        "struct": 9,
+        "enum": 21
+      },
+      "raylib/examples/shaders/raygui.h": {
+        "macro": 78,
+        "function": 82,
+        "struct": 9,
+        "enum": 21
+      },
+      "raylib/examples/shapes/raygui.h": {
+        "macro": 78,
+        "function": 82,
+        "struct": 9,
+        "enum": 21
+      },
+      "raylib/src/rcore.c": {
+        "function": 165
+      },
+      "imgui/imgui_tables.cpp": {
+        "function": 99
+      },
+      "googletest/googletest/include/gtest/internal/gtest-type-util.h": {
+        "struct": 11,
+        "function": 3,
+        "macro": 3,
+        "namespace": 2
+      },
+      "googletest/googletest/include/gtest/gtest-param-test.h": {
+        "function": 11,
+        "macro": 8,
+        "namespace": 1
+      },
+      "raylib/src/rcamera.h": {
+        "macro": 14,
+        "struct": 4,
+        "function": 14,
+        "enum": 2
+      },
+      "raylib/src/external/cgltf.h": {
+        "macro": 24,
+        "enum": 19,
+        "struct": 51,
+        "function": 137
+      },
+      "raylib/src/external/cgltf_write.h": {
+        "macro": 35,
+        "struct": 1,
+        "function": 46
+      },
+      "raylib/src/external/vox_loader.h": {
+        "macro": 12,
+        "function": 17,
+        "struct": 7
+      },
+      "raylib/src/external/rlsw.h": {
+        "macro": 454,
+        "function": 233,
+        "enum": 21,
+        "struct": 8
+      },
+      "raylib/src/external/miniaudio.h": {
+        "macro": 753,
+        "enum": 386,
+        "function": 1662,
+        "struct": 55
+      },
+      "raylib/src/external/glfw/deps/mingw/dinput.h": {
+        "macro": 925,
+        "function": 17,
+        "struct": 51
+      },
+      "raylib/src/config.h": {
+        "macro": 60
+      },
+      "googletest/googletest/samples/prime_tables.h": {
+        "function": 7,
+        "macro": 1,
+        "class": 3
+      },
+      "googletest/googlemock/include/gmock/gmock-cardinalities.h": {
+        "function": 10,
+        "class": 2,
+        "macro": 1,
+        "namespace": 1
+      },
+      "raylib/src/rmodels.c": {
+        "function": 75
+      },
+      "raylib/src/rshapes.c": {
+        "function": 71
+      },
+      "raylib/src/raymath.h": {
+        "function": 209,
+        "macro": 28,
+        "struct": 6
+      },
+      "imgui/examples/example_sdl2_directx11/main.cpp": {
+        "function": 5
+      },
+      "imgui/examples/example_sdl3_directx11/main.cpp": {
+        "function": 5
+      },
+      "imgui/examples/example_win32_directx10/main.cpp": {
+        "function": 6
+      },
+      "imgui/examples/example_win32_directx11/main.cpp": {
+        "function": 6
+      },
+      "imgui/examples/example_win32_directx12/main.cpp": {
+        "function": 8
+      },
+      "imgui/examples/example_win32_directx9/main.cpp": {
+        "function": 5
+      },
+      "imgui/examples/example_win32_opengl3/main.cpp": {
+        "function": 4
+      },
+      "googletest/googletest/samples/sample3-inl.h": {
+        "function": 15,
+        "macro": 1,
+        "class": 2
+      },
+      "raylib/src/platforms/rcore_android.c": {
+        "function": 51
+      },
+      "raylib/src/platforms/rcore_desktop_glfw.c": {
+        "function": 48
+      },
+      "raylib/src/platforms/rcore_desktop_rgfw.c": {
+        "function": 51
+      },
+      "raylib/src/platforms/rcore_desktop_sdl.c": {
+        "function": 62
+      },
+      "raylib/src/platforms/rcore_desktop_win32.c": {
+        "function": 49
+      },
+      "raylib/src/platforms/rcore_drm.c": {
+        "function": 51
+      },
+      "raylib/src/platforms/rcore_memory.c": {
+        "function": 48
+      },
+      "raylib/src/platforms/rcore_template.c": {
+        "function": 48
+      },
+      "raylib/src/platforms/rcore_web.c": {
+        "function": 48
+      },
+      "raylib/src/platforms/rcore_web_emscripten.c": {
+        "function": 48
+      },
+      "imgui/misc/freetype/imgui_freetype.cpp": {
+        "function": 5
+      },
+      "raylib/src/external/fix_win32_compatibility.h": {
+        "macro": 11
+      },
+      "raylib/src/rtext.c": {
+        "function": 61
+      },
+      "raylib/src/rtextures.c": {
+        "function": 120
+      },
+      "googletest/googletest/include/gtest/gtest-matchers.h": {
+        "function": 114,
+        "class": 22,
+        "macro": 3,
+        "struct": 6,
+        "namespace": 3
+      },
+      "raylib/examples/textures/textures_cellular_automata.c": {
+        "function": 2
+      },
+      "googletest/googlemock/test/gmock-matchers_test.h": {
+        "struct": 2,
+        "function": 12,
+        "macro": 2,
+        "class": 2,
+        "namespace": 2
+      },
+      "googletest/googletest/test/gtest-typed-test_test.h": {
+        "class": 1,
+        "macro": 1,
+        "function": 2
+      },
+      "googletest/googletest/samples/sample4.h": {
+        "function": 1,
+        "class": 1,
+        "macro": 1
+      },
+      "raylib/examples/models/rlights.h": {
+        "function": 2,
+        "macro": 2,
+        "struct": 1,
+        "enum": 1
+      },
+      "raylib/examples/shaders/rlights.h": {
+        "function": 2,
+        "macro": 2,
+        "struct": 1,
+        "enum": 1
+      },
+      "raylib/examples/shaders/shaders_rounded_rectangle.c": {
+        "function": 3
+      },
+      "raylib/examples/text/text_strings_management.c": {
+        "function": 8
+      },
+      "imgui/examples/example_glfw_wgpu/main.cpp": {
+        "function": 3
+      },
+      "imgui/examples/example_sdl2_wgpu/main.cpp": {
+        "function": 2
+      },
+      "imgui/examples/example_sdl3_wgpu/main.cpp": {
+        "function": 2
+      },
+      "raylib/examples/core/core_custom_logging.c": {
+        "function": 2
+      },
+      "raylib/src/external/glfw/deps/mingw/_mingw_dxhelper.h": {
+        "macro": 53
+      },
+      "raylib/src/external/jar_mod.h": {
+        "macro": 40,
+        "struct": 10,
+        "function": 16
+      },
+      "raylib/src/external/RGFW/deps/minigamepad.h": {
+        "macro": 45,
+        "function": 69,
+        "struct": 20
+      },
+      "raylib/src/external/dirent.h": {
+        "struct": 2,
+        "macro": 3,
+        "function": 4
+      },
+      "raylib/src/rgestures.h": {
+        "macro": 12,
+        "function": 13,
+        "struct": 8,
+        "enum": 3
+      },
+      "raylib/src/external/dr_flac.h": {
+        "macro": 205,
+        "function": 221,
+        "struct": 23,
+        "enum": 3
+      },
+      "raylib/src/external/dr_mp3.h": {
+        "macro": 185,
+        "struct": 14,
+        "enum": 2,
+        "function": 119
+      },
+      "raylib/src/external/dr_wav.h": {
+        "macro": 144,
+        "struct": 24,
+        "enum": 7,
+        "function": 226
+      },
+      "googletest/googlemock/include/gmock/gmock-more-matchers.h": {
+        "function": 5,
+        "macro": 1,
+        "class": 1,
+        "namespace": 2
+      },
+      "raylib/src/external/glfw/src/win32_init.c": {
+        "function": 10
+      },
+      "raylib/examples/models/models_textured_cube.c": {
+        "function": 3
+      },
+      "raylib/examples/models/models_point_rendering.c": {
+        "function": 3
+      },
+      "raylib/examples/models/models_rlgl_solar_system.c": {
+        "function": 2
+      },
+      "raylib/examples/textures/textures_polygon_drawing.c": {
+        "function": 2
+      },
+      "raylib/examples/textures/textures_tiled_drawing.c": {
+        "function": 2
+      },
+      "raylib/examples/shapes/reasings.h": {
+        "macro": 5,
+        "function": 28
+      },
+      "raylib/src/external/glfw/src/internal.h": {
+        "macro": 139,
+        "struct": 34,
+        "enum": 2
+      },
+      "raylib/src/external/RGFW/RGFW.h": {
+        "macro": 220,
+        "function": 1104,
+        "enum": 14,
+        "struct": 38
+      },
+      "imgui/examples/libs/emscripten/emscripten_mainloop_stub.h": {
+        "macro": 4,
+        "function": 1
+      },
+      "googletest/googletest/include/gtest/gtest-spi.h": {
+        "macro": 5,
+        "enum": 1,
+        "class": 2,
+        "namespace": 2
+      },
+      "imgui/misc/fonts/binary_to_compressed_c.cpp": {
+        "function": 4
+      },
+      "googletest/googletest/test/googletest-param-test-test.h": {
+        "class": 2,
+        "macro": 1
+      },
+      "raylib/src/external/stb_image.h": {
+        "macro": 103,
+        "enum": 4,
+        "struct": 15,
+        "function": 222
+      },
+      "raylib/src/external/rltexgpu.h": {
+        "macro": 11,
+        "enum": 1,
+        "struct": 7,
+        "function": 8
+      },
+      "googletest/googletest/include/gtest/gtest_prod.h": {
+        "macro": 2
+      },
+      "googletest/googletest/include/gtest/internal/gtest-filepath.h": {
+        "function": 10,
+        "class": 1,
+        "macro": 1,
+        "namespace": 2
+      },
+      "raylib/examples/shaders/shaders_game_of_life.c": {
+        "function": 2
+      },
+      "raylib/examples/others/external/include/glad_gles2.h": {
+        "macro": 1679,
+        "enum": 1,
+        "function": 78
+      },
+      "raylib/src/external/glad.h": {
+        "macro": 3053,
+        "enum": 1,
+        "function": 87
+      },
+      "raylib/src/external/glad_gles2.h": {
+        "macro": 1679,
+        "enum": 1,
+        "function": 78
+      },
+      "raylib/src/external/glfw/deps/glad/gl.h": {
+        "macro": 2126,
+        "enum": 1,
+        "function": 23
+      },
+      "raylib/src/external/glfw/deps/glad/gles2.h": {
+        "macro": 494,
+        "enum": 1,
+        "function": 9
+      },
+      "raylib/src/external/glfw/deps/glad/vulkan.h": {
+        "macro": 320,
+        "enum": 110,
+        "struct": 291,
+        "function": 15
+      },
+      "raylib/src/external/glfw/src/platform.h": {
+        "macro": 61
+      },
+      "raylib/src/external/glfw/src/cocoa_platform.h": {
+        "macro": 29,
+        "struct": 4,
+        "function": 76
+      },
+      "raylib/src/external/glfw/src/cocoa_joystick.h": {
+        "macro": 2,
+        "struct": 1
+      },
+      "raylib/src/external/glfw/src/cocoa_time.h": {
+        "macro": 1,
+        "struct": 1
+      },
+      "raylib/src/external/glfw/src/x11_platform.h": {
+        "macro": 197,
+        "struct": 21
+      },
+      "raylib/src/external/glfw/src/xkb_unicode.h": {
+        "macro": 1
+      },
+      "raylib/src/external/glfw/src/linux_joystick.h": {
+        "macro": 2,
+        "struct": 2
+      },
+      "raylib/src/external/glfw/src/null_platform.h": {
+        "macro": 128,
+        "struct": 3
+      },
+      "raylib/src/external/glfw/src/posix_time.h": {
+        "macro": 1,
+        "struct": 1
+      },
+      "raylib/src/external/glfw/src/posix_thread.h": {
+        "macro": 2,
+        "struct": 2
+      },
+      "raylib/src/external/glfw/src/wl_platform.h": {
+        "macro": 118,
+        "struct": 22,
+        "enum": 3
+      },
+      "raylib/src/external/glfw/src/win32_joystick.h": {
+        "macro": 2,
+        "struct": 2
+      },
+      "raylib/src/external/glfw/src/win32_time.h": {
+        "macro": 1,
+        "struct": 1
+      },
+      "raylib/src/external/glfw/src/win32_thread.h": {
+        "macro": 2,
+        "struct": 2
+      },
+      "googletest/googlemock/include/gmock/internal/gmock-port.h": {
+        "macro": 19
+      },
+      "googletest/googlemock/include/gmock/internal/gmock-pp.h": {
+        "macro": 137
+      },
+      "googletest/googlemock/include/gmock/gmock.h": {
+        "macro": 1,
+        "namespace": 1
+      },
+      "googletest/googlemock/include/gmock/gmock-nice-strict.h": {
+        "macro": 3,
+        "function": 16,
+        "class": 6,
+        "namespace": 2
+      },
+      "googletest/googlemock/include/gmock/internal/custom/gmock-generated-actions.h": {
+        "macro": 1
+      },
+      "googletest/googlemock/include/gmock/internal/custom/gmock-matchers.h": {
+        "macro": 1
+      },
+      "googletest/googlemock/include/gmock/internal/custom/gmock-port.h": {
+        "macro": 1
+      },
+      "googletest/googletest/include/gtest/gtest-message.h": {
+        "macro": 1,
+        "function": 9,
+        "class": 1,
+        "namespace": 2
+      },
+      "googletest/googletest/include/gtest/gtest-test-part.h": {
+        "macro": 1,
+        "class": 4,
+        "function": 12,
+        "enum": 1,
+        "namespace": 2
+      },
+      "googletest/googletest/include/gtest/gtest-typed-test.h": {
+        "macro": 16
+      },
+      "googletest/googletest/include/gtest/internal/custom/gtest.h": {
+        "macro": 1
+      },
+      "googletest/googletest/include/gtest/internal/custom/gtest-port.h": {
+        "macro": 1
+      },
+      "googletest/googletest/include/gtest/internal/custom/gtest-printers.h": {
+        "macro": 1
+      },
+      "googletest/googletest/include/gtest/internal/gtest-port-arch.h": {
+        "macro": 40
+      },
+      "googletest/googletest/include/gtest/internal/gtest-string.h": {
+        "macro": 1,
+        "class": 1,
+        "namespace": 2
+      },
+      "googletest/googletest/samples/sample1.h": {
+        "macro": 1
+      },
+      "googletest/googletest/samples/sample2.h": {
+        "macro": 1,
+        "function": 6,
+        "class": 1
+      },
+      "googletest/googletest/test/production.h": {
+        "macro": 1,
+        "class": 1,
+        "function": 2
+      },
+      "raylib/projects/Notepad++/raylib_npp_parser/raylib_to_parse.h": {
+        "macro": 1
+      },
+      "raylib/src/external/tinyobj_loader_c.h": {
+        "macro": 18,
+        "struct": 8,
+        "enum": 1,
+        "function": 38
+      },
+      "raylib/examples/others/resources/image_data.h": {
+        "macro": 3
+      },
+      "imgui/misc/single_file/imgui_single_file.h": {
+        "macro": 1
+      },
+      "imgui/backends/imgui_impl_opengl3.h": {
+        "macro": 2,
+        "function": 1,
+        "struct": 1
+      },
+      "imgui/backends/imgui_impl_vulkan.h": {
+        "macro": 5,
+        "struct": 6,
+        "function": 1
+      },
+      "imgui/backends/imgui_impl_wgpu.h": {
+        "macro": 1,
+        "struct": 3,
+        "function": 1
+      },
+      "imgui/imstb_textedit.h": {
+        "macro": 14,
+        "struct": 5,
+        "function": 33
+      },
+      "raylib/src/external/glfw/deps/getopt.h": {
+        "macro": 1,
+        "struct": 1
+      },
+      "raylib/src/external/stb_image_write.h": {
+        "macro": 38,
+        "struct": 1,
+        "function": 49
+      },
+      "imgui/examples/example_allegro5/imconfig_allegro5.h": {
+        "macro": 1
+      },
+      "imgui/misc/cpp/imgui_stdlib.h": {
+        "namespace": 1
+      },
+      "imgui/misc/freetype/imgui_freetype.h": {
+        "namespace": 1,
+        "enum": 1
+      },
+      "imgui/backends/imgui_impl_allegro5.cpp": {
+        "function": 10
+      },
+      "imgui/backends/imgui_impl_android.cpp": {
+        "function": 4
+      },
+      "imgui/backends/imgui_impl_dx10.cpp": {
+        "function": 7
+      },
+      "imgui/backends/imgui_impl_dx10.h": {
+        "struct": 1
+      },
+      "imgui/backends/imgui_impl_dx11.cpp": {
+        "function": 7
+      },
+      "imgui/backends/imgui_impl_dx11.h": {
+        "struct": 1
+      },
+      "imgui/backends/imgui_impl_dx12.cpp": {
+        "function": 8
+      },
+      "imgui/backends/imgui_impl_dx12.h": {
+        "function": 1,
+        "struct": 2
+      },
+      "imgui/backends/imgui_impl_dx9.cpp": {
+        "function": 7
+      },
+      "imgui/backends/imgui_impl_glut.cpp": {
+        "function": 12
+      },
+      "imgui/backends/imgui_impl_glfw.cpp": {
+        "function": 23
+      },
+      "imgui/backends/imgui_impl_null.cpp": {
+        "function": 10
+      },
+      "imgui/backends/imgui_impl_opengl2.cpp": {
+        "function": 7
+      },
+      "imgui/backends/imgui_impl_opengl3.cpp": {
+        "function": 8
+      },
+      "imgui/backends/imgui_impl_sdl2.h": {
+        "enum": 2
+      },
+      "imgui/backends/imgui_impl_sdl2.cpp": {
+        "function": 14
+      },
+      "imgui/backends/imgui_impl_sdl3.h": {
+        "enum": 2
+      },
+      "imgui/backends/imgui_impl_sdl3.cpp": {
+        "function": 13
+      },
+      "imgui/backends/imgui_impl_sdlgpu3.cpp": {
+        "function": 9
+      },
+      "imgui/backends/imgui_impl_sdlgpu3.h": {
+        "struct": 2
+      },
+      "imgui/backends/imgui_impl_sdlrenderer2.cpp": {
+        "function": 7
+      },
+      "imgui/backends/imgui_impl_sdlrenderer2.h": {
+        "struct": 1
+      },
+      "imgui/backends/imgui_impl_sdlrenderer3.cpp": {
+        "function": 7
+      },
+      "imgui/backends/imgui_impl_sdlrenderer3.h": {
+        "struct": 1
+      },
+      "imgui/backends/imgui_impl_vulkan.cpp": {
+        "function": 26
+      },
+      "imgui/backends/imgui_impl_wgpu.cpp": {
+        "function": 16
+      },
+      "imgui/backends/imgui_impl_win32.cpp": {
+        "function": 11
+      },
+      "imgui/examples/example_android_opengl3/main.cpp": {
+        "function": 4
+      },
+      "imgui/misc/cpp/imgui_stdlib.cpp": {
+        "function": 3
+      },
+      "raylib/examples/text/text_input_box.c": {
+        "function": 2
+      },
+      "raylib/examples/core/core_storage_values.c": {
+        "function": 3
+      },
+      "raylib/src/external/m3d.h": {
+        "namespace": 1,
+        "macro": 143,
+        "function": 140,
+        "class": 1,
+        "struct": 35,
+        "enum": 8
+      },
+      "raylib/examples/core/msf_gif.h": {
+        "macro": 11,
+        "struct": 6,
+        "function": 17
+      },
+      "imgui/examples/example_glut_opengl2/main.cpp": {
+        "function": 2
+      },
+      "raylib/examples/audio/audio_mixed_processor.c": {
+        "function": 2
+      },
+      "raylib/src/external/qoa.h": {
+        "macro": 11,
+        "struct": 2,
+        "function": 16
+      },
+      "raylib/src/external/qoi.h": {
+        "macro": 17,
+        "struct": 2,
+        "function": 6
+      },
+      "raylib/src/external/rprand.h": {
+        "macro": 10,
+        "function": 8
+      },
+      "raylib/src/external/sdefl.h": {
+        "macro": 31,
+        "struct": 9,
+        "function": 27,
+        "enum": 1
+      },
+      "raylib/src/external/sinfl.h": {
+        "macro": 17,
+        "struct": 2,
+        "function": 19,
+        "enum": 1
+      },
+      "raylib/src/external/stb_image_resize2.h": {
+        "macro": 793,
+        "function": 158,
+        "struct": 13,
+        "enum": 5
+      },
+      "imgui/imstb_rectpack.h": {
+        "macro": 11,
+        "enum": 2,
+        "struct": 4,
+        "function": 9
+      },
+      "raylib/src/external/stb_rect_pack.h": {
+        "macro": 11,
+        "enum": 2,
+        "struct": 4,
+        "function": 9
+      },
+      "imgui/imstb_truetype.h": {
+        "macro": 45,
+        "struct": 19,
+        "enum": 7,
+        "function": 140
+      },
+      "raylib/src/external/stb_truetype.h": {
+        "macro": 45,
+        "struct": 19,
+        "enum": 7,
+        "function": 140
+      },
+      "imgui/imgui_demo.cpp": {
+        "function": 12
+      },
+      "abseil-cpp/absl/time/internal/cctz/src/tzfile.h": {
+        "macro": 6,
+        "struct": 1
+      },
+      "raylib/tools/rlparser/rlparser.c": {
+        "function": 2
+      },
+      "imgui/examples/libs/usynergy/uSynergy.h": {
+        "macro": 19,
+        "struct": 2,
+        "enum": 1
+      },
+      "raylib/examples/shaders/shaders_depth_rendering.c": {
+        "function": 2
+      },
+      "raylib/examples/shaders/shaders_depth_writing.c": {
+        "function": 2
+      },
+      "raylib/examples/core/core_3d_camera_fps.c": {
+        "function": 2
+      },
+      "raylib/examples/core/core_2d_camera_platformer.c": {
+        "function": 7
+      },
+      "raylib/examples/core/core_window_web.c": {
+        "function": 2
+      },
+      "raylib/projects/CMake/core_basic_window.c": {
+        "function": 2
+      },
+      "raylib/projects/Zig/src/core_basic_window.c": {
+        "function": 2
+      },
+      "imgui/examples/example_win32_vulkan/main.cpp": {
+        "function": 2
+      },
+      "raylib/projects/VS2019-Android/raylib_android/raylib_android.NativeActivity/android_native_app_glue.h": {
+        "macro": 1,
+        "enum": 2,
+        "struct": 2
+      },
+      "imgui/examples/libs/glfw/include/GLFW/glfw3native.h": {
+        "macro": 1
+      },
+      "raylib/examples/others/external/include/GLFW/glfw3native.h": {
+        "macro": 1
+      },
+      "raylib/src/external/glfw/include/GLFW/glfw3native.h": {
+        "macro": 1
+      },
+      "raylib/src/external/glfw/src/wl_window.c": {
+        "function": 66
+      },
+      "raylib/src/external/glfw/src/wl_monitor.c": {
+        "function": 12
+      },
+      "raylib/src/external/glfw/src/monitor.c": {
+        "function": 24
+      },
+      "raylib/src/external/glfw/src/input.c": {
+        "function": 55
+      },
+      "raylib/src/external/glfw/src/context.c": {
+        "function": 10
+      },
+      "raylib/src/external/glfw/src/egl_context.c": {
+        "function": 7
+      },
+      "raylib/src/external/glfw/src/glx_context.c": {
+        "function": 6
+      },
+      "raylib/src/external/glfw/src/null_init.c": {
+        "function": 3
+      },
+      "raylib/src/external/glfw/src/wl_init.c": {
+        "function": 4
+      },
+      "raylib/src/external/glfw/src/x11_init.c": {
+        "function": 7
+      },
+      "raylib/src/external/glfw/src/osmesa_context.c": {
+        "function": 6
+      },
+      "raylib/src/external/glfw/src/wgl_context.c": {
+        "function": 4
+      },
+      "raylib/src/external/glfw/src/null_window.c": {
+        "function": 56
+      },
+      "raylib/src/external/glfw/src/win32_window.c": {
+        "function": 57
+      },
+      "raylib/src/external/glfw/src/x11_window.c": {
+        "function": 64
+      },
+      "raylib/src/external/glfw/src/linux_joystick.c": {
+        "function": 6
+      },
+      "raylib/src/external/glfw/src/win32_joystick.c": {
+        "function": 7
+      },
+      "raylib/src/external/glfw/src/init.c": {
+        "function": 17
+      },
+      "raylib/src/external/glfw/src/null_monitor.c": {
+        "function": 9
+      },
+      "raylib/src/external/glfw/src/win32_monitor.c": {
+        "function": 14
+      },
+      "raylib/src/external/glfw/src/x11_monitor.c": {
+        "function": 13
+      },
+      "raylib/src/external/glfw/src/null_joystick.c": {
+        "function": 5
+      },
+      "raylib/src/external/glfw/src/vulkan.c": {
+        "function": 8
+      },
+      "raylib/src/external/glfw/src/window.c": {
+        "function": 57
+      },
+      "raylib/src/external/glfw/src/xkb_unicode.c": {
+        "function": 1
+      },
+      "raylib/src/external/glfw/src/posix_thread.c": {
+        "function": 8
+      },
+      "raylib/src/external/glfw/src/win32_thread.c": {
+        "function": 8
+      },
+      "raylib/src/external/glfw/src/posix_module.c": {
+        "function": 3
+      },
+      "raylib/src/external/glfw/src/win32_module.c": {
+        "function": 3
+      },
+      "raylib/src/external/glfw/src/cocoa_time.c": {
+        "function": 3
+      },
+      "raylib/src/external/glfw/src/posix_time.c": {
+        "function": 3
+      },
+      "raylib/src/external/glfw/src/win32_time.c": {
+        "function": 3
+      },
+      "raylib/src/external/glfw/src/posix_poll.c": {
+        "function": 1
+      },
+      "raylib/src/external/glfw/src/platform.c": {
+        "function": 4
+      },
+      "raylib/src/external/stb_vorbis.c": {
+        "function": 31
+      },
+      "raylib/src/external/glfw/deps/getopt.c": {
+        "function": 2
+      },
+      "abseil-cpp/absl/base/c_header_test.c": {
+        "function": 1
+      },
+      "imgui/examples/example_allegro5/main.cpp": {
+        "function": 1
+      },
+      "imgui/examples/example_glfw_opengl2/main.cpp": {
+        "function": 1
+      },
+      "imgui/examples/example_glfw_opengl3/main.cpp": {
+        "function": 1
+      },
+      "imgui/examples/example_glfw_vulkan/main.cpp": {
+        "function": 1
+      },
+      "imgui/examples/example_null/main.cpp": {
+        "function": 1
+      },
+      "imgui/examples/example_sdl2_opengl2/main.cpp": {
+        "function": 1
+      },
+      "imgui/examples/example_sdl2_opengl3/main.cpp": {
+        "function": 1
+      },
+      "imgui/examples/example_sdl2_sdlrenderer2/main.cpp": {
+        "function": 1
+      },
+      "imgui/examples/example_sdl2_vulkan/main.cpp": {
+        "function": 1
+      },
+      "imgui/examples/example_sdl3_opengl3/main.cpp": {
+        "function": 1
+      },
+      "imgui/examples/example_sdl3_sdlgpu3/main.cpp": {
+        "function": 1
+      },
+      "imgui/examples/example_sdl3_sdlrenderer3/main.cpp": {
+        "function": 1
+      },
+      "imgui/examples/example_sdl3_vulkan/main.cpp": {
+        "function": 1
+      },
+      "raylib/examples/audio/audio_amp_envelope.c": {
+        "function": 1
+      },
+      "raylib/examples/audio/audio_module_playing.c": {
+        "function": 1
+      },
+      "raylib/examples/audio/audio_music_stream.c": {
+        "function": 1
+      },
+      "raylib/examples/audio/audio_raw_stream.c": {
+        "function": 1
+      },
+      "raylib/examples/audio/audio_sound_loading.c": {
+        "function": 1
+      },
+      "raylib/examples/audio/audio_sound_multi.c": {
+        "function": 1
+      },
+      "raylib/examples/audio/audio_sound_positioning.c": {
+        "function": 1
+      },
+      "raylib/examples/audio/audio_spectrum_visualizer.c": {
+        "function": 1
+      },
+      "raylib/examples/audio/audio_stream_callback.c": {
+        "function": 1
+      },
+      "raylib/examples/audio/audio_stream_effects.c": {
+        "function": 1
+      },
+      "raylib/examples/core/core_2d_camera.c": {
+        "function": 1
+      },
+      "raylib/examples/core/core_2d_camera_mouse_zoom.c": {
+        "function": 1
+      },
+      "raylib/examples/core/core_2d_camera_split_screen.c": {
+        "function": 1
+      },
+      "raylib/examples/core/core_3d_camera_first_person.c": {
+        "function": 1
+      },
+      "raylib/examples/core/core_3d_camera_free.c": {
+        "function": 1
+      },
+      "raylib/examples/core/core_3d_camera_mode.c": {
+        "function": 1
+      },
+      "raylib/examples/core/core_3d_camera_split_screen.c": {
+        "function": 1
+      },
+      "raylib/examples/core/core_3d_picking.c": {
+        "function": 1
+      },
+      "raylib/examples/core/core_automation_events.c": {
+        "function": 1
+      },
+      "raylib/examples/core/core_basic_screen_manager.c": {
+        "function": 1
+      },
+      "raylib/examples/core/core_basic_window.c": {
+        "function": 1
+      },
+      "raylib/examples/core/core_clipboard_text.c": {
+        "function": 1
+      },
+      "raylib/examples/core/core_compute_hash.c": {
+        "function": 1
+      },
+      "raylib/examples/core/core_custom_frame_control.c": {
+        "function": 1
+      },
+      "raylib/examples/core/core_delta_time.c": {
+        "function": 1
+      },
+      "raylib/examples/core/core_directory_files.c": {
+        "function": 1
+      },
+      "raylib/examples/core/core_drop_files.c": {
+        "function": 1
+      },
+      "raylib/examples/core/core_highdpi_demo.c": {
+        "function": 1
+      },
+      "raylib/examples/core/core_highdpi_testbed.c": {
+        "function": 1
+      },
+      "raylib/examples/core/core_input_actions.c": {
+        "function": 1
+      },
+      "raylib/examples/core/core_input_gamepad.c": {
+        "function": 1
+      },
+      "raylib/examples/core/core_input_gestures.c": {
+        "function": 1
+      },
+      "raylib/examples/core/core_input_gestures_testbed.c": {
+        "function": 1
+      },
+      "raylib/examples/core/core_input_keys.c": {
+        "function": 1
+      },
+      "raylib/examples/core/core_input_mouse.c": {
+        "function": 1
+      },
+      "raylib/examples/core/core_input_mouse_wheel.c": {
+        "function": 1
+      },
+      "raylib/examples/core/core_input_multitouch.c": {
+        "function": 1
+      },
+      "raylib/examples/core/core_input_virtual_controls.c": {
+        "function": 1
+      },
+      "raylib/examples/core/core_keyboard_testbed.c": {
+        "function": 1
+      },
+      "raylib/examples/core/core_monitor_detector.c": {
+        "function": 1
+      },
+      "raylib/examples/core/core_random_sequence.c": {
+        "function": 1
+      },
+      "raylib/examples/core/core_random_values.c": {
+        "function": 1
+      },
+      "raylib/examples/core/core_render_texture.c": {
+        "function": 1
+      },
+      "raylib/examples/core/core_scissor_test.c": {
+        "function": 1
+      },
+      "raylib/examples/core/core_screen_recording.c": {
+        "function": 1
+      },
+      "raylib/examples/core/core_smooth_pixelperfect.c": {
+        "function": 1
+      },
+      "raylib/examples/core/core_text_file_loading.c": {
+        "function": 1
+      },
+      "raylib/examples/core/core_undo_redo.c": {
+        "function": 1
+      },
+      "raylib/examples/core/core_viewport_scaling.c": {
+        "function": 1
+      },
+      "raylib/examples/core/core_vr_simulator.c": {
+        "function": 1
+      },
+      "raylib/examples/core/core_window_flags.c": {
+        "function": 1
+      },
+      "raylib/examples/core/core_window_letterbox.c": {
+        "function": 1
+      },
+      "raylib/examples/core/core_window_should_close.c": {
+        "function": 1
+      },
+      "raylib/examples/core/core_world_screen.c": {
+        "function": 1
+      },
+      "raylib/examples/examples_template.c": {
+        "function": 1
+      },
+      "raylib/examples/models/models_animation_blend_custom.c": {
+        "function": 1
+      },
+      "raylib/examples/models/models_animation_blending.c": {
+        "function": 1
+      },
+      "raylib/examples/models/models_animation_gpu_skinning.c": {
+        "function": 1
+      },
+      "raylib/examples/models/models_animation_timing.c": {
+        "function": 1
+      },
+      "raylib/examples/models/models_basic_voxel.c": {
+        "function": 1
+      },
+      "raylib/examples/models/models_billboard_rendering.c": {
+        "function": 1
+      },
+      "raylib/examples/models/models_bone_socket.c": {
+        "function": 1
+      },
+      "raylib/examples/models/models_box_collisions.c": {
+        "function": 1
+      },
+      "raylib/examples/models/models_cubicmap_rendering.c": {
+        "function": 1
+      },
+      "raylib/examples/models/models_decals.c": {
+        "function": 1
+      },
+      "raylib/examples/models/models_directional_billboard.c": {
+        "function": 1
+      },
+      "raylib/examples/models/models_first_person_maze.c": {
+        "function": 1
+      },
+      "raylib/examples/models/models_geometric_shapes.c": {
+        "function": 1
+      },
+      "raylib/examples/models/models_heightmap_rendering.c": {
+        "function": 1
+      },
+      "raylib/examples/models/models_loading.c": {
+        "function": 1
+      },
+      "raylib/examples/models/models_loading_gltf.c": {
+        "function": 1
+      },
+      "raylib/examples/models/models_loading_iqm.c": {
+        "function": 1
+      },
+      "raylib/examples/models/models_loading_m3d.c": {
+        "function": 1
+      },
+      "raylib/examples/models/models_loading_vox.c": {
+        "function": 1
+      },
+      "raylib/examples/models/models_mesh_generation.c": {
+        "function": 1
+      },
+      "raylib/examples/models/models_mesh_picking.c": {
+        "function": 1
+      },
+      "raylib/examples/models/models_orthographic_projection.c": {
+        "function": 1
+      },
+      "raylib/examples/models/models_rotating_cube.c": {
+        "function": 1
+      },
+      "raylib/examples/models/models_skybox_rendering.c": {
+        "function": 1
+      },
+      "raylib/examples/models/models_tesseract_view.c": {
+        "function": 1
+      },
+      "raylib/examples/models/models_waving_cubes.c": {
+        "function": 1
+      },
+      "raylib/examples/models/models_yaw_pitch_roll.c": {
+        "function": 1
+      },
+      "raylib/examples/others/embedded_files_loading.c": {
+        "function": 1
+      },
+      "raylib/examples/others/raylib_opengl_interop.c": {
+        "function": 1
+      },
+      "raylib/examples/others/rlgl_standalone.c": {
+        "function": 1
+      },
+      "raylib/examples/shaders/shaders_ascii_rendering.c": {
+        "function": 1
+      },
+      "raylib/examples/shaders/shaders_basic_lighting.c": {
+        "function": 1
+      },
+      "raylib/examples/shaders/shaders_basic_pbr.c": {
+        "function": 1
+      },
+      "raylib/examples/shaders/shaders_cel_shading.c": {
+        "function": 1
+      },
+      "raylib/examples/shaders/shaders_color_correction.c": {
+        "function": 1
+      },
+      "raylib/examples/shaders/shaders_custom_uniform.c": {
+        "function": 1
+      },
+      "raylib/examples/shaders/shaders_deferred_rendering.c": {
+        "function": 1
+      },
+      "raylib/examples/shaders/shaders_eratosthenes_sieve.c": {
+        "function": 1
+      },
+      "raylib/examples/shaders/shaders_fog_rendering.c": {
+        "function": 1
+      },
+      "raylib/examples/shaders/shaders_hot_reloading.c": {
+        "function": 1
+      },
+      "raylib/examples/shaders/shaders_hybrid_rendering.c": {
+        "function": 1
+      },
+      "raylib/examples/shaders/shaders_julia_set.c": {
+        "function": 1
+      },
+      "raylib/examples/shaders/shaders_lightmap_rendering.c": {
+        "function": 1
+      },
+      "raylib/examples/shaders/shaders_mandelbrot_set.c": {
+        "function": 1
+      },
+      "raylib/examples/shaders/shaders_mesh_instancing.c": {
+        "function": 1
+      },
+      "raylib/examples/shaders/shaders_model_shader.c": {
+        "function": 1
+      },
+      "raylib/examples/shaders/shaders_multi_sample2d.c": {
+        "function": 1
+      },
+      "raylib/examples/shaders/shaders_normalmap_rendering.c": {
+        "function": 1
+      },
+      "raylib/examples/shaders/shaders_palette_switch.c": {
+        "function": 1
+      },
+      "raylib/examples/shaders/shaders_postprocessing.c": {
+        "function": 1
+      },
+      "raylib/examples/shaders/shaders_raymarching_rendering.c": {
+        "function": 1
+      },
+      "raylib/examples/shaders/shaders_rlgl_compute.c": {
+        "function": 1
+      },
+      "raylib/examples/shaders/shaders_shadowmap_rendering.c": {
+        "function": 1
+      },
+      "raylib/examples/shaders/shaders_shapes_textures.c": {
+        "function": 1
+      },
+      "raylib/examples/shaders/shaders_simple_mask.c": {
+        "function": 1
+      },
+      "raylib/examples/shaders/shaders_spotlight_rendering.c": {
+        "function": 1
+      },
+      "raylib/examples/shaders/shaders_texture_outline.c": {
+        "function": 1
+      },
+      "raylib/examples/shaders/shaders_texture_rendering.c": {
+        "function": 1
+      },
+      "raylib/examples/shaders/shaders_texture_tiling.c": {
+        "function": 1
+      },
+      "raylib/examples/shaders/shaders_texture_waves.c": {
+        "function": 1
+      },
+      "raylib/examples/shaders/shaders_vertex_displacement.c": {
+        "function": 1
+      },
+      "raylib/examples/shapes/shapes_ball_physics.c": {
+        "function": 1
+      },
+      "raylib/examples/shapes/shapes_basic_shapes.c": {
+        "function": 1
+      },
+      "raylib/examples/shapes/shapes_bouncing_ball.c": {
+        "function": 1
+      },
+      "raylib/examples/shapes/shapes_bullet_hell.c": {
+        "function": 1
+      },
+      "raylib/examples/shapes/shapes_circle_sector_drawing.c": {
+        "function": 1
+      },
+      "raylib/examples/shapes/shapes_clock_of_clocks.c": {
+        "function": 1
+      },
+      "raylib/examples/shapes/shapes_collision_area.c": {
+        "function": 1
+      },
+      "raylib/examples/shapes/shapes_colors_palette.c": {
+        "function": 1
+      },
+      "raylib/examples/shapes/shapes_dashed_line.c": {
+        "function": 1
+      },
+      "raylib/examples/shapes/shapes_digital_clock.c": {
+        "function": 1
+      },
+      "raylib/examples/shapes/shapes_double_pendulum.c": {
+        "function": 1
+      },
+      "raylib/examples/shapes/shapes_easings_ball.c": {
+        "function": 1
+      },
+      "raylib/examples/shapes/shapes_easings_box.c": {
+        "function": 1
+      },
+      "raylib/examples/shapes/shapes_easings_rectangles.c": {
+        "function": 1
+      },
+      "raylib/examples/shapes/shapes_easings_testbed.c": {
+        "function": 1
+      },
+      "raylib/examples/shapes/shapes_ellipse_collision.c": {
+        "function": 1
+      },
+      "raylib/examples/shapes/shapes_following_eyes.c": {
+        "function": 1
+      },
+      "raylib/examples/shapes/shapes_hilbert_curve.c": {
+        "function": 1
+      },
+      "raylib/examples/shapes/shapes_kaleidoscope.c": {
+        "function": 1
+      },
+      "raylib/examples/shapes/shapes_lines_bezier.c": {
+        "function": 1
+      },
+      "raylib/examples/shapes/shapes_lines_drawing.c": {
+        "function": 1
+      },
+      "raylib/examples/shapes/shapes_logo_raylib.c": {
+        "function": 1
+      },
+      "raylib/examples/shapes/shapes_logo_raylib_anim.c": {
+        "function": 1
+      },
+      "raylib/examples/shapes/shapes_math_angle_rotation.c": {
+        "function": 1
+      },
+      "raylib/examples/shapes/shapes_math_sine_cosine.c": {
+        "function": 1
+      },
+      "raylib/examples/shapes/shapes_mouse_trail.c": {
+        "function": 1
+      },
+      "raylib/examples/shapes/shapes_penrose_tile.c": {
+        "function": 1
+      },
+      "raylib/examples/shapes/shapes_pie_chart.c": {
+        "function": 1
+      },
+      "raylib/examples/shapes/shapes_rectangle_advanced.c": {
+        "function": 1
+      },
+      "raylib/examples/shapes/shapes_rectangle_scaling.c": {
+        "function": 1
+      },
+      "raylib/examples/shapes/shapes_recursive_tree.c": {
+        "function": 1
+      },
+      "raylib/examples/shapes/shapes_ring_drawing.c": {
+        "function": 1
+      },
+      "raylib/examples/shapes/shapes_rlgl_color_wheel.c": {
+        "function": 1
+      },
+      "raylib/examples/shapes/shapes_rlgl_triangle.c": {
+        "function": 1
+      },
+      "raylib/examples/shapes/shapes_rounded_rectangle_drawing.c": {
+        "function": 1
+      },
+      "raylib/examples/shapes/shapes_simple_particles.c": {
+        "function": 1
+      },
+      "raylib/examples/shapes/shapes_splines_drawing.c": {
+        "function": 1
+      },
+      "raylib/examples/shapes/shapes_starfield_effect.c": {
+        "function": 1
+      },
+      "raylib/examples/shapes/shapes_top_down_lights.c": {
+        "function": 1
+      },
+      "raylib/examples/shapes/shapes_triangle_strip.c": {
+        "function": 1
+      },
+      "raylib/examples/shapes/shapes_vector_angle.c": {
+        "function": 1
+      },
+      "raylib/examples/text/text_3d_drawing.c": {
+        "function": 1
+      },
+      "raylib/examples/text/text_codepoints_loading.c": {
+        "function": 1
+      },
+      "raylib/examples/text/text_font_filters.c": {
+        "function": 1
+      },
+      "raylib/examples/text/text_font_loading.c": {
+        "function": 1
+      },
+      "raylib/examples/text/text_font_sdf.c": {
+        "function": 1
+      },
+      "raylib/examples/text/text_font_spritefont.c": {
+        "function": 1
+      },
+      "raylib/examples/text/text_format_text.c": {
+        "function": 1
+      },
+      "raylib/examples/text/text_inline_styling.c": {
+        "function": 1
+      },
+      "raylib/examples/text/text_rectangle_bounds.c": {
+        "function": 1
+      },
+      "raylib/examples/text/text_sprite_fonts.c": {
+        "function": 1
+      },
+      "raylib/examples/text/text_unicode_emojis.c": {
+        "function": 1
+      },
+      "raylib/examples/text/text_unicode_ranges.c": {
+        "function": 1
+      },
+      "raylib/examples/text/text_words_alignment.c": {
+        "function": 1
+      },
+      "raylib/examples/text/text_writing_anim.c": {
+        "function": 1
+      },
+      "raylib/examples/textures/textures_background_scrolling.c": {
+        "function": 1
+      },
+      "raylib/examples/textures/textures_blend_modes.c": {
+        "function": 1
+      },
+      "raylib/examples/textures/textures_bunnymark.c": {
+        "function": 1
+      },
+      "raylib/examples/textures/textures_clipboard_image.c": {
+        "function": 1
+      },
+      "raylib/examples/textures/textures_fog_of_war.c": {
+        "function": 1
+      },
+      "raylib/examples/textures/textures_framebuffer_rendering.c": {
+        "function": 1
+      },
+      "raylib/examples/textures/textures_gif_player.c": {
+        "function": 1
+      },
+      "raylib/examples/textures/textures_image_channel.c": {
+        "function": 1
+      },
+      "raylib/examples/textures/textures_image_drawing.c": {
+        "function": 1
+      },
+      "raylib/examples/textures/textures_image_generation.c": {
+        "function": 1
+      },
+      "raylib/examples/textures/textures_image_kernel.c": {
+        "function": 1
+      },
+      "raylib/examples/textures/textures_image_loading.c": {
+        "function": 1
+      },
+      "raylib/examples/textures/textures_image_processing.c": {
+        "function": 1
+      },
+      "raylib/examples/textures/textures_image_rotate.c": {
+        "function": 1
+      },
+      "raylib/examples/textures/textures_image_text.c": {
+        "function": 1
+      },
+      "raylib/examples/textures/textures_logo_raylib.c": {
+        "function": 1
+      },
+      "raylib/examples/textures/textures_magnifying_glass.c": {
+        "function": 1
+      },
+      "raylib/examples/textures/textures_mouse_painting.c": {
+        "function": 1
+      },
+      "raylib/examples/textures/textures_npatch_drawing.c": {
+        "function": 1
+      },
+      "raylib/examples/textures/textures_particles_blending.c": {
+        "function": 1
+      },
+      "raylib/examples/textures/textures_raw_data.c": {
+        "function": 1
+      },
+      "raylib/examples/textures/textures_screen_buffer.c": {
+        "function": 1
+      },
+      "raylib/examples/textures/textures_sprite_animation.c": {
+        "function": 1
+      },
+      "raylib/examples/textures/textures_sprite_button.c": {
+        "function": 1
+      },
+      "raylib/examples/textures/textures_sprite_explosion.c": {
+        "function": 1
+      },
+      "raylib/examples/textures/textures_sprite_stacking.c": {
+        "function": 1
+      },
+      "raylib/examples/textures/textures_srcrec_dstrec.c": {
+        "function": 1
+      },
+      "raylib/examples/textures/textures_textured_curve.c": {
+        "function": 1
+      },
+      "raylib/examples/textures/textures_to_image.c": {
+        "function": 1
+      },
+      "raylib/projects/4coder/main.c": {
+        "function": 1
+      },
+      "raylib/projects/CodeBlocks/core_basic_window.c": {
+        "function": 1
+      },
+      "raylib/projects/Geany/core_basic_window.c": {
+        "function": 1
+      },
+      "raylib/projects/Notepad++/raylib_npp_parser/raylib_npp_parser.c": {
+        "function": 1
+      },
+      "raylib/projects/VS2019-Android/raylib_android/raylib_android.NativeActivity/main.c": {
+        "function": 1
+      },
+      "raylib/projects/VSCode/main.c": {
+        "function": 1
+      },
+      "raylib/projects/scripts/core_basic_window.c": {
+        "function": 1
+      },
+      "raylib/tools/rexm/rexm.c": {
+        "function": 1
+      },
+      "raylib/src/external/qoaplay.c": {
+        "function": 10
+      },
+      "raylib/src/external/stb_perlin.h": {
+        "macro": 2,
+        "function": 10
+      },
+      "imgui/examples/libs/usynergy/uSynergy.c": {
+        "function": 3
+      }
+    },
+    "empty_or_failed_files": [
+      "imgui/backends/imgui_impl_allegro5.h",
+      "imgui/backends/imgui_impl_android.h",
+      "imgui/backends/imgui_impl_dx9.h",
+      "imgui/backends/imgui_impl_glfw.h",
+      "imgui/backends/imgui_impl_glut.h",
+      "imgui/backends/imgui_impl_metal.h",
+      "imgui/backends/imgui_impl_null.h",
+      "imgui/backends/imgui_impl_opengl2.h",
+      "imgui/backends/imgui_impl_osx.h",
+      "imgui/backends/imgui_impl_sdlgpu3_shaders.h",
+      "imgui/backends/imgui_impl_win32.h",
+      "imgui/imconfig.h",
+      "raylib/src/external/glfw/src/mappings.h",
+      "raylib/src/external/glfw/src/null_joystick.h",
+      "raylib/src/external/glfw/src/posix_poll.h",
+      "raylib/src/rglfw.c"
+    ],
+    "stderr": ""
+  },
+  "risks": {
+    "large_files": [
+      {
+        "path": "raylib/src/external/miniaudio.h",
+        "lines": 95844
+      },
+      {
+        "path": "imgui/imgui.cpp",
+        "lines": 18408
+      },
+      {
+        "path": "raylib/src/external/RGFW/RGFW.h",
+        "lines": 16103
+      },
+      {
+        "path": "raylib/src/external/dr_flac.h",
+        "lines": 12698
+      },
+      {
+        "path": "imgui/imgui_demo.cpp",
+        "lines": 11216
+      },
+      {
+        "path": "imgui/imgui_widgets.cpp",
+        "lines": 10998
+      },
+      {
+        "path": "raylib/src/external/stb_image_resize2.h",
+        "lines": 10679
+      },
+      {
+        "path": "raylib/examples/others/resources/image_data.h",
+        "lines": 9848
+      },
+      {
+        "path": "raylib/src/external/dr_wav.h",
+        "lines": 9105
+      },
+      {
+        "path": "raylib/src/external/glad.h",
+        "lines": 8682
+      },
+      {
+        "path": "raylib/src/external/stb_image.h",
+        "lines": 7988
+      },
+      {
+        "path": "raylib/src/rmodels.c",
+        "lines": 7334
+      },
+      {
+        "path": "raylib/src/external/cgltf.h",
+        "lines": 7240
+      },
+      {
+        "path": "imgui/imgui_draw.cpp",
+        "lines": 6809
+      },
+      {
+        "path": "raylib/src/external/m3d.h",
+        "lines": 6574
+      },
+      {
+        "path": "raylib/src/external/glfw/include/GLFW/glfw3.h",
+        "lines": 6547
+      },
+      {
+        "path": "raylib/src/external/glfw/deps/glad/vulkan.h",
+        "lines": 6330
+      },
+      {
+        "path": "googletest/googlemock/include/gmock/gmock-matchers.h",
+        "lines": 6112
+      },
+      {
+        "path": "raylib/src/external/rlsw.h",
+        "lines": 6108
+      },
+      {
+        "path": "raylib/examples/models/raygui.h",
+        "lines": 6053
+      }
+    ],
+    "generated_files": [
+      {
+        "path": "abseil-cpp/absl/base/dynamic_annotations.h",
+        "lines": 480
+      },
+      {
+        "path": "abseil-cpp/absl/base/internal/dynamic_annotations.h",
+        "lines": 398
+      },
+      {
+        "path": "abseil-cpp/absl/base/optimization.h",
+        "lines": 311
+      },
+      {
+        "path": "abseil-cpp/absl/base/prefetch.h",
+        "lines": 209
+      },
+      {
+        "path": "abseil-cpp/absl/container/btree_test.h",
+        "lines": 167
+      },
+      {
+        "path": "abseil-cpp/absl/container/internal/hash_generator_testing.h",
+        "lines": 168
+      },
+      {
+        "path": "abseil-cpp/absl/container/internal/unordered_map_constructor_test.h",
+        "lines": 435
+      },
+      {
+        "path": "abseil-cpp/absl/container/internal/unordered_map_lookup_test.h",
+        "lines": 112
+      },
+      {
+        "path": "abseil-cpp/absl/container/internal/unordered_map_modifiers_test.h",
+        "lines": 337
+      },
+      {
+        "path": "abseil-cpp/absl/container/internal/unordered_set_constructor_test.h",
+        "lines": 437
+      },
+      {
+        "path": "abseil-cpp/absl/container/internal/unordered_set_lookup_test.h",
+        "lines": 88
+      },
+      {
+        "path": "abseil-cpp/absl/container/internal/unordered_set_modifiers_test.h",
+        "lines": 217
+      },
+      {
+        "path": "abseil-cpp/absl/debugging/stacktrace.h",
+        "lines": 259
+      },
+      {
+        "path": "abseil-cpp/absl/debugging/symbolize.h",
+        "lines": 99
+      },
+      {
+        "path": "abseil-cpp/absl/flags/flag.h",
+        "lines": 307
+      },
+      {
+        "path": "abseil-cpp/absl/flags/internal/flag.h",
+        "lines": 968
+      },
+      {
+        "path": "abseil-cpp/absl/hash/internal/hash.h",
+        "lines": 1607
+      },
+      {
+        "path": "abseil-cpp/absl/log/internal/log_message.h",
+        "lines": 469
+      },
+      {
+        "path": "abseil-cpp/absl/random/gaussian_distribution.h",
+        "lines": 276
+      },
+      {
+        "path": "abseil-cpp/absl/random/internal/generate_real.h",
+        "lines": 143
+      }
+    ],
+    "binary_or_garbled_files": [],
+    "duplicate_names": {
+      "container.h": [
+        "abseil-cpp/absl/algorithm/container.h",
+        "abseil-cpp/absl/log/internal/container.h"
+      ],
+      "config.h": [
+        "abseil-cpp/absl/base/config.h",
+        "abseil-cpp/absl/flags/config.h",
+        "abseil-cpp/absl/log/internal/config.h",
+        "raylib/src/config.h"
+      ],
+      "dynamic_annotations.h": [
+        "abseil-cpp/absl/base/dynamic_annotations.h",
+        "abseil-cpp/absl/base/internal/dynamic_annotations.h"
+      ],
+      "cleanup.h": [
+        "abseil-cpp/absl/cleanup/cleanup.h",
+        "abseil-cpp/absl/cleanup/internal/cleanup.h"
+      ],
+      "chunked_queue.h": [
+        "abseil-cpp/absl/container/chunked_queue.h",
+        "abseil-cpp/absl/container/internal/chunked_queue.h"
+      ],
+      "inlined_vector.h": [
+        "abseil-cpp/absl/container/inlined_vector.h",
+        "abseil-cpp/absl/container/internal/inlined_vector.h"
+      ],
+      "crc32c.h": [
+        "abseil-cpp/absl/crc/crc32c.h",
+        "abseil-cpp/absl/crc/internal/crc32c.h"
+      ],
+      "symbolize.h": [
+        "abseil-cpp/absl/debugging/internal/symbolize.h",
+        "abseil-cpp/absl/debugging/symbolize.h"
+      ],
+      "commandlineflag.h": [
+        "abseil-cpp/absl/flags/commandlineflag.h",
+        "abseil-cpp/absl/flags/internal/commandlineflag.h"
+      ],
+      "flag.h": [
+        "abseil-cpp/absl/flags/flag.h",
+        "abseil-cpp/absl/flags/internal/flag.h"
+      ],
+      "parse.h": [
+        "abseil-cpp/absl/flags/internal/parse.h",
+        "abseil-cpp/absl/flags/parse.h"
+      ],
+      "usage.h": [
+        "abseil-cpp/absl/flags/internal/usage.h",
+        "abseil-cpp/absl/flags/usage.h"
+      ],
+      "any_invocable.h": [
+        "abseil-cpp/absl/functional/any_invocable.h",
+        "abseil-cpp/absl/functional/internal/any_invocable.h"
+      ],
+      "function_ref.h": [
+        "abseil-cpp/absl/functional/function_ref.h",
+        "abseil-cpp/absl/functional/internal/function_ref.h"
+      ],
+      "hash.h": [
+        "abseil-cpp/absl/hash/hash.h",
+        "abseil-cpp/absl/hash/internal/hash.h"
+      ],
+      "flags.h": [
+        "abseil-cpp/absl/log/flags.h",
+        "abseil-cpp/absl/log/internal/flags.h"
+      ],
+      "globals.h": [
+        "abseil-cpp/absl/log/globals.h",
+        "abseil-cpp/absl/log/internal/globals.h"
+      ],
+      "strip.h": [
+        "abseil-cpp/absl/log/internal/strip.h",
+        "abseil-cpp/absl/strings/strip.h"
+      ],
+      "structured.h": [
+        "abseil-cpp/absl/log/internal/structured.h",
+        "abseil-cpp/absl/log/structured.h"
+      ],
+      "bits.h": [
+        "abseil-cpp/absl/numeric/bits.h",
+        "abseil-cpp/absl/numeric/internal/bits.h"
+      ]
+    },
+    "duplicate_hashes": {
+      "803b731b350d7f91": [
+        "raylib/examples/audio/raygui.h",
+        "raylib/examples/core/raygui.h",
+        "raylib/examples/shaders/raygui.h"
+      ],
+      "f76511056e7208c1": [
+        "raylib/examples/models/rlights.h",
+        "raylib/examples/shaders/rlights.h"
+      ],
+      "c73f5f80bc656a19": [
+        "raylib/examples/others/external/include/glad_gles2.h",
+        "raylib/src/external/glad_gles2.h"
+      ],
+      "d133d47ba626f414": [
+        "raylib/projects/CMake/core_basic_window.c",
+        "raylib/projects/Zig/src/core_basic_window.c"
+      ]
+    }
+  },
+  "directory_map": {
+    "raylib": {
+      "files": 368,
+      "lines": 445365,
+      "symbols": {
+        "function": 8110,
+        "macro": 18307,
+        "struct": 974,
+        "enum": 755,
+        "namespace": 1,
+        "class": 1
+      }
+    },
+    "abseil-cpp": {
+      "files": 387,
+      "lines": 101974,
+      "symbols": {
+        "macro": 1501,
+        "function": 5405,
+        "namespace": 742,
+        "struct": 702,
+        "class": 396,
+        "enum": 87
+      }
+    },
+    "imgui": {
+      "files": 91,
+      "lines": 100797,
+      "symbols": {
+        "function": 2168,
+        "struct": 183,
+        "macro": 671,
+        "enum": 98,
+        "namespace": 8
+      }
+    },
+    "googletest": {
+      "files": 49,
+      "lines": 29675,
+      "symbols": {
+        "macro": 893,
+        "function": 1671,
+        "class": 352,
+        "struct": 143,
+        "namespace": 81,
+        "enum": 17
+      }
+    }
+  },
+  "feasibility": {
+    "estimated_scan_seconds": 0.85,
+    "estimated_ctags_seconds": 20.54,
+    "estimated_chunks_mb": 11.9,
+    "ctags_fail_rate": 0.0179,
+    "risk_level": "中",
+    "recommendations": [
+      "先确认超长文件是否为第三方或生成代码，必要时通过 --exclude 排除目录。",
+      "generated-like 文件建议默认不作为业务问答重点。"
+    ]
+  }
+}

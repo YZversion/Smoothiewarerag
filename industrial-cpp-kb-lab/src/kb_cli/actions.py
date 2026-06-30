@@ -460,3 +460,38 @@ def serve_action(index: Path, port: int = 8080) -> int:
     uvicorn.run(fa, host="0.0.0.0", port=port, log_level="warning")
     return 0
 
+
+def probe_action(
+    repo_root: Path,
+    *,
+    out: Path | None = None,
+    json_out: bool = False,
+    json_file: Path | None = None,
+    exclude: list[str] | None = None,
+) -> int:
+    try:
+        import kb_probe  # noqa: PLC0415
+    except ImportError as exc:
+        render.console.print(f"[red]无法加载 kb_probe: {exc}[/]")
+        return 1
+
+    try:
+        report = kb_probe.probe(repo_root, exclude or [])
+    except SystemExit as exc:
+        render.console.print(f"[red]{exc}[/]")
+        return 1
+    except Exception as exc:
+        render.console.print(f"[red]probe failed: {exc}[/]")
+        return 1
+
+    kb_probe.write_outputs(report, out.resolve() if out else None,
+                           json_file.resolve() if json_file else None)
+    if json_out:
+        print(json.dumps(report, ensure_ascii=False, indent=2))
+    else:
+        kb_probe.render_terminal(report)
+        if out:
+            render.console.print(f"[green]report ->[/] {out.resolve()}")
+        if json_file:
+            render.console.print(f"[green]json ->[/] {json_file.resolve()}")
+    return 0

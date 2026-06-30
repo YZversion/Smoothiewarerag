@@ -24,7 +24,7 @@ app.add_typer(index_app, name="index")
 
 COMMANDS = {
     "ask", "search", "sources", "symbol", "repl", "eval", "demo",
-    "history", "export", "tui", "index", "serve",
+    "history", "export", "tui", "index", "serve", "probe",
 }
 
 
@@ -125,6 +125,21 @@ def serve(
 ) -> None:
     from .runtime import DATA_DIR
     raise typer.Exit(actions.serve_action(index or DATA_DIR, port))
+
+
+@app.command("probe")
+def probe(
+    repo_root: Path = typer.Option(..., "--repo-root", help="源码仓库根目录"),
+    out: Optional[Path] = typer.Option(None, "--out", help="Markdown report 输出路径"),
+    json_out: bool = typer.Option(False, "--json", help="JSON 输出到 stdout"),
+    json_file: Optional[Path] = typer.Option(None, "--json-out", help="JSON report 输出路径"),
+    exclude: list[str] = typer.Option(
+        [], "--exclude", help="额外跳过的目录名，可重复传入或逗号分隔"
+    ),
+) -> None:
+    raise typer.Exit(actions.probe_action(
+        repo_root, out=out, json_out=json_out, json_file=json_file, exclude=exclude
+    ))
 
 
 # ── kb index subcommands ───────────────────────────────────────────────────

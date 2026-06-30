@@ -58,6 +58,8 @@ REPORANK_DAMPING = 0.85
 REPORANK_ITERS = 30
 REPORANK_EXTRAS = 3
 REPORANK_SCORE_SCALE = 1000.0
+BM25_CANDIDATE_LIMIT = 200
+RG_CANDIDATE_FILE_LIMIT = 12
 
 SNIPPET_DEFAULT_LINES = 10
 SNIPPET_EVENT_MARKERS = ("call_event", "THEKERNEL->call_event")
@@ -634,10 +636,14 @@ class SearchIndex:
         mx = max(raw) if len(raw) else 0.0
         if mx <= 0:
             return {}
-        return {
-            self._BM25_CHUNK_IDS[i]: (raw[i] / mx) * W_BM25
-            for i in range(len(raw))
+        candidates = [
+            (i, raw[i]) for i in range(len(raw))
             if raw[i] > 0
+        ]
+        candidates.sort(key=lambda item: -item[1])
+        return {
+            self._BM25_CHUNK_IDS[i]: (score / mx) * W_BM25
+            for i, score in candidates[:BM25_CANDIDATE_LIMIT]
         }
 
     def _rg_path_to_manifest(self, path_part: str, repo_root: Path) -> str | None:
@@ -648,22 +654,53 @@ class SearchIndex:
         except ValueError:
             return None
 
+    def _candidate_files_from_scores(
+        self,
+        *score_maps: dict[str, float],
+        repo_root: Path,
+        limit: int = RG_CANDIDATE_FILE_LIMIT,
+    ) -> list[Path]:
+        file_scores: dict[str, float] = {}
+        for score_map in score_maps:
+            for cid, score in score_map.items():
+                chunk = self._CHUNK_BY_ID.get(cid)
+                if not chunk:
+                    continue
+                file = chunk["file"]
+                file_scores[file] = max(file_scores.get(file, 0.0), float(score))
+
+        paths: list[Path] = []
+        for file, _score in sorted(file_scores.items(), key=lambda item: -item[1])[:limit]:
+            path = repo_root / file
+            if path.is_file():
+                paths.append(path)
+        return paths
+
     def search_rg(
-        self, tokens: list[str], src_root: Path, repo_root: Path
+        self,
+        tokens: list[str],
+        src_root: Path,
+        repo_root: Path,
+        candidate_files: list[Path] | None = None,
     ) -> dict[str, float]:
-        if not tokens or not src_root.is_dir():
+        if not tokens:
+            return {}
+        if candidate_files is None and not src_root.is_dir():
             return {}
         pats = sorted({t for t in tokens if len(t) >= 3}, key=len, reverse=True)[:8]
         if not pats:
             return {}
+        targets = [str(p) for p in candidate_files or []]
+        if not targets:
+            targets = [str(src_root)]
         cmd = [
             self._RG_BIN, "-n", "--no-heading", "-i", "--max-count", "40",
-            "|".join(re.escape(p) for p in pats), str(src_root),
+            "|".join(re.escape(p) for p in pats), *targets,
         ]
         try:
             result = subprocess.run(
                 cmd, capture_output=True, text=True, encoding="utf-8",
-                errors="replace", timeout=15,
+                errors="replace", timeout=2,
             )
         except (subprocess.TimeoutExpired, OSError):
             return {}
@@ -961,7 +998,11 @@ class SearchIndex:
         dispatch_scores, dispatch_focus = self.search_dispatch(query)
         sym_scores = self.search_symbols(query, tokens)
         bm25_scores = self.search_bm25(tokens)
-        rg_scores = self.search_rg(tokens, src, repo)
+        rg_candidates = self._candidate_files_from_scores(
+            method_scores, class_scores, dispatch_scores, sym_scores, bm25_scores,
+            repo_root=repo,
+        )
+        rg_scores = self.search_rg(tokens, src, repo, candidate_files=rg_candidates)
         merged = self.merge_scores(
             method_scores, class_scores, dispatch_scores,
             sym_scores, bm25_scores, rg_scores,

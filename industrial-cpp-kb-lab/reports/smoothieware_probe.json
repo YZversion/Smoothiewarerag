@@ -1,0 +1,2734 @@
+{
+  "created_at": "2026-06-30T01:34:16.810788+00:00",
+  "repo_root": "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware",
+  "file_stats": {
+    "file_count": 617,
+    "total_lines": 116897,
+    "avg_lines_per_file": 189.5,
+    "by_extension": {
+      ".h": 349,
+      ".c": 74,
+      ".cpp": 193,
+      ".hpp": 1
+    },
+    "largest_files": [
+      {
+        "path": "src/libs/ChaNFS/CHAN_FS/ff.cpp",
+        "lines": 3983,
+        "size_bytes": 162400
+      },
+      {
+        "path": "src/libs/Network/uip/webserver/httpd-fsdata2.h",
+        "lines": 2096,
+        "size_bytes": 131080
+      },
+      {
+        "path": "src/libs/LPC17xx/LPC17xxLib/src/lpc17xx_can.c",
+        "lines": 1937,
+        "size_bytes": 57545
+      },
+      {
+        "path": "src/libs/Network/uip/uip/uip.c",
+        "lines": 1923,
+        "size_bytes": 69064
+      },
+      {
+        "path": "src/modules/robot/Robot.cpp",
+        "lines": 1804,
+        "size_bytes": 86163
+      },
+      {
+        "path": "src/libs/Network/uip/uip/uip.h",
+        "lines": 1638,
+        "size_bytes": 46435
+      },
+      {
+        "path": "mbed/src/vendor/NXP/cmsis/LPC1768/core_cm3.h",
+        "lines": 1612,
+        "size_bytes": 98846
+      },
+      {
+        "path": "src/modules/utils/simpleshell/SimpleShell.cpp",
+        "lines": 1481,
+        "size_bytes": 54362
+      },
+      {
+        "path": "src/libs/LPC17xx/LPC17xxLib/src/lpc17xx_i2c.c",
+        "lines": 1383,
+        "size_bytes": 45260
+      },
+      {
+        "path": "src/libs/LPC17xx/LPC17xxLib/src/lpc17xx_uart.c",
+        "lines": 1379,
+        "size_bytes": 42834
+      },
+      {
+        "path": "src/modules/tools/endstops/Endstops.cpp",
+        "lines": 1274,
+        "size_bytes": 54143
+      },
+      {
+        "path": "src/modules/utils/motordrivercontrol/drivers/TMC26X/TMC26X.cpp",
+        "lines": 1137,
+        "size_bytes": 42743
+      },
+      {
+        "path": "mbed/src/vendor/NXP/cmsis/LPC1768/LPC17xx.h",
+        "lines": 1035,
+        "size_bytes": 36106
+      },
+      {
+        "path": "src/libs/USBDevice/USBDevice/USBDevice.cpp",
+        "lines": 974,
+        "size_bytes": 28077
+      },
+      {
+        "path": "src/libs/USBDevice/USBDevice/USBHAL_LPC17.cpp",
+        "lines": 970,
+        "size_bytes": 27670
+      },
+      {
+        "path": "src/libs/LPC17xx/sLPC17xx.h",
+        "lines": 968,
+        "size_bytes": 33806
+      },
+      {
+        "path": "src/libs/LPC17xx/LPC17xxLib/src/lpc17xx_emac.c",
+        "lines": 960,
+        "size_bytes": 32513
+      },
+      {
+        "path": "src/libs/LPC17xx/score_cm3.h",
+        "lines": 908,
+        "size_bytes": 37294
+      },
+      {
+        "path": "mbed/src/vendor/NXP/capi/ethernet_api.c",
+        "lines": 895,
+        "size_bytes": 36370
+      },
+      {
+        "path": "src/libs/LPC17xx/LPC17xxLib/inc/lpc17xx_can.h",
+        "lines": 866,
+        "size_bytes": 33417
+      }
+    ]
+  },
+  "encoding": {
+    "counts": {
+      "utf-8": 615,
+      "latin-1": 2
+    },
+    "anomalies": [
+      {
+        "path": "mbed/src/vendor/NXP/cmsis/LPC11U24/system_LPC11Uxx.c",
+        "encoding": "latin-1"
+      },
+      {
+        "path": "src/libs/LPC17xx/LPC17xxLib/inc/lpc17xx_dac.h",
+        "encoding": "latin-1"
+      }
+    ]
+  },
+  "ctags": {
+    "available": true,
+    "exit_code": 0,
+    "symbol_counts": {
+      "macro": 3929,
+      "function": 3128,
+      "class": 209,
+      "enum": 131,
+      "namespace": 49,
+      "struct": 379
+    },
+    "symbols_by_file": {
+      "mbed/src/vendor/NXP/cmsis/LPC2368/vector_defns.h": {
+        "macro": 44
+      },
+      "src/modules/utils/currentcontrol/ad5206.h": {
+        "function": 4,
+        "class": 1,
+        "macro": 1
+      },
+      "src/modules/tools/temperaturecontrol/AD8495.cpp": {
+        "function": 7
+      },
+      "src/modules/tools/temperaturecontrol/AD8495.h": {
+        "class": 1,
+        "macro": 2
+      },
+      "src/libs/ADC/adc.cpp": {
+        "function": 30
+      },
+      "src/libs/ADC/adc.h": {
+        "class": 1,
+        "macro": 4,
+        "namespace": 1
+      },
+      "src/libs/LPC17xx/LPC17xxLib/inc/lpc17xx_adc.h": {
+        "macro": 37,
+        "enum": 5
+      },
+      "src/libs/LPC17xx/LPC17xxLib/src/lpc17xx_adc.c": {
+        "function": 13
+      },
+      "src/libs/Adc.h": {
+        "macro": 2,
+        "class": 1,
+        "function": 2,
+        "namespace": 1
+      },
+      "src/libs/platform_memory.h": {
+        "macro": 3
+      },
+      "src/libs/FPointer.h": {
+        "macro": 2,
+        "namespace": 1,
+        "function": 5,
+        "class": 1
+      },
+      "src/libs/nuts_bolts.h": {
+        "macro": 14
+      },
+      "src/libs/ChaNFS/CHAN_FS/ff.h": {
+        "macro": 42,
+        "struct": 5,
+        "enum": 1
+      },
+      "src/modules/tools/spindle/AnalogSpindleControl.h": {
+        "macro": 1,
+        "function": 2,
+        "class": 1,
+        "namespace": 1
+      },
+      "src/testframework/easyunit/test.h": {
+        "macro": 22,
+        "class": 1
+      },
+      "src/libs/ChaNFS/CHAN_FS/diskio.h": {
+        "macro": 23,
+        "enum": 1
+      },
+      "mbed/src/cpp/I2C.h": {
+        "enum": 2,
+        "class": 1,
+        "macro": 1,
+        "namespace": 1
+      },
+      "src/libs/Adc.cpp": {
+        "function": 5
+      },
+      "mbed/src/cpp/AnalogIn.h": {
+        "function": 4,
+        "class": 1,
+        "macro": 1,
+        "namespace": 1
+      },
+      "mbed/src/cpp/AnalogOut.h": {
+        "function": 7,
+        "class": 1,
+        "macro": 1,
+        "namespace": 1
+      },
+      "src/libs/AppendFileStream.h": {
+        "function": 2,
+        "class": 1,
+        "macro": 1
+      },
+      "src/libs/AutoPushPop.h": {
+        "function": 2,
+        "class": 1
+      },
+      "src/modules/robot/arm_solutions/BaseSolution.h": {
+        "macro": 1,
+        "function": 5,
+        "class": 1
+      },
+      "src/modules/tools/spindle/SoftSerial/BufferedSoftSerial.h": {
+        "macro": 1,
+        "class": 1
+      },
+      "src/modules/utils/panel/panels/LcdBase.h": {
+        "macro": 13,
+        "class": 1,
+        "function": 21
+      },
+      "src/modules/utils/panel/Button.h": {
+        "macro": 1,
+        "class": 1,
+        "function": 2
+      },
+      "src/libs/md5.h": {
+        "macro": 1,
+        "class": 1,
+        "enum": 1
+      },
+      "src/modules/robot/Block.cpp": {
+        "function": 12
+      },
+      "src/modules/robot/Block.h": {
+        "class": 1,
+        "struct": 1,
+        "function": 1
+      },
+      "src/modules/robot/BlockQueue.cpp": {
+        "function": 16
+      },
+      "src/modules/robot/BlockQueue.h": {
+        "class": 1
+      },
+      "src/modules/tools/spindle/SoftSerial/BufferedSoftSerial.cpp": {
+        "function": 11
+      },
+      "mbed/src/vendor/NXP/cmsis/LPC1768/GCC_CR/startup_LPC17xx.cpp": {
+        "function": 18
+      },
+      "mbed/src/cpp/BusIn.cpp": {
+        "function": 5
+      },
+      "mbed/src/cpp/BusIn.h": {
+        "class": 1,
+        "macro": 1,
+        "namespace": 1
+      },
+      "mbed/src/cpp/BusInOut.cpp": {
+        "function": 11
+      },
+      "mbed/src/cpp/BusInOut.h": {
+        "class": 1,
+        "macro": 1,
+        "namespace": 1
+      },
+      "mbed/src/cpp/BusOut.cpp": {
+        "function": 8
+      },
+      "mbed/src/cpp/BusOut.h": {
+        "class": 1,
+        "macro": 1,
+        "namespace": 1
+      },
+      "src/modules/utils/panel/Button.cpp": {
+        "function": 6
+      },
+      "src/libs/Network/uip/CallbackStream.h": {
+        "macro": 1,
+        "class": 1,
+        "function": 2
+      },
+      "mbed/src/cpp/CAN.cpp": {
+        "function": 13
+      },
+      "mbed/src/cpp/CAN.h": {
+        "class": 2,
+        "function": 4,
+        "macro": 1,
+        "namespace": 1
+      },
+      "src/libs/LPC17xx/LPC17xxLib/inc/lpc17xx_can.h": {
+        "macro": 163,
+        "enum": 10,
+        "struct": 8
+      },
+      "mbed/src/capi/can_helper.h": {
+        "enum": 2,
+        "struct": 1,
+        "macro": 1
+      },
+      "src/libs/LPC17xx/LPC17xxLib/src/lpc17xx_can.c": {
+        "function": 19
+      },
+      "src/libs/USBDevice/descriptor.h": {
+        "macro": 67,
+        "struct": 8
+      },
+      "src/libs/USBDevice/USBMSD/USBMSD.cpp": {
+        "function": 25
+      },
+      "src/libs/USBDevice/descriptor_cdc.h": {
+        "macro": 70,
+        "struct": 6
+      },
+      "src/libs/checksumm.h": {
+        "macro": 101,
+        "function": 2
+      },
+      "src/libs/LPC17xx/LPC17xxLib/inc/lpc17xx_libcfg_default.h": {
+        "macro": 33
+      },
+      "src/modules/utils/motordrivercontrol/MotorDriverControl.h": {
+        "enum": 1,
+        "class": 1,
+        "struct": 1,
+        "namespace": 1
+      },
+      "src/libs/USBDevice/USBSerial/CircBuffer.h": {
+        "macro": 1,
+        "function": 13,
+        "class": 1
+      },
+      "src/libs/USBDevice/USBDevice/USBDevice_Types.h": {
+        "macro": 23,
+        "struct": 4,
+        "enum": 1
+      },
+      "src/libs/LPC17xx/LPC17xxLib/inc/lpc17xx_clkpwr.h": {
+        "macro": 113
+      },
+      "src/libs/LPC17xx/LPC17xxLib/src/lpc17xx_clkpwr.c": {
+        "function": 8
+      },
+      "src/libs/LPC17xx/LPC17xxLib/inc/lpc17xx_systick.h": {
+        "macro": 12
+      },
+      "src/libs/Network/uip/clock-arch.h": {
+        "macro": 2
+      },
+      "src/libs/Network/uip/uip/clock.h": {
+        "macro": 3
+      },
+      "src/libs/ConfigCache.h": {
+        "macro": 1,
+        "class": 1
+      },
+      "src/libs/ConfigSource.h": {
+        "macro": 1,
+        "function": 2,
+        "class": 1
+      },
+      "src/libs/USBDevice/USBDevice/USBDescriptor.h": {
+        "macro": 34
+      },
+      "src/libs/ConfigValue.h": {
+        "macro": 1,
+        "class": 1
+      },
+      "src/libs/Config.h": {
+        "macro": 1,
+        "class": 1,
+        "function": 1
+      },
+      "src/modules/utils/panel/screens/ControlScreen.h": {
+        "macro": 1,
+        "class": 1,
+        "function": 2
+      },
+      "mbed/src/vendor/NXP/cmsis/LPC11U24/power_api.h": {
+        "macro": 19,
+        "struct": 2
+      },
+      "src/libs/USBDevice/descriptor_msc.h": {
+        "macro": 39,
+        "struct": 2
+      },
+      "src/modules/utils/currentcontrol/CurrentControl.h": {
+        "macro": 1,
+        "class": 1,
+        "function": 1
+      },
+      "src/modules/utils/panel/screens/CustomScreen.h": {
+        "macro": 1,
+        "class": 1,
+        "function": 1
+      },
+      "src/libs/Network/uip/CallbackStream.cpp": {
+        "function": 7
+      },
+      "src/modules/tools/zprobe/CartGridStrategy.cpp": {
+        "function": 13
+      },
+      "src/modules/tools/zprobe/CartGridStrategy.h": {
+        "class": 1,
+        "struct": 2,
+        "macro": 1
+      },
+      "src/modules/robot/arm_solutions/CartesianSolution.h": {
+        "function": 2,
+        "class": 1
+      },
+      "src/libs/Network/uip/CommandQueue.cpp": {
+        "function": 5
+      },
+      "src/libs/Network/uip/CommandQueue.h": {
+        "class": 1,
+        "macro": 1,
+        "struct": 1,
+        "function": 1
+      },
+      "src/libs/Config.cpp": {
+        "function": 8
+      },
+      "src/libs/ConfigCache.cpp": {
+        "function": 9
+      },
+      "src/libs/ConfigValue.cpp": {
+        "function": 15
+      },
+      "src/modules/utils/configurator/Configurator.h": {
+        "function": 1,
+        "class": 1,
+        "macro": 1
+      },
+      "src/modules/utils/panel/screens/ControlScreen.cpp": {
+        "function": 10
+      },
+      "src/modules/robot/Conveyor.cpp": {
+        "function": 14
+      },
+      "src/modules/robot/Conveyor.h": {
+        "class": 1,
+        "struct": 1,
+        "function": 5
+      },
+      "mbed/src/vendor/NXP/cmsis/LPC1768/core_cm3.h": {
+        "macro": 442,
+        "function": 17,
+        "struct": 13
+      },
+      "src/libs/LPC17xx/score_cm3.h": {
+        "macro": 63,
+        "function": 43,
+        "struct": 7
+      },
+      "src/modules/robot/arm_solutions/CoreXZSolution.cpp": {
+        "function": 3
+      },
+      "src/modules/robot/arm_solutions/CoreXZSolution.h": {
+        "class": 1
+      },
+      "src/modules/utils/currentcontrol/CurrentControl.cpp": {
+        "function": 3
+      },
+      "src/modules/utils/panel/screens/CustomScreen.cpp": {
+        "function": 5
+      },
+      "src/libs/LPC17xx/LPC17xxLib/inc/lpc17xx_dac.h": {
+        "macro": 10,
+        "enum": 1,
+        "struct": 1
+      },
+      "src/libs/LPC17xx/LPC17xxLib/src/lpc17xx_dac.c": {
+        "function": 5
+      },
+      "src/libs/LPC17xx/LPC17xxLib/inc/debug_frmwrk.h": {
+        "macro": 14
+      },
+      "src/testframework/easyunit/defaulttestprinter.h": {
+        "macro": 1,
+        "class": 1,
+        "enum": 1
+      },
+      "src/libs/USBDevice/USBDevice/USBEndpoints.h": {
+        "macro": 6,
+        "class": 4,
+        "enum": 1
+      },
+      "mbed/src/vendor/NXP/capi/LPC11U24/device.h": {
+        "macro": 23
+      },
+      "mbed/src/vendor/NXP/capi/LPC1768/device.h": {
+        "macro": 23
+      },
+      "mbed/src/vendor/NXP/capi/LPC2368/device.h": {
+        "macro": 23
+      },
+      "src/libs/USBDevice/DFU.cpp": {
+        "function": 5
+      },
+      "src/libs/USBDevice/DFU.h": {
+        "class": 1,
+        "macro": 26,
+        "struct": 2
+      },
+      "src/modules/utils/currentcontrol/DigipotBase.h": {
+        "macro": 1,
+        "function": 4,
+        "class": 1
+      },
+      "src/modules/tools/drillingcycles/Drillingcycles.h": {
+        "macro": 1,
+        "class": 1,
+        "function": 1
+      },
+      "src/modules/utils/motordrivercontrol/drivers/DRV8711/drv8711.cpp": {
+        "function": 11
+      },
+      "src/modules/utils/motordrivercontrol/drivers/DRV8711/drv8711.h": {
+        "class": 1,
+        "struct": 8
+      },
+      "src/testframework/easyunit/defaulttestprinter.cpp": {
+        "function": 11
+      },
+      "src/modules/tools/zprobe/DeltaCalibrationStrategy.h": {
+        "function": 2,
+        "class": 1,
+        "macro": 2
+      },
+      "src/modules/tools/zprobe/DeltaGridStrategy.cpp": {
+        "function": 16
+      },
+      "src/modules/tools/zprobe/DeltaGridStrategy.h": {
+        "class": 1,
+        "struct": 1,
+        "macro": 1
+      },
+      "mbed/src/cpp/DigitalIn.h": {
+        "function": 4,
+        "class": 1,
+        "macro": 1,
+        "namespace": 1
+      },
+      "mbed/src/cpp/DigitalInOut.h": {
+        "function": 9,
+        "class": 1,
+        "macro": 1,
+        "namespace": 1
+      },
+      "mbed/src/cpp/DigitalOut.h": {
+        "function": 6,
+        "class": 1,
+        "macro": 1,
+        "namespace": 1
+      },
+      "mbed/src/cpp/DirHandle.h": {
+        "class": 1,
+        "macro": 2,
+        "struct": 1,
+        "namespace": 1,
+        "function": 3
+      },
+      "src/modules/utils/panel/screens/cnc/DirectJogScreen.cpp": {
+        "function": 11
+      },
+      "src/modules/utils/panel/screens/cnc/DirectJogScreen.h": {
+        "class": 1,
+        "enum": 1,
+        "function": 2
+      },
+      "src/modules/tools/drillingcycles/Drillingcycles.cpp": {
+        "function": 9
+      },
+      "src/modules/utils/panel/screens/DynMenuScreen.cpp": {
+        "function": 12
+      },
+      "src/modules/utils/panel/screens/DynMenuScreen.h": {
+        "class": 1,
+        "function": 2
+      },
+      "src/libs/LPC17xx/LPC17xxLib/inc/lpc17xx_emac.h": {
+        "macro": 242,
+        "struct": 6
+      },
+      "src/libs/LPC17xx/LPC17xxLib/src/lpc17xx_emac.c": {
+        "function": 18
+      },
+      "src/libs/Network/Drivers/LPC17XX_Ethernet.h": {
+        "macro": 6,
+        "class": 1,
+        "struct": 3
+      },
+      "src/libs/Network/Drivers/LPC17XX_Ethernet.cpp": {
+        "function": 22
+      },
+      "src/libs/USBDevice/USBDevice/debug.h": {
+        "macro": 4
+      },
+      "src/libs/USBDevice/USBDevice/USBEndpoints_LPC11U.h": {
+        "macro": 30
+      },
+      "src/libs/USBDevice/USBDevice/USBEndpoints_LPC17_LPC23.h": {
+        "macro": 55
+      },
+      "src/libs/USBDevice/USBDevice/USBHAL_LPC11U.cpp": {
+        "function": 25
+      },
+      "src/libs/USBDevice/USBDevice/USBHAL_LPC17.cpp": {
+        "function": 33
+      },
+      "src/libs/USBDevice/USBDevice/USBDevice.cpp": {
+        "function": 37
+      },
+      "src/libs/USBDevice/USBDevice/USBHAL.h": {
+        "function": 15,
+        "macro": 1,
+        "class": 1
+      },
+      "src/libs/LPC17xx/LPC17xxLib/inc/lpc_types.h": {
+        "macro": 12,
+        "enum": 5
+      },
+      "src/libs/LPC17xx/LPC17xxLib/src/lpc17xx_exti.c": {
+        "function": 6
+      },
+      "src/libs/LPC17xx/LPC17xxLib/inc/lpc17xx_exti.h": {
+        "macro": 5,
+        "enum": 3,
+        "struct": 1
+      },
+      "src/modules/tools/extruder/ExtruderMaker.h": {
+        "macro": 1,
+        "class": 1
+      },
+      "src/modules/utils/panel/screens/3dprinter/ExtruderScreen.h": {
+        "macro": 1,
+        "class": 1,
+        "function": 1
+      },
+      "src/libs/Network/net_util.h": {
+        "class": 4,
+        "macro": 12,
+        "function": 4
+      },
+      "src/modules/tools/endstops/Endstops.cpp": {
+        "function": 19
+      },
+      "src/modules/tools/endstops/Endstops.h": {
+        "class": 1,
+        "struct": 1
+      },
+      "src/libs/Network/uip/plan9/plan9.h": {
+        "function": 2,
+        "struct": 1,
+        "class": 1,
+        "macro": 1
+      },
+      "mbed/src/cpp/Ethernet.cpp": {
+        "function": 9
+      },
+      "mbed/src/cpp/Ethernet.h": {
+        "class": 1,
+        "macro": 1,
+        "enum": 1,
+        "namespace": 1
+      },
+      "src/modules/robot/arm_solutions/ExperimentalDeltaSolution.cpp": {
+        "function": 5
+      },
+      "src/modules/robot/arm_solutions/ExperimentalDeltaSolution.h": {
+        "class": 1
+      },
+      "src/modules/tools/extruder/Extruder.cpp": {
+        "function": 12
+      },
+      "src/modules/tools/extruder/Extruder.h": {
+        "class": 1,
+        "struct": 1,
+        "function": 1
+      },
+      "src/modules/utils/panel/screens/3dprinter/ExtruderScreen.cpp": {
+        "function": 6
+      },
+      "src/libs/md5.cpp": {
+        "function": 20
+      },
+      "src/libs/ChaNFS/FATDirHandle.cpp": {
+        "function": 6
+      },
+      "src/libs/ChaNFS/FATDirHandle.h": {
+        "class": 1,
+        "macro": 1,
+        "namespace": 1
+      },
+      "src/libs/ChaNFS/FATFileHandle.cpp": {
+        "function": 8
+      },
+      "src/libs/ChaNFS/FATFileHandle.h": {
+        "class": 1,
+        "macro": 1,
+        "namespace": 1
+      },
+      "src/libs/ChaNFS/FATFileSystem.cpp": {
+        "function": 9
+      },
+      "src/libs/ChaNFS/FATFileSystem.h": {
+        "class": 1,
+        "macro": 4,
+        "function": 3,
+        "namespace": 1
+      },
+      "src/libs/ConfigSources/FileConfigSource.h": {
+        "macro": 1,
+        "class": 1
+      },
+      "src/modules/utils/panel/screens/FileScreen.h": {
+        "macro": 1,
+        "class": 1
+      },
+      "src/libs/LPC17xx/LPC17xxLib/src/lpc17xx_gpio.c": {
+        "function": 25
+      },
+      "src/libs/ConfigSources/FirmConfigSource.h": {
+        "macro": 1,
+        "class": 1
+      },
+      "src/modules/tools/spindle/SoftSerial/SoftSerial_Ticker.h": {
+        "macro": 1,
+        "class": 1,
+        "function": 5
+      },
+      "src/libs/Network/uip/fifo.h": {
+        "function": 20,
+        "class": 3,
+        "macro": 1
+      },
+      "src/modules/tools/filamentdetector/FilamentDetector.cpp": {
+        "function": 13
+      },
+      "src/modules/tools/filamentdetector/FilamentDetector.h": {
+        "class": 1,
+        "struct": 1,
+        "namespace": 1
+      },
+      "mbed/src/cpp/FileBase.cpp": {
+        "function": 6
+      },
+      "mbed/src/cpp/FileBase.h": {
+        "class": 1,
+        "macro": 8,
+        "enum": 1,
+        "namespace": 1
+      },
+      "src/libs/ConfigSources/FileConfigSource.cpp": {
+        "function": 10
+      },
+      "mbed/src/cpp/FileHandle.h": {
+        "class": 1,
+        "macro": 1,
+        "function": 1,
+        "namespace": 1
+      },
+      "mbed/src/cpp/FileLike.cpp": {
+        "function": 2
+      },
+      "mbed/src/cpp/FileLike.h": {
+        "class": 1,
+        "macro": 1,
+        "namespace": 1
+      },
+      "mbed/src/cpp/FilePath.cpp": {
+        "function": 6
+      },
+      "mbed/src/cpp/FilePath.h": {
+        "class": 1,
+        "macro": 1,
+        "namespace": 1
+      },
+      "src/modules/utils/panel/screens/FileScreen.cpp": {
+        "function": 12
+      },
+      "src/libs/FileStream.h": {
+        "function": 5,
+        "class": 1,
+        "macro": 1
+      },
+      "mbed/src/cpp/FileSystemLike.cpp": {
+        "function": 3
+      },
+      "mbed/src/cpp/FileSystemLike.h": {
+        "class": 1,
+        "macro": 1,
+        "namespace": 1,
+        "function": 4
+      },
+      "src/libs/ConfigSources/FirmConfigSource.cpp": {
+        "function": 6
+      },
+      "mbed/src/cpp/FunctionPointer.cpp": {
+        "function": 3
+      },
+      "mbed/src/cpp/FunctionPointer.h": {
+        "function": 3,
+        "class": 1,
+        "macro": 1,
+        "namespace": 1
+      },
+      "src/modules/communication/utils/Gcode.h": {
+        "macro": 1,
+        "class": 1,
+        "struct": 1,
+        "function": 1
+      },
+      "src/libs/LPC17xx/LPC17xxLib/inc/lpc17xx_gpdma.h": {
+        "macro": 104,
+        "enum": 2,
+        "struct": 2
+      },
+      "src/libs/LPC17xx/LPC17xxLib/src/lpc17xx_gpdma.c": {
+        "function": 5
+      },
+      "src/libs/gpio.cpp": {
+        "function": 12
+      },
+      "src/libs/gpio.h": {
+        "class": 1,
+        "macro": 3
+      },
+      "src/libs/LPC17xx/LPC17xxLib/inc/lpc17xx_gpio.h": {
+        "macro": 11,
+        "struct": 2
+      },
+      "src/modules/communication/utils/Gcode.cpp": {
+        "function": 13
+      },
+      "src/modules/communication/GcodeDispatch.cpp": {
+        "function": 3
+      },
+      "src/modules/communication/GcodeDispatch.h": {
+        "class": 1,
+        "struct": 1,
+        "function": 1
+      },
+      "src/modules/robot/arm_solutions/HBotSolution.h": {
+        "function": 1,
+        "class": 1
+      },
+      "src/libs/Hook.h": {
+        "macro": 1,
+        "class": 1
+      },
+      "src/libs/Network/uip/uip/uip.h": {
+        "macro": 87,
+        "struct": 11
+      },
+      "src/libs/Network/uip/webserver/httpd-fsdata2.h": {
+        "macro": 2
+      },
+      "src/libs/Network/uip/webserver/httpd-fs.h": {
+        "macro": 2,
+        "struct": 1
+      },
+      "src/modules/tools/spindle/HuanyangSpindleControl.h": {
+        "macro": 1,
+        "function": 2,
+        "class": 1
+      },
+      "src/testframework/prettyprint.hpp": {
+        "macro": 1,
+        "struct": 35,
+        "function": 24,
+        "namespace": 3
+      },
+      "mbed/src/vendor/NXP/cmsis/LPC11U24/GCC_CR/startup_LPC11xx.cpp": {
+        "function": 14
+      },
+      "src/libs/Hook.cpp": {
+        "function": 1
+      },
+      "mbed/src/cpp/I2C.cpp": {
+        "function": 10
+      },
+      "mbed/src/cpp/I2CSlave.cpp": {
+        "function": 9
+      },
+      "mbed/src/cpp/I2CSlave.h": {
+        "class": 1,
+        "macro": 1,
+        "enum": 1,
+        "namespace": 1
+      },
+      "src/libs/LPC17xx/LPC17xxLib/src/lpc17xx_i2c.c": {
+        "function": 15
+      },
+      "src/libs/LPC17xx/LPC17xxLib/inc/lpc17xx_i2c.h": {
+        "macro": 61,
+        "struct": 3,
+        "enum": 1
+      },
+      "src/libs/LPC17xx/LPC17xxLib/inc/lpc17xx_i2s.h": {
+        "macro": 88,
+        "struct": 3
+      },
+      "src/libs/LPC17xx/LPC17xxLib/src/lpc17xx_i2s.c": {
+        "function": 19
+      },
+      "mbed/src/vendor/NXP/cmsis/LPC1768/LPC17xx.h": {
+        "enum": 1,
+        "macro": 105,
+        "struct": 38
+      },
+      "mbed/src/vendor/NXP/cmsis/LPC2368/LPC23xx.h": {
+        "enum": 1,
+        "macro": 84,
+        "struct": 26
+      },
+      "src/libs/LPC17xx/sLPC17xx.h": {
+        "enum": 1,
+        "macro": 105,
+        "struct": 28
+      },
+      "mbed/src/cpp/InterruptIn.cpp": {
+        "function": 8
+      },
+      "mbed/src/cpp/InterruptIn.h": {
+        "class": 1,
+        "macro": 1,
+        "function": 2,
+        "namespace": 1
+      },
+      "mbed/src/cpp/Serial.h": {
+        "enum": 2,
+        "macro": 1,
+        "class": 1,
+        "function": 1,
+        "namespace": 1
+      },
+      "src/modules/tools/spindle/SoftSerial/SoftSerial.h": {
+        "enum": 2,
+        "macro": 1,
+        "class": 1,
+        "function": 2
+      },
+      "src/modules/utils/panel/screens/3dprinter/JogScreen.h": {
+        "macro": 1,
+        "class": 1
+      },
+      "src/modules/utils/panel/screens/cnc/JogScreen.h": {
+        "macro": 1,
+        "class": 1
+      },
+      "src/modules/utils/panel/screens/3dprinter/JogScreen.cpp": {
+        "function": 5
+      },
+      "src/modules/utils/panel/screens/cnc/JogScreen.cpp": {
+        "function": 6
+      },
+      "src/libs/Kernel.h": {
+        "macro": 4,
+        "class": 1,
+        "struct": 1,
+        "function": 12
+      },
+      "src/libs/Kernel.cpp": {
+        "function": 8
+      },
+      "src/testframework/Test_kernel.cpp": {
+        "function": 10
+      },
+      "src/modules/utils/killbutton/KillButton.cpp": {
+        "function": 4
+      },
+      "src/modules/utils/killbutton/KillButton.h": {
+        "class": 1,
+        "enum": 1,
+        "struct": 1
+      },
+      "src/libs/Network/uip/uip/lc-addrlabels.h": {
+        "macro": 5
+      },
+      "src/libs/Network/uip/uip/lc-switch.h": {
+        "macro": 5
+      },
+      "src/libs/Network/uip/uip/lc.h": {
+        "macro": 5
+      },
+      "src/libs/LPC17xx/LPC17xxLib/inc/lpc17xx_mcpwm.h": {
+        "macro": 48,
+        "struct": 3
+      },
+      "src/libs/LPC17xx/LPC17xxLib/inc/lpc17xx_nvic.h": {
+        "macro": 1
+      },
+      "src/libs/LPC17xx/LPC17xxLib/inc/lpc17xx_pinsel.h": {
+        "macro": 53,
+        "struct": 1
+      },
+      "src/libs/LPC17xx/LPC17xxLib/inc/lpc17xx_pwm.h": {
+        "macro": 36,
+        "struct": 5,
+        "enum": 7
+      },
+      "src/libs/LPC17xx/LPC17xxLib/inc/lpc17xx_qei.h": {
+        "macro": 138,
+        "struct": 2
+      },
+      "src/libs/LPC17xx/LPC17xxLib/inc/lpc17xx_rit.h": {
+        "macro": 6
+      },
+      "src/libs/LPC17xx/LPC17xxLib/inc/lpc17xx_rtc.h": {
+        "macro": 65,
+        "struct": 1,
+        "enum": 2
+      },
+      "src/libs/LPC17xx/LPC17xxLib/inc/lpc17xx_spi.h": {
+        "macro": 61,
+        "struct": 2,
+        "enum": 1
+      },
+      "src/libs/LPC17xx/LPC17xxLib/inc/lpc17xx_ssp.h": {
+        "macro": 101,
+        "struct": 2,
+        "enum": 1
+      },
+      "src/libs/LPC17xx/LPC17xxLib/inc/lpc17xx_wdt.h": {
+        "macro": 18,
+        "enum": 2
+      },
+      "mbed/src/vendor/NXP/cmsis/LPC11U24/LPC11Uxx.h": {
+        "macro": 42,
+        "enum": 1,
+        "struct": 21
+      },
+      "src/modules/tools/laser/Laser.cpp": {
+        "function": 11
+      },
+      "src/modules/tools/laser/Laser.h": {
+        "class": 1,
+        "struct": 1,
+        "function": 3,
+        "namespace": 1
+      },
+      "src/modules/utils/panel/screens/cnc/LaserScreen.cpp": {
+        "function": 8
+      },
+      "src/modules/utils/panel/screens/cnc/LaserScreen.h": {
+        "class": 1,
+        "function": 1
+      },
+      "src/modules/utils/panel/panels/LcdBase.cpp": {
+        "function": 3
+      },
+      "src/modules/tools/zprobe/LevelingStrategy.h": {
+        "function": 2,
+        "class": 1,
+        "macro": 1
+      },
+      "src/modules/robot/arm_solutions/LinearDeltaSolution.cpp": {
+        "function": 6
+      },
+      "src/modules/robot/arm_solutions/LinearDeltaSolution.h": {
+        "class": 1
+      },
+      "mbed/src/cpp/LocalFileSystem.cpp": {
+        "function": 13
+      },
+      "mbed/src/cpp/LocalFileSystem.h": {
+        "class": 2,
+        "function": 1,
+        "macro": 1,
+        "namespace": 1
+      },
+      "src/modules/utils/panel/screens/3dprinter/MainMenuScreen.h": {
+        "macro": 1,
+        "class": 1
+      },
+      "src/modules/utils/panel/screens/cnc/MainMenuScreen.h": {
+        "macro": 1,
+        "class": 1,
+        "function": 1
+      },
+      "src/modules/robot/ActuatorCoordinates.h": {
+        "macro": 3
+      },
+      "src/modules/robot/Robot.h": {
+        "macro": 2,
+        "enum": 1,
+        "class": 1,
+        "struct": 1,
+        "function": 16
+      },
+      "mbed/src/capi/analogin_api.h": {
+        "macro": 1
+      },
+      "mbed/src/capi/analogout_api.h": {
+        "macro": 1
+      },
+      "mbed/src/capi/can_api.h": {
+        "macro": 1
+      },
+      "mbed/src/vendor/NXP/cmsis/LPC11U24/cmsis.h": {
+        "macro": 1
+      },
+      "mbed/src/vendor/NXP/cmsis/LPC1768/cmsis.h": {
+        "macro": 1
+      },
+      "mbed/src/vendor/NXP/cmsis/LPC2368/cmsis.h": {
+        "macro": 1
+      },
+      "mbed/src/vendor/NXP/cmsis/LPC11U24/cmsis_nvic.h": {
+        "macro": 1
+      },
+      "mbed/src/vendor/NXP/cmsis/LPC1768/cmsis_nvic.h": {
+        "macro": 1
+      },
+      "mbed/src/vendor/NXP/cmsis/LPC2368/cmsis_nvic.h": {
+        "macro": 1
+      },
+      "mbed/src/capi/mbed_debug.h": {
+        "macro": 1,
+        "function": 2
+      },
+      "mbed/src/capi/error.h": {
+        "macro": 3
+      },
+      "mbed/src/capi/ethernet_api.h": {
+        "macro": 1
+      },
+      "mbed/src/capi/gpio_api.h": {
+        "macro": 1
+      },
+      "mbed/src/capi/gpio_irq_api.h": {
+        "macro": 1,
+        "enum": 1
+      },
+      "mbed/src/vendor/NXP/capi/LPC11U24/gpio_object.h": {
+        "macro": 1,
+        "struct": 1,
+        "function": 2
+      },
+      "mbed/src/vendor/NXP/capi/LPC1768/gpio_object.h": {
+        "macro": 1,
+        "struct": 1,
+        "function": 2
+      },
+      "mbed/src/vendor/NXP/capi/LPC2368/gpio_object.h": {
+        "macro": 1,
+        "struct": 1,
+        "function": 2
+      },
+      "mbed/src/cpp/mbed.h": {
+        "macro": 2
+      },
+      "mbed/src/capi/i2c_api.h": {
+        "macro": 1
+      },
+      "mbed/src/capi/mbed_interface.h": {
+        "macro": 1
+      },
+      "mbed/src/vendor/NXP/capi/LPC11U24/objects.h": {
+        "macro": 1,
+        "struct": 7
+      },
+      "mbed/src/vendor/NXP/capi/LPC1768/objects.h": {
+        "macro": 1,
+        "struct": 9
+      },
+      "mbed/src/vendor/NXP/capi/LPC2368/objects.h": {
+        "macro": 1,
+        "struct": 9
+      },
+      "mbed/src/cpp/platform.h": {
+        "macro": 2
+      },
+      "mbed/src/vendor/NXP/capi/LPC11U24/PeripheralNames.h": {
+        "macro": 4,
+        "enum": 5
+      },
+      "mbed/src/vendor/NXP/capi/LPC1768/PeripheralNames.h": {
+        "macro": 4,
+        "enum": 7
+      },
+      "mbed/src/vendor/NXP/capi/LPC2368/PeripheralNames.h": {
+        "macro": 4,
+        "enum": 7
+      },
+      "mbed/src/capi/pinmap.h": {
+        "macro": 1,
+        "struct": 1
+      },
+      "mbed/src/vendor/NXP/capi/LPC11U24/PinNames.h": {
+        "macro": 2,
+        "enum": 4
+      },
+      "mbed/src/vendor/NXP/capi/LPC1768/PinNames.h": {
+        "macro": 3,
+        "enum": 3,
+        "struct": 1
+      },
+      "mbed/src/vendor/NXP/capi/LPC2368/PinNames.h": {
+        "macro": 3,
+        "enum": 3,
+        "struct": 1
+      },
+      "mbed/src/cpp/PortInOut.h": {
+        "macro": 1,
+        "function": 9,
+        "class": 1,
+        "namespace": 1
+      },
+      "mbed/src/cpp/PortIn.h": {
+        "macro": 1,
+        "function": 4,
+        "class": 1,
+        "namespace": 1
+      },
+      "mbed/src/capi/port_api.h": {
+        "macro": 1
+      },
+      "mbed/src/vendor/NXP/capi/LPC11U24/PortNames.h": {
+        "macro": 1,
+        "enum": 1
+      },
+      "mbed/src/vendor/NXP/capi/LPC1768/PortNames.h": {
+        "macro": 1,
+        "enum": 1
+      },
+      "mbed/src/vendor/NXP/capi/LPC2368/PortNames.h": {
+        "macro": 1,
+        "enum": 1
+      },
+      "mbed/src/cpp/PortOut.h": {
+        "macro": 1,
+        "function": 6,
+        "class": 1,
+        "namespace": 1
+      },
+      "mbed/src/capi/pwmout_api.h": {
+        "macro": 1
+      },
+      "mbed/src/cpp/PwmOut.h": {
+        "macro": 1,
+        "function": 12,
+        "class": 1,
+        "namespace": 1
+      },
+      "mbed/src/capi/rtc_api.h": {
+        "macro": 1
+      },
+      "mbed/src/capi/semihost_api.h": {
+        "macro": 1,
+        "function": 1
+      },
+      "mbed/src/capi/serial_api.h": {
+        "macro": 1,
+        "enum": 2
+      },
+      "mbed/src/capi/sleep_api.h": {
+        "macro": 1
+      },
+      "mbed/src/cpp/SPISlave.h": {
+        "macro": 1,
+        "class": 1,
+        "namespace": 1
+      },
+      "mbed/src/capi/spi_api.h": {
+        "macro": 1
+      },
+      "mbed/src/cpp/SPI.h": {
+        "macro": 1,
+        "class": 1,
+        "namespace": 1,
+        "function": 1
+      },
+      "mbed/src/cpp/Stream.h": {
+        "macro": 1,
+        "class": 1,
+        "namespace": 1,
+        "function": 1
+      },
+      "mbed/src/cpp/Ticker.h": {
+        "macro": 1,
+        "class": 1,
+        "function": 4,
+        "namespace": 1
+      },
+      "mbed/src/cpp/Timeout.h": {
+        "macro": 1,
+        "class": 1,
+        "namespace": 1
+      },
+      "mbed/src/cpp/TimerEvent.h": {
+        "macro": 1,
+        "class": 1,
+        "namespace": 1
+      },
+      "mbed/src/cpp/Timer.h": {
+        "macro": 1,
+        "class": 1,
+        "namespace": 1
+      },
+      "mbed/src/capi/toolchain.h": {
+        "macro": 6
+      },
+      "mbed/src/capi/us_ticker_api.h": {
+        "macro": 1,
+        "struct": 1
+      },
+      "mbed/src/capi/wait_api.h": {
+        "macro": 1
+      },
+      "src/modules/utils/currentcontrol/mcp4451.h": {
+        "function": 6,
+        "class": 1,
+        "macro": 1
+      },
+      "src/libs/LPC17xx/LPC17xxLib/src/lpc17xx_mcpwm.c": {
+        "function": 15
+      },
+      "src/libs/MemoryPool.h": {
+        "macro": 3,
+        "class": 1,
+        "function": 2
+      },
+      "src/libs/Network/uip/lib/memb.h": {
+        "macro": 4,
+        "struct": 1
+      },
+      "src/modules/tools/spindle/Modbus/Modbus.h": {
+        "macro": 1,
+        "class": 1
+      },
+      "src/modules/tools/spindle/ModbusSpindleControl.h": {
+        "macro": 1,
+        "function": 2,
+        "class": 1
+      },
+      "src/modules/utils/panel/screens/ModifyValuesScreen.h": {
+        "macro": 1,
+        "class": 1,
+        "struct": 1,
+        "function": 1
+      },
+      "src/libs/Module.h": {
+        "macro": 1,
+        "class": 1,
+        "enum": 1,
+        "function": 10
+      },
+      "src/modules/robot/arm_solutions/MorganSCARASolution.h": {
+        "macro": 1,
+        "class": 1
+      },
+      "mri/mri.h": {
+        "macro": 14
+      },
+      "src/libs/USBDevice/USBMSD/disk.h": {
+        "class": 1,
+        "macro": 1,
+        "function": 9
+      },
+      "src/modules/utils/panel/screens/3dprinter/MainMenuScreen.cpp": {
+        "function": 7
+      },
+      "src/modules/utils/panel/screens/cnc/MainMenuScreen.cpp": {
+        "function": 7
+      },
+      "src/modules/tools/temperaturecontrol/max31855.cpp": {
+        "function": 5
+      },
+      "src/modules/tools/temperaturecontrol/max31855.h": {
+        "class": 1,
+        "struct": 1,
+        "macro": 1
+      },
+      "src/libs/MemoryPool.cpp": {
+        "function": 8
+      },
+      "src/modules/tools/spindle/Modbus/Modbus.cpp": {
+        "function": 16
+      },
+      "src/modules/utils/panel/screens/ModifyValuesScreen.cpp": {
+        "function": 10
+      },
+      "src/libs/Module.cpp": {
+        "function": 3
+      },
+      "src/modules/robot/arm_solutions/MorganSCARASolution.cpp": {
+        "function": 7
+      },
+      "src/modules/utils/motordrivercontrol/MotorDriverControl.cpp": {
+        "function": 18
+      },
+      "src/libs/SoftPWM.h": {
+        "macro": 2,
+        "class": 1,
+        "function": 2
+      },
+      "src/libs/Network/uip/NetworkPublicAccess.h": {
+        "macro": 4
+      },
+      "mbed/src/vendor/NXP/cmsis/LPC11U24/core_cm0.h": {
+        "macro": 94,
+        "function": 9,
+        "struct": 7
+      },
+      "mbed/src/vendor/NXP/cmsis/LPC2368/core_arm7.h": {
+        "macro": 34,
+        "function": 5,
+        "struct": 1
+      },
+      "src/libs/LPC17xx/LPC17xxLib/src/lpc17xx_nvic.c": {
+        "function": 3
+      },
+      "mbed/src/vendor/NXP/cmsis/LPC11U24/cmsis_nvic.c": {
+        "function": 2
+      },
+      "mbed/src/vendor/NXP/cmsis/LPC1768/cmsis_nvic.c": {
+        "function": 2
+      },
+      "mbed/src/vendor/NXP/cmsis/LPC2368/cmsis_nvic.c": {
+        "function": 2
+      },
+      "src/libs/USBDevice/USB.h": {
+        "macro": 2,
+        "class": 1
+      },
+      "src/libs/Network/uip/Network.cpp": {
+        "function": 19
+      },
+      "src/libs/Network/uip/Network.h": {
+        "class": 1,
+        "macro": 1,
+        "struct": 1
+      },
+      "src/libs/StreamOutput.h": {
+        "class": 2,
+        "macro": 1,
+        "function": 7
+      },
+      "src/modules/tools/switch/Switch.h": {
+        "enum": 1,
+        "class": 1,
+        "struct": 1,
+        "namespace": 1
+      },
+      "src/modules/utils/panel/PanelScreen.h": {
+        "macro": 1,
+        "class": 1,
+        "function": 3
+      },
+      "src/modules/utils/panel/Panel.h": {
+        "macro": 2,
+        "class": 1,
+        "struct": 1,
+        "function": 13
+      },
+      "src/libs/LPC17xx/LPC17xxLib/inc/lpc17xx_timer.h": {
+        "macro": 37,
+        "enum": 6,
+        "struct": 4
+      },
+      "src/libs/LPC17xx/LPC17xxLib/inc/lpc17xx_uart.h": {
+        "macro": 123,
+        "enum": 14,
+        "struct": 4
+      },
+      "src/modules/tools/temperaturecontrol/PID_Autotuner.cpp": {
+        "function": 8
+      },
+      "src/modules/tools/temperaturecontrol/PID_Autotuner.h": {
+        "class": 1,
+        "macro": 1,
+        "struct": 1
+      },
+      "src/libs/LPC17xx/LPC17xxLib/src/lpc17xx_pinsel.c": {
+        "function": 5
+      },
+      "src/libs/Pin.h": {
+        "macro": 1,
+        "class": 1,
+        "struct": 1,
+        "function": 8,
+        "namespace": 1
+      },
+      "src/modules/robot/Planner.h": {
+        "macro": 1,
+        "class": 1
+      },
+      "src/modules/utils/player/PlayerPublicAccess.h": {
+        "macro": 6,
+        "struct": 1
+      },
+      "mbed/src/cpp/stdio.cpp": {
+        "function": 23
+      },
+      "src/modules/utils/panel/screens/3dprinter/PrepareScreen.h": {
+        "macro": 1,
+        "class": 1,
+        "function": 1
+      },
+      "src/modules/utils/panel/screens/cnc/PrepareScreen.h": {
+        "macro": 1,
+        "class": 1,
+        "function": 1
+      },
+      "src/modules/utils/panel/screens/3dprinter/ProbeScreen.h": {
+        "macro": 1,
+        "class": 1,
+        "struct": 1,
+        "function": 1
+      },
+      "src/modules/utils/panel/screens/cnc/ProbeScreen.h": {
+        "macro": 1,
+        "class": 1,
+        "struct": 1,
+        "function": 1
+      },
+      "src/libs/Network/uip/uip/psock.h": {
+        "macro": 20,
+        "struct": 2
+      },
+      "src/modules/tools/temperaturecontrol/PT1000.cpp": {
+        "function": 7
+      },
+      "src/modules/tools/temperaturecontrol/PT1000.h": {
+        "class": 1,
+        "macro": 1
+      },
+      "src/modules/tools/temperaturecontrol/PT100_E3D.cpp": {
+        "function": 7
+      },
+      "src/modules/tools/temperaturecontrol/PT100_E3D.h": {
+        "class": 1,
+        "macro": 1
+      },
+      "src/libs/Network/uip/uip/pt.h": {
+        "macro": 18,
+        "struct": 1
+      },
+      "src/libs/Network/uip/uip/psock.c": {
+        "function": 8
+      },
+      "src/libs/PublicDataRequest.h": {
+        "macro": 1,
+        "function": 12,
+        "class": 1,
+        "struct": 1
+      },
+      "src/libs/PublicData.h": {
+        "macro": 1,
+        "class": 1,
+        "function": 6
+      },
+      "src/modules/tools/spindle/PWMSpindleControl.cpp": {
+        "function": 12
+      },
+      "src/modules/tools/spindle/PWMSpindleControl.h": {
+        "class": 1,
+        "macro": 1,
+        "namespace": 1,
+        "function": 1
+      },
+      "src/libs/LPC17xx/LPC17xxLib/src/lpc17xx_pwm.c": {
+        "function": 15
+      },
+      "src/modules/utils/panel/Panel.cpp": {
+        "function": 37
+      },
+      "src/modules/utils/panel/PanelScreen.cpp": {
+        "function": 12
+      },
+      "src/libs/StepTicker.cpp": {
+        "function": 13
+      },
+      "src/libs/Pin.cpp": {
+        "function": 9
+      },
+      "src/libs/Network/uip/plan9/plan9.cpp": {
+        "function": 19
+      },
+      "src/modules/tools/zprobe/Plane3D.cpp": {
+        "function": 5
+      },
+      "src/modules/tools/zprobe/Plane3D.h": {
+        "class": 1,
+        "macro": 1
+      },
+      "src/modules/robot/Planner.cpp": {
+        "function": 5
+      },
+      "src/modules/utils/PlayLed/PlayLed.cpp": {
+        "function": 4
+      },
+      "src/modules/utils/PlayLed/PlayLed.h": {
+        "class": 1,
+        "macro": 1,
+        "struct": 1
+      },
+      "src/modules/utils/player/Player.cpp": {
+        "function": 16
+      },
+      "src/modules/utils/player/Player.h": {
+        "class": 1,
+        "struct": 1
+      },
+      "src/modules/utils/panel/screens/3dprinter/PrepareScreen.cpp": {
+        "function": 8
+      },
+      "src/modules/utils/panel/screens/cnc/PrepareScreen.cpp": {
+        "function": 5
+      },
+      "src/modules/utils/panel/screens/3dprinter/ProbeScreen.cpp": {
+        "function": 7
+      },
+      "src/modules/utils/panel/screens/cnc/ProbeScreen.cpp": {
+        "function": 7
+      },
+      "src/libs/Pwm.cpp": {
+        "function": 6
+      },
+      "src/libs/Pwm.h": {
+        "class": 1,
+        "macro": 1,
+        "function": 1
+      },
+      "src/libs/LPC17xx/LPC17xxLib/src/lpc17xx_qei.c": {
+        "function": 21
+      },
+      "src/modules/tools/temperaturecontrol/Thermistor.h": {
+        "macro": 2,
+        "class": 1,
+        "struct": 3
+      },
+      "src/libs/RingBuffer.h": {
+        "macro": 1,
+        "function": 12,
+        "class": 1
+      },
+      "src/libs/LPC17xx/LPC17xxLib/src/lpc17xx_rit.c": {
+        "function": 6
+      },
+      "src/modules/utils/panel/panels/ReprapDiscountGLCD.h": {
+        "macro": 1,
+        "class": 1,
+        "function": 3
+      },
+      "src/libs/LPC17xx/LPC17xxLib/src/lpc17xx_rtc.c": {
+        "function": 20
+      },
+      "src/modules/tools/temperaturecontrol/TemperatureControl.h": {
+        "enum": 1,
+        "macro": 1,
+        "class": 1,
+        "struct": 1
+      },
+      "src/modules/utils/panel/panels/ReprapDiscountGLCD.cpp": {
+        "function": 13
+      },
+      "src/modules/robot/Robot.cpp": {
+        "function": 31
+      },
+      "src/modules/tools/rotarydeltacalibration/RotaryDeltaCalibration.h": {
+        "function": 2,
+        "class": 1
+      },
+      "src/modules/robot/arm_solutions/RotaryDeltaSolution.cpp": {
+        "function": 8
+      },
+      "src/modules/robot/arm_solutions/RotaryDeltaSolution.h": {
+        "class": 1,
+        "struct": 1
+      },
+      "src/modules/robot/arm_solutions/RotatableCartesianSolution.cpp": {
+        "function": 4
+      },
+      "src/modules/robot/arm_solutions/RotatableCartesianSolution.h": {
+        "class": 1,
+        "macro": 1
+      },
+      "src/modules/utils/panel/panels/rrdglcd/RrdGlcd.cpp": {
+        "function": 11
+      },
+      "src/modules/utils/panel/panels/rrdglcd/RrdGlcd.h": {
+        "class": 1,
+        "macro": 1
+      },
+      "src/modules/tools/scaracal/SCARAcal.h": {
+        "macro": 1,
+        "class": 1,
+        "struct": 1
+      },
+      "src/modules/tools/scaracal/SCARAcal.cpp": {
+        "function": 10
+      },
+      "src/libs/USBDevice/USBMSD/SDCard.h": {
+        "macro": 1,
+        "class": 1,
+        "enum": 1,
+        "function": 1
+      },
+      "src/libs/USBDevice/USBMSD/SDCard.cpp": {
+        "function": 22
+      },
+      "src/libs/SDFAT.cpp": {
+        "function": 8
+      },
+      "src/libs/SDFAT.h": {
+        "class": 1,
+        "macro": 1
+      },
+      "src/modules/communication/SerialConsole.h": {
+        "macro": 1,
+        "class": 1,
+        "struct": 1
+      },
+      "src/libs/SerialMessage.h": {
+        "macro": 1,
+        "struct": 1
+      },
+      "src/testframework/unittests/tools/switch/TEST_Switch.cpp": {
+        "function": 3
+      },
+      "src/testframework/unittests/tools/temperatureswitch/TEST_TemperatureSwitch.cpp": {
+        "function": 4
+      },
+      "src/testframework/easyunit/simplestring.h": {
+        "macro": 1,
+        "class": 1
+      },
+      "src/libs/SlowTicker.h": {
+        "macro": 1,
+        "class": 1,
+        "function": 1
+      },
+      "mbed/src/cpp/SPI.cpp": {
+        "function": 5
+      },
+      "src/modules/utils/panel/panels/UniversalAdapter.cpp": {
+        "function": 17
+      },
+      "src/modules/utils/panel/panels/UniversalAdapter.h": {
+        "class": 2,
+        "macro": 1,
+        "function": 2
+      },
+      "src/modules/tools/spindle/SpindleMaker.h": {
+        "macro": 1,
+        "function": 2,
+        "class": 1
+      },
+      "src/modules/tools/spindle/SpindleControl.h": {
+        "macro": 1,
+        "function": 11,
+        "class": 1
+      },
+      "mbed/src/cpp/SPISlave.cpp": {
+        "function": 6
+      },
+      "src/libs/LPC17xx/LPC17xxLib/src/lpc17xx_spi.c": {
+        "function": 13
+      },
+      "src/libs/LPC17xx/LPC17xxLib/src/lpc17xx_ssp.c": {
+        "function": 17
+      },
+      "src/modules/utils/panel/panels/ST7565.cpp": {
+        "function": 30
+      },
+      "src/modules/utils/panel/panels/ST7565.h": {
+        "class": 1,
+        "macro": 1,
+        "struct": 1,
+        "function": 5
+      },
+      "src/modules/tools/temperatureswitch/TemperatureSwitch.h": {
+        "enum": 2,
+        "macro": 1,
+        "class": 1,
+        "struct": 1,
+        "function": 1
+      },
+      "src/libs/Network/uip/sftp/sftpd.h": {
+        "enum": 1,
+        "class": 1,
+        "macro": 1
+      },
+      "src/libs/StepTicker.h": {
+        "macro": 2,
+        "class": 1,
+        "struct": 1,
+        "function": 3
+      },
+      "src/libs/StreamOutputPool.h": {
+        "macro": 1,
+        "function": 4,
+        "class": 1
+      },
+      "src/modules/tools/switch/SwitchPool.h": {
+        "macro": 1,
+        "class": 1
+      },
+      "src/libs/LPC17xx/LPC17xxLib/src/lpc17xx_systick.c": {
+        "function": 6
+      },
+      "mbed/src/cpp/Serial.cpp": {
+        "function": 9
+      },
+      "src/modules/communication/SerialConsole.cpp": {
+        "function": 13
+      },
+      "src/libs/USBDevice/USBSerial/USBSerial.h": {
+        "function": 1,
+        "macro": 1,
+        "class": 2,
+        "struct": 1
+      },
+      "src/libs/Network/uip/sftp/sftpd.cpp": {
+        "function": 8
+      },
+      "src/libs/Network/uip/telnetd/shell.cpp": {
+        "function": 10
+      },
+      "src/libs/Network/uip/telnetd/shell.h": {
+        "class": 1,
+        "macro": 1,
+        "function": 1
+      },
+      "src/modules/utils/simpleshell/SimpleShell.h": {
+        "function": 2,
+        "class": 1,
+        "struct": 1
+      },
+      "src/testframework/easyunit/simplestring.cpp": {
+        "function": 18
+      },
+      "src/libs/SlowTicker.cpp": {
+        "function": 8
+      },
+      "src/libs/SoftPWM.cpp": {
+        "function": 13
+      },
+      "src/modules/tools/spindle/SoftSerial/SoftSerial.cpp": {
+        "function": 4
+      },
+      "src/libs/USBDevice/USBMSD/USBMSD.h": {
+        "enum": 1,
+        "class": 1,
+        "macro": 1,
+        "struct": 2
+      },
+      "src/libs/StepperMotor.cpp": {
+        "function": 10
+      },
+      "src/libs/StepperMotor.h": {
+        "class": 1,
+        "struct": 1,
+        "function": 25
+      },
+      "mbed/src/cpp/Stream.cpp": {
+        "function": 15
+      },
+      "src/libs/StringStream.h": {
+        "function": 4,
+        "class": 1,
+        "macro": 1
+      },
+      "src/modules/tools/switch/Switch.cpp": {
+        "function": 14
+      },
+      "mbed/src/vendor/NXP/cmsis/LPC11U24/system_LPC11Uxx.c": {
+        "function": 2
+      },
+      "mbed/src/vendor/NXP/cmsis/LPC1768/system_LPC17xx.c": {
+        "function": 2
+      },
+      "mbed/src/vendor/NXP/cmsis/LPC2368/system_LPC23xx.c": {
+        "function": 2
+      },
+      "src/modules/tools/temperaturecontrol/TemperatureControlPool.h": {
+        "macro": 1,
+        "class": 1
+      },
+      "src/modules/tools/temperaturecontrol/TempSensor.h": {
+        "macro": 1,
+        "class": 1,
+        "function": 7
+      },
+      "src/testframework/unittests/libs/TEST_gcode.cpp": {
+        "function": 1
+      },
+      "src/testframework/unittests/libs/TEST_utils.cpp": {
+        "function": 4
+      },
+      "src/testframework/easyunit/testcase.h": {
+        "macro": 1,
+        "class": 1
+      },
+      "src/testframework/easyunit/testharness.h": {
+        "macro": 1
+      },
+      "src/testframework/easyunit/testpartresult.h": {
+        "macro": 1,
+        "class": 1,
+        "enum": 1
+      },
+      "src/testframework/easyunit/testprinter.h": {
+        "macro": 1,
+        "class": 1,
+        "function": 1
+      },
+      "src/testframework/easyunit/testregistry.h": {
+        "macro": 1,
+        "class": 1
+      },
+      "src/libs/LPC17xx/LPC17xxLib/src/lpc17xx_timer.c": {
+        "function": 15
+      },
+      "src/modules/utils/motordrivercontrol/drivers/TMC26X/TMC26X.cpp": {
+        "function": 44
+      },
+      "src/modules/utils/motordrivercontrol/drivers/TMC26X/TMC26X.h": {
+        "class": 1,
+        "struct": 1
+      },
+      "src/modules/tools/toolmanager/ToolManager.h": {
+        "macro": 1,
+        "class": 1,
+        "function": 1
+      },
+      "src/libs/TSRingBuffer.h": {
+        "function": 7,
+        "class": 1
+      },
+      "src/libs/Network/uip/telnetd/telnetd.cpp": {
+        "function": 14
+      },
+      "src/libs/Network/uip/telnetd/telnetd.h": {
+        "class": 1,
+        "macro": 1
+      },
+      "src/modules/tools/temperaturecontrol/TemperatureControl.cpp": {
+        "function": 17
+      },
+      "src/modules/tools/temperatureswitch/TemperatureSwitch.cpp": {
+        "function": 9
+      },
+      "src/testframework/easyunit/test.cpp": {
+        "function": 16
+      },
+      "src/testframework/easyunit/testcase.cpp": {
+        "function": 17
+      },
+      "src/testframework/easyunit/testpartresult.cpp": {
+        "function": 8
+      },
+      "src/testframework/easyunit/testregistry.cpp": {
+        "function": 13
+      },
+      "src/testframework/easyunit/testresult.cpp": {
+        "function": 14
+      },
+      "src/testframework/easyunit/testresult.h": {
+        "class": 1,
+        "macro": 1
+      },
+      "src/testframework/easyunit/testrunner.cpp": {
+        "function": 3
+      },
+      "src/testframework/easyunit/testrunner.h": {
+        "class": 1,
+        "macro": 1
+      },
+      "src/modules/tools/temperaturecontrol/Thermistor.cpp": {
+        "function": 12
+      },
+      "src/modules/tools/zprobe/ThreePointStrategy.cpp": {
+        "function": 11
+      },
+      "src/modules/tools/zprobe/ThreePointStrategy.h": {
+        "class": 1,
+        "macro": 2,
+        "struct": 1
+      },
+      "mbed/src/cpp/Timer.cpp": {
+        "function": 9
+      },
+      "mbed/src/cpp/TimerEvent.cpp": {
+        "function": 5
+      },
+      "src/modules/tools/toolmanager/Tool.h": {
+        "function": 5,
+        "class": 1
+      },
+      "src/modules/tools/toolmanager/ToolManager.cpp": {
+        "function": 6
+      },
+      "src/libs/LPC17xx/LPC17xxLib/src/lpc17xx_debug_frmwrk.c": {
+        "function": 11
+      },
+      "src/libs/LPC17xx/LPC17xxLib/src/lpc17xx_uart.c": {
+        "function": 28
+      },
+      "src/libs/Network/uip/uip/uipopt.h": {
+        "macro": 44
+      },
+      "src/libs/Network/uip/uip-conf.h": {
+        "macro": 12
+      },
+      "src/libs/Network/uip/webserver/webserver.h": {
+        "macro": 2
+      },
+      "src/libs/Network/uip/uip/uip_arp.h": {
+        "macro": 6,
+        "struct": 1
+      },
+      "src/libs/Network/uip/uip/uip-fw.h": {
+        "macro": 11,
+        "struct": 1
+      },
+      "src/libs/Network/uip/dhcpc/dhcpc.h": {
+        "macro": 2,
+        "struct": 1
+      },
+      "src/libs/USBDevice/USB.cpp": {
+        "function": 29
+      },
+      "src/libs/USBDevice/USBSerial/USBCDC.cpp": {
+        "function": 8
+      },
+      "src/libs/USBDevice/USBSerial/USBCDC.h": {
+        "class": 1,
+        "macro": 1
+      },
+      "src/libs/USBDevice/USBDevice/USBDevice.h": {
+        "function": 2,
+        "macro": 1,
+        "class": 1
+      },
+      "src/libs/USBDevice/USBSerial/USBSerial.cpp": {
+        "function": 15
+      },
+      "src/libs/Vector3.h": {
+        "function": 3,
+        "class": 1,
+        "macro": 1
+      },
+      "src/version.h": {
+        "class": 1,
+        "macro": 1
+      },
+      "src/modules/utils/panel/screens/3dprinter/WatchScreen.h": {
+        "macro": 1,
+        "class": 1,
+        "struct": 1
+      },
+      "src/modules/utils/panel/screens/cnc/WatchScreen.h": {
+        "macro": 1,
+        "class": 1,
+        "struct": 1
+      },
+      "src/modules/utils/panel/screens/cnc/WCSScreen.cpp": {
+        "function": 7
+      },
+      "src/modules/utils/panel/screens/cnc/WCSScreen.h": {
+        "class": 1
+      },
+      "src/libs/LPC17xx/LPC17xxLib/src/lpc17xx_wdt.c": {
+        "function": 7
+      },
+      "src/libs/Watchdog.cpp": {
+        "function": 5
+      },
+      "src/modules/utils/panel/screens/3dprinter/WatchScreen.cpp": {
+        "function": 14
+      },
+      "src/modules/utils/panel/screens/cnc/WatchScreen.cpp": {
+        "function": 13
+      },
+      "src/libs/Watchdog.h": {
+        "class": 1,
+        "macro": 1,
+        "enum": 1
+      },
+      "src/modules/tools/zprobe/ZProbe.h": {
+        "macro": 3,
+        "function": 7,
+        "class": 1,
+        "struct": 1
+      },
+      "src/libs/ahbmalloc.h": {
+        "macro": 1,
+        "enum": 1
+      },
+      "src/libs/Network/uip/c-fifo.h": {
+        "macro": 1
+      },
+      "src/libs/ChaNFS/CHAN_FS/ffconf.h": {
+        "macro": 22
+      },
+      "src/libs/ChaNFS/CHAN_FS/integer.h": {
+        "macro": 1
+      },
+      "src/libs/MRI_Hooks.h": {
+        "macro": 1
+      },
+      "mbed/src/vendor/NXP/cmsis/LPC11U24/core_cmInstr.h": {
+        "macro": 25,
+        "function": 22
+      },
+      "mbed/src/vendor/NXP/cmsis/LPC1768/core_cmInstr.h": {
+        "macro": 25,
+        "function": 22
+      },
+      "mbed/src/vendor/NXP/cmsis/LPC11U24/core_cm0.c": {
+        "function": 14
+      },
+      "mbed/src/vendor/NXP/cmsis/LPC1768/core_cm3.c": {
+        "function": 18
+      },
+      "mbed/src/vendor/NXP/cmsis/LPC11U24/core_cmFunc.h": {
+        "macro": 3,
+        "function": 38
+      },
+      "mbed/src/vendor/NXP/cmsis/LPC1768/core_cmFunc.h": {
+        "macro": 3,
+        "function": 38
+      },
+      "src/modules/tools/endstops/EndstopsPublicAccess.h": {
+        "macro": 7
+      },
+      "src/libs/Network/uip/webserver/httpd-fsdata.h": {
+        "macro": 1,
+        "struct": 2
+      },
+      "src/libs/Network/uip/webserver/httpd.h": {
+        "macro": 1,
+        "struct": 1
+      },
+      "src/modules/tools/switch/SwitchPublicAccess.h": {
+        "macro": 4,
+        "struct": 1
+      },
+      "mbed/src/vendor/NXP/cmsis/LPC11U24/system_LPC11Uxx.h": {
+        "macro": 1
+      },
+      "mbed/src/vendor/NXP/cmsis/LPC1768/system_LPC17xx.h": {
+        "macro": 1
+      },
+      "mbed/src/vendor/NXP/cmsis/LPC2368/system_LPC23xx.h": {
+        "macro": 1
+      },
+      "src/modules/tools/temperaturecontrol/TemperatureControlPublicAccess.h": {
+        "macro": 9,
+        "struct": 1
+      },
+      "src/libs/Network/uip/uip/timer.h": {
+        "macro": 1,
+        "struct": 1
+      },
+      "src/modules/tools/toolmanager/ToolManagerPublicAccess.h": {
+        "macro": 5
+      },
+      "src/libs/Network/uip/uip/uiplib.h": {
+        "macro": 1
+      },
+      "src/libs/Network/uip/uip/uip_arch.h": {
+        "macro": 1
+      },
+      "src/libs/Network/uip/uip/uip-neighbor.h": {
+        "macro": 1,
+        "struct": 1
+      },
+      "src/libs/Network/uip/uip/uip-split.h": {
+        "macro": 1
+      },
+      "src/modules/tools/temperaturecontrol/predefined_thermistors.h": {
+        "struct": 2
+      },
+      "mbed/src/vendor/NXP/cmsis/LPC11U24/GCC_CS/sys.cpp": {
+        "function": 6
+      },
+      "mbed/src/vendor/NXP/cmsis/LPC1768/GCC_CS/sys.cpp": {
+        "function": 6
+      },
+      "mbed/src/vendor/NXP/cmsis/LPC2368/core_arm7.c": {
+        "function": 1
+      },
+      "mbed/src/vendor/NXP/cmsis/LPC2368/vector_realmonitor.c": {
+        "function": 1
+      },
+      "src/libs/MRI_Hooks.cpp": {
+        "function": 4
+      },
+      "mbed/src/capi/rtc_time.c": {
+        "function": 3
+      },
+      "mbed/src/vendor/NXP/cmsis/LPC11U24/ARM/sys.cpp": {
+        "function": 1
+      },
+      "mbed/src/vendor/NXP/cmsis/LPC11U24/uARM/sys.cpp": {
+        "function": 1
+      },
+      "mbed/src/vendor/NXP/cmsis/LPC1768/ARM/sys.cpp": {
+        "function": 1
+      },
+      "mbed/src/vendor/NXP/cmsis/LPC1768/uARM/sys.cpp": {
+        "function": 1
+      },
+      "mbed/src/vendor/NXP/cmsis/LPC2368/ARM/sys.cpp": {
+        "function": 1
+      },
+      "mbed/src/vendor/NXP/cmsis/LPC2368/uARM/sys.cpp": {
+        "function": 1
+      },
+      "src/modules/tools/spindle/SoftSerial/SoftSerial_rx.cpp": {
+        "function": 4
+      },
+      "src/modules/tools/spindle/SoftSerial/SoftSerial_tx.cpp": {
+        "function": 4
+      },
+      "src/libs/utils.cpp": {
+        "function": 22
+      },
+      "src/modules/robot/arm_solutions/CartesianSolution.cpp": {
+        "function": 2
+      },
+      "src/modules/robot/arm_solutions/HBotSolution.cpp": {
+        "function": 2
+      },
+      "src/libs/Vector3.cpp": {
+        "function": 9
+      },
+      "src/libs/ahbmalloc.cpp": {
+        "function": 2
+      },
+      "mbed/src/vendor/NXP/capi/analogin_api.c": {
+        "function": 3
+      },
+      "mbed/src/vendor/NXP/capi/analogout_api.c": {
+        "function": 6
+      },
+      "src/modules/utils/simpleshell/SimpleShell.cpp": {
+        "function": 33
+      },
+      "src/modules/tools/zprobe/DeltaCalibrationStrategy.cpp": {
+        "function": 8
+      },
+      "mbed/src/vendor/NXP/capi/can_api.c": {
+        "function": 9
+      },
+      "src/libs/LPC17xx/LPC17xxLib/src/lpc17xx_libcfg_default.c": {
+        "function": 1
+      },
+      "src/libs/Network/net_util.cpp": {
+        "function": 7
+      },
+      "src/libs/Network/uip/clock-arch.c": {
+        "function": 2
+      },
+      "src/libs/ChaNFS/CHAN_FS/ff.cpp": {
+        "function": 30
+      },
+      "src/modules/utils/configurator/Configurator.cpp": {
+        "function": 3
+      },
+      "src/modules/tools/zprobe/ZProbe.cpp": {
+        "function": 10
+      },
+      "src/libs/utils.h": {
+        "macro": 1
+      },
+      "mbed/src/vendor/NXP/capi/sleep.c": {
+        "function": 2
+      },
+      "src/libs/Network/uip/fifo.cpp": {
+        "function": 5
+      },
+      "mbed/src/cpp/Ticker.cpp": {
+        "function": 3
+      },
+      "src/libs/Network/uip/dhcpc/dhcpc.c": {
+        "function": 4
+      },
+      "src/libs/ChaNFS/CHAN_FS/diskio.cpp": {
+        "function": 5
+      },
+      "mbed/src/vendor/NXP/capi/ethernet_api.c": {
+        "function": 9
+      },
+      "mbed/src/capi/exit.c": {
+        "function": 1
+      },
+      "src/modules/tools/extruder/ExtruderPublicAccess.h": {
+        "macro": 4
+      },
+      "src/libs/ChaNFS/CHAN_FS/option/ccsbcs.c": {
+        "function": 1
+      },
+      "src/version.cpp": {
+        "function": 2
+      },
+      "src/modules/tools/rotarydeltacalibration/RotaryDeltaCalibration.cpp": {
+        "function": 3
+      },
+      "src/libs/PublicData.cpp": {
+        "function": 2
+      },
+      "mbed/src/vendor/NXP/capi/gpio_api.c": {
+        "function": 4
+      },
+      "mbed/src/vendor/NXP/capi/gpio_irq_api.c": {
+        "function": 11
+      },
+      "mbed/src/cpp/Timeout.cpp": {
+        "function": 1
+      },
+      "src/libs/Network/uip/uip/uip.c": {
+        "function": 15
+      },
+      "src/libs/Network/uip/webserver/httpd.c": {
+        "function": 2
+      },
+      "src/libs/Network/uip/webserver/httpd-fs.c": {
+        "function": 3
+      },
+      "mbed/src/vendor/NXP/capi/i2c_api.c": {
+        "function": 15
+      },
+      "src/modules/utils/panel/bitmaps.h": {
+        "macro": 2
+      },
+      "src/main.cpp": {
+        "function": 2
+      },
+      "mbed/src/vendor/NXP/capi/us_ticker_api.c": {
+        "function": 5
+      },
+      "src/modules/tools/spindle/SpindleMaker.cpp": {
+        "function": 1
+      },
+      "src/modules/tools/extruder/ExtruderMaker.cpp": {
+        "function": 1
+      },
+      "src/modules/tools/switch/SwitchPool.cpp": {
+        "function": 1
+      },
+      "src/modules/tools/temperaturecontrol/TemperatureControlPool.cpp": {
+        "function": 1
+      },
+      "src/testframework/Test_main.cpp": {
+        "function": 1
+      },
+      "mbed/src/vendor/NXP/capi/board.c": {
+        "function": 1
+      },
+      "mbed/src/capi/mbed_interface.c": {
+        "function": 8
+      },
+      "src/libs/Network/uip/lib/memb.c": {
+        "function": 3
+      },
+      "src/modules/tools/spindle/SpindleControl.cpp": {
+        "function": 2
+      },
+      "src/modules/tools/spindle/AnalogSpindleControl.cpp": {
+        "function": 6
+      },
+      "src/modules/tools/spindle/ModbusSpindleControl.cpp": {
+        "function": 1
+      },
+      "src/libs/nist_float.cpp": {
+        "function": 1
+      },
+      "mbed/src/vendor/NXP/capi/PinNames.c": {
+        "function": 1
+      },
+      "mbed/src/vendor/NXP/capi/pinmap.c": {
+        "function": 2
+      },
+      "mbed/src/capi/pinmap_common.c": {
+        "function": 3
+      },
+      "mbed/src/vendor/NXP/capi/port_api.c": {
+        "function": 6
+      },
+      "src/libs/StreamOutput.cpp": {
+        "function": 1
+      },
+      "src/libs/ConfigSource.cpp": {
+        "function": 3
+      },
+      "src/libs/AppendFileStream.cpp": {
+        "function": 1
+      },
+      "mbed/src/vendor/NXP/capi/pwmout_api.c": {
+        "function": 10
+      },
+      "src/libs/Median.h": {
+        "function": 2
+      },
+      "src/modules/tools/spindle/HuanyangSpindleControl.cpp": {
+        "function": 4
+      },
+      "mbed/src/vendor/NXP/capi/rtc_api.c": {
+        "function": 5
+      },
+      "mbed/src/capi/semihost_api.c": {
+        "function": 17
+      },
+      "mbed/src/vendor/NXP/capi/semihost.c": {
+        "function": 1
+      },
+      "mbed/src/vendor/NXP/capi/serial_api.c": {
+        "function": 17
+      },
+      "mbed/src/vendor/NXP/capi/spi_api.c": {
+        "function": 9
+      },
+      "src/libs/Network/uip/uip/timer.c": {
+        "function": 4
+      },
+      "src/libs/Network/uip/uip/uip_arp.c": {
+        "function": 4
+      },
+      "src/libs/Network/uip/uip/uip-fw.c": {
+        "function": 6
+      },
+      "src/libs/Network/uip/uip/uip-neighbor.c": {
+        "function": 5
+      },
+      "src/libs/Network/uip/uip/uip-split.c": {
+        "function": 1
+      },
+      "src/libs/Network/uip/uip/uiplib.c": {
+        "function": 1
+      },
+      "mbed/src/capi/wait_api.c": {
+        "function": 3
+      }
+    },
+    "empty_or_failed_files": [
+      "mbed/src/capi/rtc_time.h",
+      "src/libs/Network/uip/webserver/http-strings.c",
+      "src/libs/Network/uip/webserver/http-strings.h",
+      "src/libs/nist_float.h",
+      "src/libs/platform_memory.cpp",
+      "src/modules/utils/panel/panels/ST7565/glcdfont.h",
+      "src/testframework/Test_kernel.h"
+    ],
+    "stderr": ""
+  },
+  "risks": {
+    "large_files": [
+      {
+        "path": "src/libs/ChaNFS/CHAN_FS/ff.cpp",
+        "lines": 3983
+      }
+    ],
+    "generated_files": [
+      {
+        "path": "mbed/src/cpp/CAN.h",
+        "lines": 196
+      },
+      {
+        "path": "mbed/src/cpp/Serial.h",
+        "lines": 138
+      },
+      {
+        "path": "mbed/src/vendor/NXP/cmsis/LPC11U24/LPC11Uxx.h",
+        "lines": 670
+      },
+      {
+        "path": "src/libs/LPC17xx/LPC17xxLib/inc/lpc17xx_pwm.h",
+        "lines": 342
+      },
+      {
+        "path": "src/libs/LPC17xx/LPC17xxLib/src/lpc17xx_gpio.c",
+        "lines": 759
+      },
+      {
+        "path": "src/libs/LPC17xx/LPC17xxLib/src/lpc17xx_timer.c",
+        "lines": 606
+      },
+      {
+        "path": "src/libs/Network/uip/uip/psock.h",
+        "lines": 409
+      },
+      {
+        "path": "src/libs/Network/uip/uip/uipopt.h",
+        "lines": 546
+      },
+      {
+        "path": "src/main.cpp",
+        "lines": 277
+      },
+      {
+        "path": "src/modules/communication/GcodeDispatch.cpp",
+        "lines": 490
+      },
+      {
+        "path": "src/modules/tools/spindle/SoftSerial/SoftSerial.h",
+        "lines": 127
+      },
+      {
+        "path": "src/modules/utils/motordrivercontrol/drivers/TMC26X/TMC26X.h",
+        "lines": 451
+      },
+      {
+        "path": "src/testframework/easyunit/test.h",
+        "lines": 433
+      }
+    ],
+    "binary_or_garbled_files": [],
+    "duplicate_names": {
+      "device.h": [
+        "mbed/src/vendor/NXP/capi/LPC11U24/device.h",
+        "mbed/src/vendor/NXP/capi/LPC1768/device.h",
+        "mbed/src/vendor/NXP/capi/LPC2368/device.h"
+      ],
+      "gpio_object.h": [
+        "mbed/src/vendor/NXP/capi/LPC11U24/gpio_object.h",
+        "mbed/src/vendor/NXP/capi/LPC1768/gpio_object.h",
+        "mbed/src/vendor/NXP/capi/LPC2368/gpio_object.h"
+      ],
+      "objects.h": [
+        "mbed/src/vendor/NXP/capi/LPC11U24/objects.h",
+        "mbed/src/vendor/NXP/capi/LPC1768/objects.h",
+        "mbed/src/vendor/NXP/capi/LPC2368/objects.h"
+      ],
+      "PeripheralNames.h": [
+        "mbed/src/vendor/NXP/capi/LPC11U24/PeripheralNames.h",
+        "mbed/src/vendor/NXP/capi/LPC1768/PeripheralNames.h",
+        "mbed/src/vendor/NXP/capi/LPC2368/PeripheralNames.h"
+      ],
+      "PinNames.h": [
+        "mbed/src/vendor/NXP/capi/LPC11U24/PinNames.h",
+        "mbed/src/vendor/NXP/capi/LPC1768/PinNames.h",
+        "mbed/src/vendor/NXP/capi/LPC2368/PinNames.h"
+      ],
+      "PortNames.h": [
+        "mbed/src/vendor/NXP/capi/LPC11U24/PortNames.h",
+        "mbed/src/vendor/NXP/capi/LPC1768/PortNames.h",
+        "mbed/src/vendor/NXP/capi/LPC2368/PortNames.h"
+      ],
+      "sys.cpp": [
+        "mbed/src/vendor/NXP/cmsis/LPC11U24/ARM/sys.cpp",
+        "mbed/src/vendor/NXP/cmsis/LPC11U24/GCC_CS/sys.cpp",
+        "mbed/src/vendor/NXP/cmsis/LPC11U24/uARM/sys.cpp",
+        "mbed/src/vendor/NXP/cmsis/LPC1768/ARM/sys.cpp",
+        "mbed/src/vendor/NXP/cmsis/LPC1768/GCC_CS/sys.cpp",
+        "mbed/src/vendor/NXP/cmsis/LPC1768/uARM/sys.cpp",
+        "mbed/src/vendor/NXP/cmsis/LPC2368/ARM/sys.cpp",
+        "mbed/src/vendor/NXP/cmsis/LPC2368/uARM/sys.cpp"
+      ],
+      "cmsis.h": [
+        "mbed/src/vendor/NXP/cmsis/LPC11U24/cmsis.h",
+        "mbed/src/vendor/NXP/cmsis/LPC1768/cmsis.h",
+        "mbed/src/vendor/NXP/cmsis/LPC2368/cmsis.h"
+      ],
+      "cmsis_nvic.c": [
+        "mbed/src/vendor/NXP/cmsis/LPC11U24/cmsis_nvic.c",
+        "mbed/src/vendor/NXP/cmsis/LPC1768/cmsis_nvic.c",
+        "mbed/src/vendor/NXP/cmsis/LPC2368/cmsis_nvic.c"
+      ],
+      "cmsis_nvic.h": [
+        "mbed/src/vendor/NXP/cmsis/LPC11U24/cmsis_nvic.h",
+        "mbed/src/vendor/NXP/cmsis/LPC1768/cmsis_nvic.h",
+        "mbed/src/vendor/NXP/cmsis/LPC2368/cmsis_nvic.h"
+      ],
+      "core_cmFunc.h": [
+        "mbed/src/vendor/NXP/cmsis/LPC11U24/core_cmFunc.h",
+        "mbed/src/vendor/NXP/cmsis/LPC1768/core_cmFunc.h"
+      ],
+      "core_cmInstr.h": [
+        "mbed/src/vendor/NXP/cmsis/LPC11U24/core_cmInstr.h",
+        "mbed/src/vendor/NXP/cmsis/LPC1768/core_cmInstr.h"
+      ],
+      "JogScreen.cpp": [
+        "src/modules/utils/panel/screens/3dprinter/JogScreen.cpp",
+        "src/modules/utils/panel/screens/cnc/JogScreen.cpp"
+      ],
+      "JogScreen.h": [
+        "src/modules/utils/panel/screens/3dprinter/JogScreen.h",
+        "src/modules/utils/panel/screens/cnc/JogScreen.h"
+      ],
+      "MainMenuScreen.cpp": [
+        "src/modules/utils/panel/screens/3dprinter/MainMenuScreen.cpp",
+        "src/modules/utils/panel/screens/cnc/MainMenuScreen.cpp"
+      ],
+      "MainMenuScreen.h": [
+        "src/modules/utils/panel/screens/3dprinter/MainMenuScreen.h",
+        "src/modules/utils/panel/screens/cnc/MainMenuScreen.h"
+      ],
+      "PrepareScreen.cpp": [
+        "src/modules/utils/panel/screens/3dprinter/PrepareScreen.cpp",
+        "src/modules/utils/panel/screens/cnc/PrepareScreen.cpp"
+      ],
+      "PrepareScreen.h": [
+        "src/modules/utils/panel/screens/3dprinter/PrepareScreen.h",
+        "src/modules/utils/panel/screens/cnc/PrepareScreen.h"
+      ],
+      "ProbeScreen.cpp": [
+        "src/modules/utils/panel/screens/3dprinter/ProbeScreen.cpp",
+        "src/modules/utils/panel/screens/cnc/ProbeScreen.cpp"
+      ],
+      "ProbeScreen.h": [
+        "src/modules/utils/panel/screens/3dprinter/ProbeScreen.h",
+        "src/modules/utils/panel/screens/cnc/ProbeScreen.h"
+      ]
+    },
+    "duplicate_hashes": {
+      "5b8cd5e788b9df09": [
+        "mbed/src/vendor/NXP/capi/LPC11U24/gpio_object.h",
+        "mbed/src/vendor/NXP/capi/LPC1768/gpio_object.h",
+        "mbed/src/vendor/NXP/capi/LPC2368/gpio_object.h"
+      ],
+      "708b83ae5a931882": [
+        "mbed/src/vendor/NXP/capi/LPC1768/objects.h",
+        "mbed/src/vendor/NXP/capi/LPC2368/objects.h"
+      ],
+      "ed000f08a6052e03": [
+        "mbed/src/vendor/NXP/capi/LPC1768/PeripheralNames.h",
+        "mbed/src/vendor/NXP/capi/LPC2368/PeripheralNames.h"
+      ],
+      "41b78799568ee40b": [
+        "mbed/src/vendor/NXP/capi/LPC1768/PortNames.h",
+        "mbed/src/vendor/NXP/capi/LPC2368/PortNames.h"
+      ],
+      "466eaeab9486985d": [
+        "mbed/src/vendor/NXP/cmsis/LPC11U24/ARM/sys.cpp",
+        "mbed/src/vendor/NXP/cmsis/LPC11U24/uARM/sys.cpp",
+        "mbed/src/vendor/NXP/cmsis/LPC1768/ARM/sys.cpp",
+        "mbed/src/vendor/NXP/cmsis/LPC1768/uARM/sys.cpp",
+        "mbed/src/vendor/NXP/cmsis/LPC2368/ARM/sys.cpp",
+        "mbed/src/vendor/NXP/cmsis/LPC2368/uARM/sys.cpp"
+      ],
+      "dcb8ba8b48b36c2d": [
+        "mbed/src/vendor/NXP/cmsis/LPC11U24/cmsis_nvic.h",
+        "mbed/src/vendor/NXP/cmsis/LPC1768/cmsis_nvic.h",
+        "mbed/src/vendor/NXP/cmsis/LPC2368/cmsis_nvic.h"
+      ],
+      "2282677207fb25cd": [
+        "mbed/src/vendor/NXP/cmsis/LPC11U24/core_cmFunc.h",
+        "mbed/src/vendor/NXP/cmsis/LPC1768/core_cmFunc.h"
+      ],
+      "364e26c5fa97a0b1": [
+        "mbed/src/vendor/NXP/cmsis/LPC11U24/core_cmInstr.h",
+        "mbed/src/vendor/NXP/cmsis/LPC1768/core_cmInstr.h"
+      ]
+    }
+  },
+  "directory_map": {
+    "src": {
+      "files": 452,
+      "lines": 93513,
+      "symbols": {
+        "function": 2453,
+        "class": 174,
+        "macro": 2814,
+        "namespace": 16,
+        "enum": 84,
+        "struct": 237
+      }
+    },
+    "mbed": {
+      "files": 164,
+      "lines": 23276,
+      "symbols": {
+        "macro": 1101,
+        "enum": 47,
+        "struct": 142,
+        "function": 675,
+        "class": 35,
+        "namespace": 33
+      }
+    },
+    "mri": {
+      "files": 1,
+      "lines": 108,
+      "symbols": {
+        "macro": 14
+      }
+    }
+  },
+  "feasibility": {
+    "estimated_scan_seconds": 0.15,
+    "estimated_ctags_seconds": 3.54,
+    "estimated_chunks_mb": 2.0,
+    "ctags_fail_rate": 0.0113,
+    "risk_level": "中",
+    "recommendations": [
+      "先确认超长文件是否为第三方或生成代码，必要时通过 --exclude 排除目录。",
+      "迁移前确认 GBK/GB18030 文件读取策略，避免 line number 与源码显示不一致。",
+      "generated-like 文件建议默认不作为业务问答重点。"
+    ]
+  }
+}
