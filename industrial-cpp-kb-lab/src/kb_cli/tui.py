@@ -1,83 +1,80 @@
 from __future__ import annotations
 
+import re
+import time
 from pathlib import Path
 from types import ModuleType
 
 from . import render
-from .runtime import repo_file, search_module
+from .runtime import answer_module, repo_file, search_module
 
-_HELP_TEXT = """\
-[bold]Smoothieware Code KB — Search Cockpit[/]
+# ── helpers ───────────────────────────────────────────────────────────────────
 
-[bold cyan]Navigation[/]
-  j / ↓      下一条 hit（table 获焦时）
-  k / ↑      上一条 hit（table 获焦时）
-  Enter      提交 query
-
-[bold cyan]Actions[/]
-  /          跳到 query 输入框
-  s          重跑检索
-  ?          打开 / 关闭本帮助
-  q          退出
-
-[bold cyan]Workflow[/]
-  1. 在顶部输入框输入 query，按 Enter
-  2. j / k 浏览命中行，右侧 preview 实时更新
-  3. 按 / 再次搜索
-
-Esc / q / ?  关闭此帮助\
-"""
+def _short_path(file: str) -> str:
+    parts = Path(file).parts
+    return "/".join(parts[-2:]) if len(parts) >= 2 else file
 
 
-def _source_preview(hit: dict | None, context: int = 10):
-    try:
-        from rich.panel import Panel
-        from rich.syntax import Syntax
-    except ImportError:
-        return "Rich is required for source preview."
-
-    if not hit:
-        return Panel(
-            "Run a search to preview the top source hit.",
-            title="Source Preview",
-            border_style="dim",
-        )
-
+def _snippet_lines(hit: dict, context: int = 4) -> list[tuple[int, str, bool]]:
     path = repo_file(hit["file"])
     focus = int(hit.get("line_start") or 1)
-    lexer = "cpp" if Path(hit["file"]).suffix.lower() in {
-        ".cpp", ".h", ".hpp", ".c", ".cc"
-    } else "text"
-
     if not path.is_file():
-        return Panel(
-            f"File not found: {path}",
-            title="Source Preview",
-            border_style="red",
-        )
+        return []
+    try:
+        raw = path.read_text(encoding="utf-8", errors="replace").splitlines()
+    except OSError:
+        return []
+    start = max(1, focus - context)
+    end = min(len(raw), focus + context)
+    return [(n, raw[n - 1], n == focus) for n in range(start, end + 1)]
 
+
+def _read_chunk(hit: dict) -> str:
+    path = repo_file(hit["file"])
+    if not path.is_file():
+        return f"# file not found: {hit['file']}"
     try:
         lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
     except OSError as exc:
-        return Panel(str(exc), title="Source Preview", border_style="red")
+        return str(exc)
+    m = re.search(r"::(\d+)-(\d+)$", hit.get("chunk_id", ""))
+    if m:
+        start = max(0, int(m.group(1)) - 1)
+        end = min(len(lines), int(m.group(2)))
+    else:
+        focus = int(hit.get("line_start") or 1)
+        start = max(0, focus - 5)
+        end = min(len(lines), focus + 80)
+    return "\n".join(lines[start:end])
 
-    start = max(1, focus - context)
-    end = min(len(lines), focus + context)
-    code = "\n".join(lines[start - 1:end])
-    return Panel(
-        Syntax(
-            code,
-            lexer,
-            line_numbers=True,
-            start_line=start,
-            highlight_lines={focus},
-            theme="monokai",
-            word_wrap=False,
-        ),
-        title=f"Source Preview  {hit['file']}:{focus}",
-        border_style="green",
-    )
 
+def _safe(text: str) -> str:
+    return text.expandtabs(4).replace("[", "\\[")
+
+
+# ── help text ─────────────────────────────────────────────────────────────────
+
+_HELP = """\
+[bold]Search[/bold]
+  [cyan]<query>[/cyan]         search the index
+  [cyan]/ask <query>[/cyan]    LLM answer  (requires LLM_API_KEY)
+  [cyan]/clear[/cyan]  Ctrl+L  clear the screen
+  [cyan]Escape  Ctrl+C[/cyan]  quit
+
+[bold]Copy code[/bold]
+  [cyan]1 – 9[/cyan]  (input empty) open result in full-screen code view
+             mouse-select any text, then [bold]Ctrl+C[/bold] to copy
+             [bold]Escape / q[/bold] to close code view
+
+[bold]Quick clipboard[/bold]
+  [cyan]/copy N[/cyan]         copy result N's file:line to clipboard
+
+[bold]History[/bold]
+  [cyan]↑ / ↓[/cyan]           cycle previous queries
+"""
+
+
+# ── TUI ───────────────────────────────────────────────────────────────────────
 
 def run_tui() -> None:
     try:
@@ -85,215 +82,383 @@ def run_tui() -> None:
         from textual.binding import Binding
         from textual.containers import Horizontal, Vertical
         from textual.screen import ModalScreen
-        from textual.widgets import DataTable, Footer, Header, Input, Label, ListItem, ListView, Static
+        from textual.widgets import Footer, Input, Label, RichLog, TextArea
     except ImportError:
         render.console.print(
-            "[yellow]Textual 当前未安装。[/]\n"
-            "运行 `pip install -r requirements.txt` 后可启用 `tui`。\n"
-            "现在可先使用 `repl` 的 F1/F2/F3/F4/F5/F8 快捷键工作台。"
+            "[yellow]Textual not installed.[/]\n"
+            "Run `pip install -r requirements.txt` to enable tui."
         )
         return
 
-    class HelpScreen(ModalScreen):
+    # ── code viewer modal ─────────────────────────────────────────────────────
+
+    class CodeViewScreen(ModalScreen):
         BINDINGS = [
             Binding("escape", "dismiss", "Close"),
             Binding("q", "dismiss", "Close"),
-            Binding("?", "dismiss", "Close"),
         ]
         CSS = """
-        HelpScreen {
+        CodeViewScreen {
             align: center middle;
         }
-        #help_panel {
-            width: 64;
-            height: auto;
-            padding: 2 4;
+        #cv-panel {
+            width: 92%;
+            height: 88%;
             border: double $primary;
             background: $surface;
         }
-        """
-
-        def compose(self) -> ComposeResult:
-            yield Static(_HELP_TEXT, id="help_panel")
-
-    class SearchCockpit(App):
-        CSS = """
-        Screen {
-            layout: vertical;
+        #cv-title {
+            height: 2;
+            padding: 0 2;
+            background: $primary-darken-3;
+            color: $text-muted;
         }
-
-        #query {
-            height: 3;
-            dock: top;
+        #cv-hint {
+            height: 1;
+            padding: 0 2;
+            background: $primary-darken-3;
+            color: $text-disabled;
+            text-style: dim;
         }
-
-        #main {
+        TextArea {
             height: 1fr;
         }
+        """
 
-        #left {
-            width: 24;
-            border: solid $accent;
+        def __init__(self, hit: dict) -> None:
+            super().__init__()
+            self._hit = hit
+
+        def compose(self) -> ComposeResult:
+            file = self._hit.get("file", "")
+            line = self._hit.get("line_start", "")
+            sym  = self._hit.get("symbol", "")
+            code = _read_chunk(self._hit)
+
+            with Vertical(id="cv-panel"):
+                yield Label(
+                    f" {file}:{line}  {sym}",
+                    id="cv-title",
+                )
+                yield Label(
+                    " mouse-select + Ctrl+C to copy  │  Ctrl+A select all  │  Escape / q to close",
+                    id="cv-hint",
+                )
+                try:
+                    yield TextArea(code, read_only=True, language="cpp", id="cv-code")
+                except Exception:
+                    yield TextArea(code, read_only=True, id="cv-code")
+
+        def on_mount(self) -> None:
+            self.query_one("#cv-code").focus()
+
+    # ── main app ──────────────────────────────────────────────────────────────
+
+    class KBCLI(App):
+        CSS = """
+        Screen {
+            background: $background;
         }
-
-        #results {
-            width: 44%;
-            border: solid $primary;
+        RichLog {
+            height: 1fr;
+            padding: 1 3;
+            border: none;
+            scrollbar-gutter: stable;
+            scrollbar-color: $primary-darken-3 $background;
         }
-
-        #preview {
+        #input-row {
+            height: 3;
+            border-top: solid $primary-darken-3;
+            padding: 0 3;
+            align: left middle;
+        }
+        #prompt {
+            width: 2;
+            color: $success;
+            text-style: bold;
+        }
+        Input {
             width: 1fr;
-            border: solid $success;
-            overflow: auto;
+            border: none;
+            background: transparent;
+            padding: 0 1;
+            color: $text;
         }
-
-        #status {
+        Input:focus {
+            border: none;
+        }
+        Footer {
             height: 1;
-            color: $text-muted;
+            background: $primary-darken-3;
         }
         """
 
         BINDINGS = [
-            Binding("q", "quit", "Quit"),
-            Binding("/", "focus_query", "Query"),
-            Binding("s", "run_search", "Search"),
-            Binding("?", "show_help", "Help"),
-            Binding("j", "table_down", "↓", show=False),
-            Binding("k", "table_up", "↑", show=False),
+            Binding("ctrl+c", "quit", "Quit"),
+            Binding("ctrl+l", "clear_log", "Clear"),
+            Binding("escape", "quit", "Quit", show=False),
         ]
 
         def __init__(self) -> None:
             super().__init__()
-            self.search_mod: ModuleType | None = None
-            self.last_query = ""
-            self.hits: list[dict] = []
+            self._mod: ModuleType | None = None
+            self._history: list[str] = []
+            self._hist_pos: int = -1
+            self._last_hits: list[dict] = []
 
         def compose(self) -> ComposeResult:
-            yield Header(show_clock=True)
-            yield Input(
-                placeholder="Search Smoothieware code: G-code entry, Planner, halt...",
-                id="query",
-            )
-            with Horizontal(id="main"):
-                with Vertical(id="left"):
-                    yield Label("History / Commands", id="status")
-                    yield ListView(
-                        ListItem(Label("/ search current query")),
-                        ListItem(Label("s run search")),
-                        ListItem(Label("/ focus query")),
-                        ListItem(Label("? help")),
-                        ListItem(Label("q quit")),
-                        id="history",
-                    )
-                table = DataTable(id="results", zebra_stripes=True)
-                table.add_columns(
-                    "#",
-                    "file",
-                    "line",
-                    "type",
-                    "class",
-                    "symbol",
-                    "score",
-                    "source",
-                    "chunk_id",
+            yield RichLog(id="log", highlight=True, markup=True, wrap=True)
+            with Horizontal(id="input-row"):
+                yield Label("❯", id="prompt")
+                yield Input(
+                    placeholder="search…   1-9 open code view   /ask <q>   /help   Escape quit",
+                    id="query",
                 )
-                yield table
-                yield Static(_source_preview(None), id="preview")
             yield Footer()
 
         def on_mount(self) -> None:
-            self.title = "Smoothieware Code KB"
-            self.sub_title = "Search Cockpit v1"
-            self.query_one("#query", Input).focus()
-            self._set_status("Loading index...")
+            log = self.query_one(RichLog)
+            log.write(
+                "[bold]Smoothieware Code KB[/bold]  "
+                "[dim]rg + BM25 + ctags · /help for commands[/dim]\n"
+            )
+            self.query_one(Input).focus()
             try:
-                self.search_mod = search_module()
-            except SystemExit as exc:
-                self._set_status(str(exc), error=True)
+                self._mod = search_module()
+                log.write("[dim green]✓ index loaded[/dim green]\n")
             except Exception as exc:
-                self._set_status(f"Index load failed: {exc}", error=True)
-            else:
-                self._set_status("Ready. Type a query and press Enter.")
+                log.write(f"[red]✗ index load failed: {exc}[/red]\n")
+
+        # ── input ─────────────────────────────────────────────────────────────
 
         def on_input_submitted(self, event: Input.Submitted) -> None:
-            if event.input.id == "query":
-                self.last_query = event.value.strip()
-                self.run_search()
-
-        def on_data_table_row_highlighted(self, event: DataTable.RowHighlighted) -> None:
-            idx = event.cursor_row
-            if 0 <= idx < len(self.hits):
-                self.query_one("#preview", Static).update(_source_preview(self.hits[idx]))
-
-        def action_focus_query(self) -> None:
-            self.query_one("#query", Input).focus()
-
-        def action_run_search(self) -> None:
-            self.last_query = self.query_one("#query", Input).value.strip()
-            self.run_search()
-
-        def action_show_help(self) -> None:
-            self.push_screen(HelpScreen())
-
-        def action_table_down(self) -> None:
-            table = self.query_one("#results", DataTable)
-            if table.row_count:
-                table.move_cursor(row=min(table.cursor_row + 1, table.row_count - 1))
-                table.focus()
-
-        def action_table_up(self) -> None:
-            table = self.query_one("#results", DataTable)
-            if table.row_count:
-                table.move_cursor(row=max(0, table.cursor_row - 1))
-                table.focus()
-
-        def run_search(self) -> None:
-            table = self.query_one("#results", DataTable)
-            if not self.search_mod:
-                self._set_status("Search index is not loaded.", error=True)
+            raw = event.value.strip()
+            if not raw:
                 return
-            if not self.last_query:
-                self._set_status("Type a query first.", error=True)
+            self._history.append(raw)
+            self._hist_pos = -1
+            event.input.clear()
+
+            if raw in ("/clear", "/c"):
+                self.action_clear_log()
+            elif raw in ("/help", "/h", "?"):
+                self.query_one(RichLog).write(_HELP)
+            elif raw.startswith("/ask "):
+                self._do_ask(raw[5:].strip())
+            elif raw.startswith("/copy "):
+                self._do_copy_cmd(raw[6:].strip())
+            else:
+                self._do_search(raw)
+
+        def on_key(self, event) -> None:
+            inp = self.query_one(Input)
+            if not inp.has_focus:
                 return
 
-            self._set_status(f"Searching: {self.last_query}")
+            if event.key == "up" and self._history:
+                self._hist_pos = min(self._hist_pos + 1, len(self._history) - 1)
+                inp.value = self._history[-(self._hist_pos + 1)]
+                inp.cursor_position = len(inp.value)
+                event.stop()
+                return
+
+            if event.key == "down":
+                if self._hist_pos > 0:
+                    self._hist_pos -= 1
+                    inp.value = self._history[-(self._hist_pos + 1)]
+                    inp.cursor_position = len(inp.value)
+                elif self._hist_pos == 0:
+                    self._hist_pos = -1
+                    inp.value = ""
+                event.stop()
+                return
+
+            # digit 1-9 (empty input) → open code view
+            if (
+                not inp.value
+                and event.character
+                and event.character.isdigit()
+                and event.character != "0"
+            ):
+                n = int(event.character)
+                if n <= len(self._last_hits):
+                    self.push_screen(CodeViewScreen(self._last_hits[n - 1]))
+                    event.stop()
+
+        def action_clear_log(self) -> None:
+            self.query_one(RichLog).clear()
+
+        # ── clipboard ─────────────────────────────────────────────────────────
+
+        def _clipboard_write(self, text: str) -> bool:
             try:
-                self.hits = self.search_mod.search(
-                    self.last_query,
-                    top_k=20,
-                    bundle=False,
-                )
+                self.copy_to_clipboard(text)
+                return True
+            except Exception:
+                pass
+            try:
+                import pyperclip
+                pyperclip.copy(text)
+                return True
+            except Exception:
+                return False
+
+        def _do_copy_cmd(self, arg: str) -> None:
+            log = self.query_one(RichLog)
+            try:
+                n = int(arg)
+            except ValueError:
+                log.write("[red]✗ /copy needs a number, e.g. /copy 2[/red]\n")
+                return
+            if not self._last_hits:
+                log.write("[dim]  no results to copy[/dim]\n")
+                return
+            if not (1 <= n <= len(self._last_hits)):
+                log.write(f"[red]✗ result {n} out of range (1–{len(self._last_hits)})[/red]\n")
+                return
+            hit = self._last_hits[n - 1]
+            text = f"{hit['file']}:{hit.get('line_start', '')}"
+            if self._clipboard_write(text):
+                self.notify(f"Copied  {text}", timeout=2)
+            else:
+                self.notify("Clipboard unavailable — install pyperclip", severity="warning", timeout=3)
+
+        # ── search ────────────────────────────────────────────────────────────
+
+        def _do_search(self, query: str) -> None:
+            log = self.query_one(RichLog)
+            if not self._mod:
+                log.write("[red]✗ index not loaded[/red]\n")
+                return
+
+            log.write(f"\n[bold cyan]> {_safe(query)}[/bold cyan]")
+
+            t0 = time.perf_counter()
+            try:
+                hits = self._mod.search(query, top_k=10, bundle=False)
             except Exception as exc:
-                self.hits = []
-                table.clear()
-                self.query_one("#preview", Static).update(_source_preview(None))
-                self._set_status(f"Search failed: {exc}", error=True)
+                log.write(f"[red]✗ search error: {exc}[/red]\n")
+                return
+            ms = (time.perf_counter() - t0) * 1000
+
+            if not hits:
+                self._last_hits = []
+                log.write("[dim]  no results[/dim]\n")
                 return
 
-            table.clear()
-            if not self.hits:
-                self.query_one("#preview", Static).update(_source_preview(None))
-                self._set_status("No hits.")
-                return
+            self._last_hits = hits
+            for i, hit in enumerate(hits, 1):
+                self._render_hit(log, i, hit)
 
-            for index, hit in enumerate(self.hits, 1):
-                table.add_row(
-                    str(index),
-                    str(hit.get("file", "")),
-                    str(hit.get("line_start", "")),
-                    str(hit.get("type", "")),
-                    str(hit.get("class", "")),
-                    str(hit.get("symbol", "")),
-                    f"{float(hit.get('score', 0)):.2f}",
-                    str(hit.get("source", "")),
-                    str(hit.get("chunk_id", "")),
+            log.write(
+                f"\n[dim]── {len(hits)} result{'s' if len(hits) != 1 else ''}"
+                f" · {ms:.0f} ms"
+                f"  ·  press [bold]1–9[/bold] to open code view ──[/dim]\n"
+            )
+
+        def _render_hit(self, log, idx: int, hit: dict) -> None:
+            file_short = _short_path(hit.get("file", ""))
+            line   = hit.get("line_start", "")
+            symbol = hit.get("symbol", "")
+            source = hit.get("source", "")
+            score  = float(hit.get("score", 0))
+
+            src_tag  = f" [dim]\\[{source}][/dim]" if source else ""
+            sym_part = f"  [green]{_safe(symbol)}[/green]" if symbol else ""
+
+            log.write(
+                f"\n [dim]{idx:>2}[/dim]  "
+                f"[cyan]{_safe(file_short)}[/cyan]:[yellow]{line}[/yellow]"
+                f"{sym_part}{src_tag}  [dim]{score:.1f}[/dim]"
+            )
+
+            full = hit.get("file", "")
+            if full and full != file_short:
+                log.write(f"      [dim]{_safe(full)}[/dim]")
+
+            for lineno, text, focused in _snippet_lines(hit):
+                marker = "[bold green]▶[/bold green]" if focused else " "
+                style  = "bold white" if focused else "dim"
+                log.write(
+                    f"      {marker} [dim]{lineno:>4}[/dim] [dim]│[/dim]"
+                    f" [{style}]{_safe(text)}[/{style}]"
                 )
 
-            self.query_one("#preview", Static).update(_source_preview(self.hits[0]))
-            self._set_status(f"{len(self.hits)} hits for: {self.last_query}")
+        # ── /ask ─────────────────────────────────────────────────────────────
 
-        def _set_status(self, message: str, *, error: bool = False) -> None:
-            style = "red" if error else "green"
-            self.query_one("#status", Label).update(f"[{style}]{message}[/{style}]")
+        def _do_ask(self, query: str) -> None:
+            log = self.query_one(RichLog)
+            if not self._mod:
+                log.write("[red]✗ index not loaded[/red]\n")
+                return
+            log.write(f"\n[bold magenta]? {_safe(query)}[/bold magenta]")
+            log.write("[dim]  ▸ searching context…[/dim]")
+            self.query_one(Input).disabled = True
+            self.run_worker(lambda: self._ask_thread(query), thread=True, name="ask")
 
-    SearchCockpit().run()
+        def _ask_thread(self, query: str) -> None:
+            """Background thread: buffers tokens into lines before writing."""
+            log = self.query_one(RichLog)
+
+            def w(line: str) -> None:
+                self.call_from_thread(log.write, line)
+
+            def done() -> None:
+                inp = self.query_one(Input)
+                inp.disabled = False
+                self.call_from_thread(inp.focus)
+
+            try:
+                answer = answer_module()
+                answer.load_dotenv(answer.ENV_PATH)
+
+                import os
+                if not os.environ.get("LLM_API_KEY"):
+                    w("[yellow]  LLM_API_KEY not set in .env — falling back to search[/yellow]")
+                    self.call_from_thread(self._do_search, query)
+                    done()
+                    return
+
+                hits = self._mod.search(query, top_k=8, bundle=True)
+                w(f"[dim]  ▸ {len(hits)} chunks · building prompt…[/dim]")
+
+                template = answer.load_prompt_template()
+                prompt = answer.build_prompt(template, query, hits)
+                provider, api_key, model, base_url = answer.llm_config()
+                w(f"[dim]  ▸ {provider} / {model}[/dim]")
+                w("")  # blank line before answer
+
+                # Buffer tokens into complete lines before writing.
+                # RichLog.write() creates a new visual row per call — writing
+                # each token separately stacks them vertically.
+                line_buf: list[str] = []
+                for token in answer.call_llm_stream(prompt, provider, api_key, model, base_url):
+                    parts = token.split("\n")
+                    for i, part in enumerate(parts):
+                        line_buf.append(part)
+                        if i < len(parts) - 1:          # newline in this token
+                            w(_safe("".join(line_buf)))
+                            line_buf = []
+                if line_buf:                              # flush last partial line
+                    w(_safe("".join(line_buf)))
+
+                w("")  # blank line after answer
+
+                # Store hits so digit keys open CodeViewScreen
+                self._last_hits = hits[:9]
+                n = len(self._last_hits)
+                w(f"[dim]── sources  ·  press 1–{n} to view code ──[/dim]")
+                for i, h in enumerate(self._last_hits, 1):
+                    fs  = _short_path(h.get("file", ""))
+                    ln  = h.get("line_start", "")
+                    sy  = h.get("symbol", "")
+                    sym = f"  [green]{_safe(sy)}[/green]" if sy else ""
+                    w(f" [dim]{i:>2}[/dim]  [cyan]{_safe(fs)}[/cyan]:[yellow]{ln}[/yellow]{sym}")
+                w("")
+
+            except Exception as exc:
+                w(f"[red]✗ {exc}[/red]")
+            finally:
+                done()
+
+    KBCLI().run()
