@@ -151,8 +151,8 @@ Smoothiewarerag/
 | 10 | primary 清单 + coverage 度量；tune 5/5 expected；Q3–Q5 检索补齐 | ✅ |
 | A | 工程化：`SearchIndex` 类 / `IndexManifest` / 查询日志 / `kb index` 命令 / `kb serve` | ✅ |
 | B | 规模压测（80 万行）；P95 修复；scale_test Recall 17/20，mean_cov@5 75% | ✅ |
-| C | `kb probe` + `wire_bonder_migration_plan.md` | ✅ |
-| D | 外部试点准备包：问题模板 / intake checklist / 首轮验收标准 | 🟡 待真实目录 |
+| C | `kb probe` + wire bonder 迁移摘要 | ✅ |
+| D | 外部试点准备包：pilot plan / 真实问题评估手册 / 问题模板 / intake checklist | 🟡 待真实目录 |
 | Smart | LLM query planner + 多路检索（`kb smart` / TUI `/smart`） | ✅ |
 | 11–12 | wire bonder → CLI 产品化 | ⬜ |
 
@@ -181,11 +181,16 @@ CI：[![Eval](https://github.com/YZversion/Smoothiewarerag/actions/workflows/eva
 - [AGENTS.md](AGENTS.md) — 协作入口与命令
 - [architecture.md](architecture.md) — 架构与设计决策
 - [docs/history.md](docs/history.md) — Session 日志
+- [industrial-cpp-kb-lab/docs/README.md](industrial-cpp-kb-lab/docs/README.md) — 文档导航与维护规则
+- [industrial-cpp-kb-lab/notes/README.md](industrial-cpp-kb-lab/notes/README.md) — notes 历史实验索引
+- [industrial-cpp-kb-lab/reports/README.md](industrial-cpp-kb-lab/reports/README.md) — probe/report 产物索引
 - [industrial-cpp-kb-lab/docs/deployment.md](industrial-cpp-kb-lab/docs/deployment.md) — 部署指南
 - [industrial-cpp-kb-lab/docs/benchmark_report.md](industrial-cpp-kb-lab/docs/benchmark_report.md) — 规模压测报告
 - [industrial-cpp-kb-lab/docs/generalization_followup_diagnosis.md](industrial-cpp-kb-lab/docs/generalization_followup_diagnosis.md) — scale_test 修复根因诊断
-- [industrial-cpp-kb-lab/docs/wire_bonder_migration_plan.md](industrial-cpp-kb-lab/docs/wire_bonder_migration_plan.md) — wire bonder 接入流程
+- [industrial-cpp-kb-lab/docs/wire_bonder_pilot_plan.md](industrial-cpp-kb-lab/docs/wire_bonder_pilot_plan.md) — wire bonder 只读试点主入口
+- [industrial-cpp-kb-lab/docs/real_problem_evaluation_plan.md](industrial-cpp-kb-lab/docs/real_problem_evaluation_plan.md) — 真实问题评估执行手册
 - [industrial-cpp-kb-lab/docs/capability_boundary.md](industrial-cpp-kb-lab/docs/capability_boundary.md) — 能力边界说明
+- [industrial-cpp-kb-lab/docs/mcp_feasibility_review.md](industrial-cpp-kb-lab/docs/mcp_feasibility_review.md) — MCP / SQLite / 图结构后续方向审查
 - [industrial-cpp-kb-lab/docs/demo_visual_plan.md](industrial-cpp-kb-lab/docs/demo_visual_plan.md) — 演示动态图设计
 - [industrial-cpp-kb-lab/notes/phase10_conclusion.md](industrial-cpp-kb-lab/notes/phase10_conclusion.md) — Phase 10 结论
 - [industrial-cpp-kb-lab/notes/smoothieware_code_map.md](industrial-cpp-kb-lab/notes/smoothieware_code_map.md) — 代码地图

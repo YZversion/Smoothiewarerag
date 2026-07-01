@@ -1049,6 +1049,8 @@ kb probe --repo-root D:/WireBonderCode --out reports/repo_probe.md
 - [x] `docs/wire_bonder_migration_plan.md` 存在，覆盖 6 步流程与数据安全边界
 - [x] `kb probe` 在 Smoothieware 上也能正常运行（不崩溃）
 
+> 文档整理后，`wire_bonder_migration_plan.md` 保留为迁移摘要；后续试点主入口统一维护在 `docs/wire_bonder_pilot_plan.md`，真实问题评估细则统一维护在 `docs/real_problem_evaluation_plan.md`。
+
 ---
 
 ## Phase D — 真实问题集与演示材料（第 4 周）
@@ -1096,6 +1098,17 @@ kb probe --repo-root D:/WireBonderCode --out reports/repo_probe.md
   - 不做：自动修 bug、提交 SVN、重构代码、保证回答 100% 正确
   - 引用来源：全部来自源码 chunk，不凭空生成
 
+- [x] **试点主入口**（`docs/wire_bonder_pilot_plan.md`）：
+  - 输入：非核心只读目录、10 个真实问题、日志/报警样例、验收工程师
+  - 流程：probe -> index -> search eval -> 人工验收 -> 失败分类
+  - gate：是否进入 MCP / SQLite / trace log / 偏焊专项知识库
+
+- [x] **真实问题评估手册**（`docs/real_problem_evaluation_plan.md`）：
+  - 10 题评分表
+  - 每题记录字段
+  - 失败分类
+  - 下一阶段判定标准
+
 - [ ] **一页部署架构图**（`docs/architecture.md` 或 Mermaid 图）：
   - 输入：代码目录（只读）
   - 管道：scan → ctags → chunk → BM25 → rg → dispatch → LLM
@@ -1127,6 +1140,7 @@ kb probe --repo-root D:/WireBonderCode --out reports/repo_probe.md
 - [x] `docs/demo_script.md` 可支撑 5 分钟演示（无需 PPT）
 - [x] `docs/capability_boundary.md` 存在，能力与边界描述清晰
 - [x] `docs/stakeholder_pitch.md` 或等效沟通材料存在
+- [x] `docs/wire_bonder_pilot_plan.md` 与 `docs/real_problem_evaluation_plan.md` 存在，真实问题到位后可直接执行评估
 
 ---
 
