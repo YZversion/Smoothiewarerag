@@ -144,6 +144,13 @@ A+B@30: H3=100% H8=50% Q4=57%。 H3通道=method。 **部分有效，无 holdout
 
 ## Revert 说明
 
-- 改动 A：不设置 `KB_HALT_HINT_EXTENDED`（或设为 0）
-- 改动 B：不设置 `RG_CANDIDATE_FILE_LIMIT`（默认 12）
-- 代码中的 env 门控保留在 `search/index.py`，未改 diversify/coherence/reporank
+- 改动 A：`_hint_halt` 默认含「急停」「紧急停止」（见 `notes/CHANGELOG.md`）
+- rg 预筛固定为 12（`RG_CANDIDATE_FILE_LIMIT`）
+
+---
+
+## rg 预筛方向关闭（2026-06-25）
+
+**结论：** rg 预筛宽度对 hub 文件召回失败**无效**。H3/H8 中 Kernel.cpp 在 method/symbol/bm25 合成的 `file_scores` 里为 **None（全通道零信号）**，并非「排名在 top-12 之外」。将预筛从 12 扩到 20/30 后 H3/H8 指标无变化，仅增加查询耗时。
+
+**此方向已关闭** — 后续不要再调 `RG_CANDIDATE_FILE_LIMIT` 试图解决 hub/框架文件零召回问题。见本报告 `rg_20` / `rg_30` 配置与 `notes/kernel_trace_H3_H8.md`。

@@ -1,0 +1,2715 @@
+{
+  "eval_time_sec": 9.792,
+  "summary": {
+    "total": 48,
+    "pass5": 41,
+    "pass10": 41,
+    "mean_cov5": 0.7584325396825397,
+    "gate_ok": true,
+    "recall5_ok": true,
+    "tune": {
+      "pass5": 5,
+      "count": 5,
+      "mean_cov5": 0.8476190476190476
+    },
+    "holdout": {
+      "pass5": 36,
+      "count": 43,
+      "mean_cov5": 0.7480620155038761
+    },
+    "details": [
+      {
+        "id": "Q1",
+        "split": "tune",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 3,
+        "hit10_n": 3,
+        "exp_n": 3,
+        "hit5": [
+          "src/modules/communication/SerialConsole.cpp",
+          "src/modules/communication/GcodeDispatch.cpp",
+          "src/modules/utils/player/Player.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "Q2",
+        "split": "tune",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 5,
+        "hit10_n": 5,
+        "exp_n": 5,
+        "hit5": [
+          "src/modules/communication/GcodeDispatch.cpp",
+          "src/modules/robot/Robot.cpp",
+          "src/modules/robot/Planner.cpp",
+          "src/modules/robot/Conveyor.cpp",
+          "src/libs/StepTicker.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "Q3",
+        "split": "tune",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 0.8333333333333334,
+        "cov10": 1.0,
+        "hit5_n": 5,
+        "hit10_n": 6,
+        "exp_n": 6,
+        "hit5": [
+          "src/modules/robot/Planner.cpp",
+          "src/modules/robot/Block.cpp",
+          "src/modules/robot/Conveyor.cpp",
+          "src/libs/StepTicker.cpp",
+          "src/libs/StepperMotor.cpp"
+        ],
+        "miss5": [
+          "src/modules/robot/Robot.cpp"
+        ]
+      },
+      {
+        "id": "Q4",
+        "split": "tune",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 0.5714285714285714,
+        "cov10": 1.0,
+        "hit5_n": 4,
+        "hit10_n": 7,
+        "exp_n": 7,
+        "hit5": [
+          "src/libs/Kernel.cpp",
+          "src/modules/tools/endstops/Endstops.cpp",
+          "src/modules/robot/Conveyor.cpp",
+          "src/libs/StepperMotor.cpp"
+        ],
+        "miss5": [
+          "src/modules/communication/SerialConsole.cpp",
+          "src/modules/communication/GcodeDispatch.cpp",
+          "src/modules/utils/killbutton/KillButton.cpp"
+        ]
+      },
+      {
+        "id": "Q5",
+        "split": "tune",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 0.8333333333333334,
+        "cov10": 1.0,
+        "hit5_n": 5,
+        "hit10_n": 6,
+        "exp_n": 6,
+        "hit5": [
+          "src/libs/Module.h",
+          "src/libs/Module.cpp",
+          "src/libs/Kernel.cpp",
+          "src/main.cpp",
+          "src/libs/PublicData.cpp"
+        ],
+        "miss5": [
+          "src/libs/Kernel.h"
+        ]
+      },
+      {
+        "id": "H1",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 1,
+        "hit5": [
+          "src/modules/robot/Planner.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H2",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 1,
+        "hit5": [
+          "src/libs/Kernel.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H3",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 2,
+        "hit10_n": 2,
+        "exp_n": 2,
+        "hit5": [
+          "src/modules/utils/killbutton/KillButton.cpp",
+          "src/libs/Kernel.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H4",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 1,
+        "hit5": [
+          "src/modules/tools/endstops/Endstops.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H5",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 1,
+        "hit5": [
+          "src/modules/robot/Block.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H6",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 1,
+        "hit5": [
+          "src/libs/StepTicker.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H7",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 1,
+        "hit5": [
+          "src/libs/StepperMotor.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H8",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 0.5,
+        "cov10": 0.5,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 2,
+        "hit5": [
+          "src/main.cpp"
+        ],
+        "miss5": [
+          "src/libs/Kernel.cpp"
+        ]
+      },
+      {
+        "id": "H9",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 2,
+        "hit10_n": 2,
+        "exp_n": 2,
+        "hit5": [
+          "src/libs/PublicData.cpp",
+          "src/libs/PublicData.h"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H10",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 1,
+        "hit5": [
+          "src/modules/tools/temperaturecontrol/TemperatureControl.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H11",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 1,
+        "hit5": [
+          "src/libs/Config.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H12",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 1,
+        "hit5": [
+          "src/libs/ConfigSources/FileConfigSource.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H13",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 1,
+        "hit5": [
+          "src/libs/SlowTicker.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H14",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 1,
+        "hit5": [
+          "src/libs/Adc.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H15",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 1,
+        "hit5": [
+          "src/libs/Watchdog.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H16",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 1,
+        "hit5": [
+          "src/modules/tools/extruder/Extruder.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H17",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 1,
+        "hit5": [
+          "src/modules/tools/laser/Laser.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H18",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 1,
+        "hit5": [
+          "src/modules/tools/switch/Switch.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H19",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 1,
+        "hit5": [
+          "src/modules/tools/filamentdetector/FilamentDetector.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H20",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 1,
+        "hit5": [
+          "src/modules/tools/zprobe/ZProbe.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H21",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 1,
+        "hit5": [
+          "src/modules/tools/zprobe/DeltaGridStrategy.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H22",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 1,
+        "hit5": [
+          "src/modules/tools/zprobe/CartGridStrategy.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H23",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 1,
+        "hit5": [
+          "src/modules/tools/temperaturecontrol/PID_Autotuner.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H24",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 1,
+        "hit5": [
+          "src/modules/tools/temperaturecontrol/Thermistor.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H25",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 1,
+        "hit5": [
+          "src/modules/utils/currentcontrol/CurrentControl.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H26",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 1,
+        "hit5": [
+          "src/modules/robot/Robot.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H27",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 1,
+        "hit5": [
+          "src/modules/tools/temperaturecontrol/TemperatureControl.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H28",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 1,
+        "hit5": [
+          "src/modules/tools/laser/Laser.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H29",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 1,
+        "hit5": [
+          "src/modules/utils/currentcontrol/CurrentControl.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H30",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 1,
+        "hit5": [
+          "src/modules/utils/simpleshell/SimpleShell.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H31",
+        "split": "holdout",
+        "ok5": false,
+        "ok10": false,
+        "cov5": 0.0,
+        "cov10": 0.0,
+        "hit5_n": 0,
+        "hit10_n": 0,
+        "exp_n": 3,
+        "hit5": [],
+        "miss5": [
+          "src/libs/Kernel.cpp",
+          "src/libs/Module.cpp",
+          "src/main.cpp"
+        ]
+      },
+      {
+        "id": "H32",
+        "split": "holdout",
+        "ok5": false,
+        "ok10": false,
+        "cov5": 0.0,
+        "cov10": 0.0,
+        "hit5_n": 0,
+        "hit10_n": 0,
+        "exp_n": 2,
+        "hit5": [],
+        "miss5": [
+          "src/libs/Kernel.cpp",
+          "src/libs/Module.cpp"
+        ]
+      },
+      {
+        "id": "H33",
+        "split": "holdout",
+        "ok5": false,
+        "ok10": false,
+        "cov5": 0.0,
+        "cov10": 0.0,
+        "hit5_n": 0,
+        "hit10_n": 0,
+        "exp_n": 2,
+        "hit5": [],
+        "miss5": [
+          "src/libs/ConfigSources/FileConfigSource.cpp",
+          "src/libs/Config.cpp"
+        ]
+      },
+      {
+        "id": "H34",
+        "split": "holdout",
+        "ok5": false,
+        "ok10": false,
+        "cov5": 0.0,
+        "cov10": 0.0,
+        "hit5_n": 0,
+        "hit10_n": 0,
+        "exp_n": 2,
+        "hit5": [],
+        "miss5": [
+          "src/libs/PublicData.cpp",
+          "src/libs/Kernel.cpp"
+        ]
+      },
+      {
+        "id": "H35",
+        "split": "holdout",
+        "ok5": false,
+        "ok10": false,
+        "cov5": 0.0,
+        "cov10": 0.0,
+        "hit5_n": 0,
+        "hit10_n": 0,
+        "exp_n": 2,
+        "hit5": [],
+        "miss5": [
+          "src/main.cpp",
+          "src/libs/Kernel.cpp"
+        ]
+      },
+      {
+        "id": "H36",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 0.5,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 2,
+        "exp_n": 2,
+        "hit5": [
+          "src/libs/Kernel.cpp"
+        ],
+        "miss5": [
+          "src/libs/SlowTicker.cpp"
+        ]
+      },
+      {
+        "id": "H37",
+        "split": "holdout",
+        "ok5": false,
+        "ok10": false,
+        "cov5": 0.0,
+        "cov10": 0.0,
+        "hit5_n": 0,
+        "hit10_n": 0,
+        "exp_n": 3,
+        "hit5": [],
+        "miss5": [
+          "src/libs/Module.h",
+          "src/libs/Kernel.cpp",
+          "src/main.cpp"
+        ]
+      },
+      {
+        "id": "H38",
+        "split": "holdout",
+        "ok5": false,
+        "ok10": false,
+        "cov5": 0.0,
+        "cov10": 0.0,
+        "hit5_n": 0,
+        "hit10_n": 0,
+        "exp_n": 2,
+        "hit5": [],
+        "miss5": [
+          "src/modules/utils/configurator/Configurator.cpp",
+          "src/libs/Config.cpp"
+        ]
+      },
+      {
+        "id": "H39",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 0.16666666666666666,
+        "cov10": 0.16666666666666666,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 6,
+        "hit5": [
+          "src/modules/robot/Robot.cpp"
+        ],
+        "miss5": [
+          "src/modules/communication/SerialConsole.cpp",
+          "src/modules/communication/GcodeDispatch.cpp",
+          "src/modules/robot/Planner.cpp",
+          "src/modules/robot/Conveyor.cpp",
+          "src/libs/StepTicker.cpp"
+        ]
+      },
+      {
+        "id": "H40",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 0.5,
+        "cov10": 0.5,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 2,
+        "hit5": [
+          "src/modules/tools/temperaturecontrol/TemperatureControl.cpp"
+        ],
+        "miss5": [
+          "src/modules/communication/GcodeDispatch.cpp"
+        ]
+      },
+      {
+        "id": "H41",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 0.6666666666666666,
+        "cov10": 1.0,
+        "hit5_n": 2,
+        "hit10_n": 3,
+        "exp_n": 3,
+        "hit5": [
+          "src/libs/Kernel.cpp",
+          "src/modules/robot/Conveyor.cpp"
+        ],
+        "miss5": [
+          "src/modules/tools/endstops/Endstops.cpp"
+        ]
+      },
+      {
+        "id": "H42",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 0.5,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 2,
+        "exp_n": 2,
+        "hit5": [
+          "src/modules/robot/Planner.cpp"
+        ],
+        "miss5": [
+          "src/modules/robot/Robot.cpp"
+        ]
+      },
+      {
+        "id": "H43",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 0.3333333333333333,
+        "cov10": 0.6666666666666666,
+        "hit5_n": 1,
+        "hit10_n": 2,
+        "exp_n": 3,
+        "hit5": [
+          "src/libs/Kernel.cpp"
+        ],
+        "miss5": [
+          "src/libs/Module.cpp",
+          "src/main.cpp"
+        ]
+      }
+    ]
+  },
+  "rows": [
+    {
+      "id": "Q1",
+      "split": "tune",
+      "batch": "original",
+      "multiplicity": "multi",
+      "category": "",
+      "vocab_mismatch": false,
+      "cov5": 1.0,
+      "hit5": [
+        "src/modules/communication/SerialConsole.cpp",
+        "src/modules/communication/GcodeDispatch.cpp",
+        "src/modules/utils/player/Player.cpp"
+      ],
+      "miss5": [],
+      "question": "G-code 从哪里进入系统？",
+      "expected_files": [
+        "src/modules/communication/SerialConsole.cpp",
+        "src/modules/communication/GcodeDispatch.cpp",
+        "src/modules/utils/player/Player.cpp"
+      ]
+    },
+    {
+      "id": "Q2",
+      "split": "tune",
+      "batch": "original",
+      "multiplicity": "multi",
+      "category": "",
+      "vocab_mismatch": false,
+      "cov5": 1.0,
+      "hit5": [
+        "src/modules/communication/GcodeDispatch.cpp",
+        "src/modules/robot/Robot.cpp",
+        "src/modules/robot/Planner.cpp",
+        "src/modules/robot/Conveyor.cpp",
+        "src/libs/StepTicker.cpp"
+      ],
+      "miss5": [],
+      "question": "G-code 如何变成运动命令？",
+      "expected_files": [
+        "src/modules/communication/GcodeDispatch.cpp",
+        "src/modules/robot/Robot.cpp",
+        "src/modules/robot/Planner.cpp",
+        "src/modules/robot/Conveyor.cpp",
+        "src/libs/StepTicker.cpp"
+      ]
+    },
+    {
+      "id": "Q3",
+      "split": "tune",
+      "batch": "original",
+      "multiplicity": "multi",
+      "category": "",
+      "vocab_mismatch": false,
+      "cov5": 0.8333333333333334,
+      "hit5": [
+        "src/modules/robot/Planner.cpp",
+        "src/modules/robot/Block.cpp",
+        "src/modules/robot/Conveyor.cpp",
+        "src/libs/StepTicker.cpp",
+        "src/libs/StepperMotor.cpp"
+      ],
+      "miss5": [
+        "src/modules/robot/Robot.cpp"
+      ],
+      "question": "Motion / Planner / Stepper 相关代码在哪里？",
+      "expected_files": [
+        "src/modules/robot/Robot.cpp",
+        "src/modules/robot/Planner.cpp",
+        "src/modules/robot/Block.cpp",
+        "src/modules/robot/Conveyor.cpp",
+        "src/libs/StepTicker.cpp",
+        "src/libs/StepperMotor.cpp"
+      ]
+    },
+    {
+      "id": "Q4",
+      "split": "tune",
+      "batch": "original",
+      "multiplicity": "multi",
+      "category": "",
+      "vocab_mismatch": false,
+      "cov5": 0.5714285714285714,
+      "hit5": [
+        "src/libs/Kernel.cpp",
+        "src/modules/tools/endstops/Endstops.cpp",
+        "src/modules/robot/Conveyor.cpp",
+        "src/libs/StepperMotor.cpp"
+      ],
+      "miss5": [
+        "src/modules/communication/SerialConsole.cpp",
+        "src/modules/communication/GcodeDispatch.cpp",
+        "src/modules/utils/killbutton/KillButton.cpp"
+      ],
+      "question": "error / stop / halt / emergency 逻辑在哪里？",
+      "expected_files": [
+        "src/libs/Kernel.cpp",
+        "src/modules/communication/SerialConsole.cpp",
+        "src/modules/communication/GcodeDispatch.cpp",
+        "src/modules/utils/killbutton/KillButton.cpp",
+        "src/modules/tools/endstops/Endstops.cpp",
+        "src/modules/robot/Conveyor.cpp",
+        "src/libs/StepperMotor.cpp"
+      ]
+    },
+    {
+      "id": "Q5",
+      "split": "tune",
+      "batch": "original",
+      "multiplicity": "multi",
+      "category": "",
+      "vocab_mismatch": false,
+      "cov5": 0.8333333333333334,
+      "hit5": [
+        "src/libs/Module.h",
+        "src/libs/Module.cpp",
+        "src/libs/Kernel.cpp",
+        "src/main.cpp",
+        "src/libs/PublicData.cpp"
+      ],
+      "miss5": [
+        "src/libs/Kernel.h"
+      ],
+      "question": "模块系统如何注册、触发、通信？",
+      "expected_files": [
+        "src/libs/Module.h",
+        "src/libs/Module.cpp",
+        "src/libs/Kernel.h",
+        "src/libs/Kernel.cpp",
+        "src/main.cpp",
+        "src/libs/PublicData.cpp"
+      ]
+    },
+    {
+      "id": "H1",
+      "split": "holdout",
+      "batch": "original",
+      "multiplicity": "single",
+      "category": "",
+      "vocab_mismatch": false,
+      "cov5": 1.0,
+      "hit5": [
+        "src/modules/robot/Planner.cpp"
+      ],
+      "miss5": [],
+      "question": "Planner::append_block 在哪个文件实现？",
+      "expected_files": [
+        "src/modules/robot/Planner.cpp"
+      ]
+    },
+    {
+      "id": "H2",
+      "split": "holdout",
+      "batch": "original",
+      "multiplicity": "single",
+      "category": "",
+      "vocab_mismatch": false,
+      "cov5": 1.0,
+      "hit5": [
+        "src/libs/Kernel.cpp"
+      ],
+      "miss5": [],
+      "question": "immediate_halt 停机函数在哪里？",
+      "expected_files": [
+        "src/libs/Kernel.cpp"
+      ]
+    },
+    {
+      "id": "H3",
+      "split": "holdout",
+      "batch": "original",
+      "multiplicity": "multi",
+      "category": "",
+      "vocab_mismatch": false,
+      "cov5": 1.0,
+      "hit5": [
+        "src/modules/utils/killbutton/KillButton.cpp",
+        "src/libs/Kernel.cpp"
+      ],
+      "miss5": [],
+      "question": "硬件急停按钮 KillButton 如何处理？",
+      "expected_files": [
+        "src/modules/utils/killbutton/KillButton.cpp",
+        "src/libs/Kernel.cpp"
+      ]
+    },
+    {
+      "id": "H4",
+      "split": "holdout",
+      "batch": "original",
+      "multiplicity": "single",
+      "category": "",
+      "vocab_mismatch": false,
+      "cov5": 1.0,
+      "hit5": [
+        "src/modules/tools/endstops/Endstops.cpp"
+      ],
+      "miss5": [],
+      "question": "回零 / homing / G28 命令在哪里处理？",
+      "expected_files": [
+        "src/modules/tools/endstops/Endstops.cpp"
+      ]
+    },
+    {
+      "id": "H5",
+      "split": "holdout",
+      "batch": "original",
+      "multiplicity": "single",
+      "category": "",
+      "vocab_mismatch": false,
+      "cov5": 1.0,
+      "hit5": [
+        "src/modules/robot/Block.cpp"
+      ],
+      "miss5": [],
+      "question": "Block 梯形速度规划 calculate_trapezoid 在哪？",
+      "expected_files": [
+        "src/modules/robot/Block.cpp"
+      ]
+    },
+    {
+      "id": "H6",
+      "split": "holdout",
+      "batch": "original",
+      "multiplicity": "single",
+      "category": "",
+      "vocab_mismatch": false,
+      "cov5": 1.0,
+      "hit5": [
+        "src/libs/StepTicker.cpp"
+      ],
+      "miss5": [],
+      "question": "StepTicker 步进中断 step_tick 在哪里？",
+      "expected_files": [
+        "src/libs/StepTicker.cpp"
+      ]
+    },
+    {
+      "id": "H7",
+      "split": "holdout",
+      "batch": "original",
+      "multiplicity": "single",
+      "category": "",
+      "vocab_mismatch": false,
+      "cov5": 1.0,
+      "hit5": [
+        "src/libs/StepperMotor.cpp"
+      ],
+      "miss5": [],
+      "question": "StepperMotor 单轴步进电机控制在哪个文件？",
+      "expected_files": [
+        "src/libs/StepperMotor.cpp"
+      ]
+    },
+    {
+      "id": "H8",
+      "split": "holdout",
+      "batch": "original",
+      "multiplicity": "multi",
+      "category": "",
+      "vocab_mismatch": false,
+      "cov5": 0.5,
+      "hit5": [
+        "src/main.cpp"
+      ],
+      "miss5": [
+        "src/libs/Kernel.cpp"
+      ],
+      "question": "main 函数和系统启动入口在哪里？",
+      "expected_files": [
+        "src/main.cpp",
+        "src/libs/Kernel.cpp"
+      ]
+    },
+    {
+      "id": "H9",
+      "split": "holdout",
+      "batch": "original",
+      "multiplicity": "multi",
+      "category": "",
+      "vocab_mismatch": false,
+      "cov5": 1.0,
+      "hit5": [
+        "src/libs/PublicData.cpp",
+        "src/libs/PublicData.h"
+      ],
+      "miss5": [],
+      "question": "PublicData 模块间共享数据怎么读写？",
+      "expected_files": [
+        "src/libs/PublicData.cpp",
+        "src/libs/PublicData.h"
+      ]
+    },
+    {
+      "id": "H10",
+      "split": "holdout",
+      "batch": "original",
+      "multiplicity": "single",
+      "category": "",
+      "vocab_mismatch": false,
+      "cov5": 1.0,
+      "hit5": [
+        "src/modules/tools/temperaturecontrol/TemperatureControl.cpp"
+      ],
+      "miss5": [],
+      "question": "TemperatureControl 如何响应 G-code 温度命令？",
+      "expected_files": [
+        "src/modules/tools/temperaturecontrol/TemperatureControl.cpp"
+      ]
+    },
+    {
+      "id": "H11",
+      "split": "holdout",
+      "batch": "original",
+      "multiplicity": "single",
+      "category": "",
+      "vocab_mismatch": false,
+      "cov5": 1.0,
+      "hit5": [
+        "src/libs/Config.cpp"
+      ],
+      "miss5": [],
+      "question": "Config::value 配置读取和查找在哪里实现？",
+      "expected_files": [
+        "src/libs/Config.cpp"
+      ]
+    },
+    {
+      "id": "H12",
+      "split": "holdout",
+      "batch": "original",
+      "multiplicity": "single",
+      "category": "",
+      "vocab_mismatch": false,
+      "cov5": 1.0,
+      "hit5": [
+        "src/libs/ConfigSources/FileConfigSource.cpp"
+      ],
+      "miss5": [],
+      "question": "FileConfigSource 如何读取配置文件？",
+      "expected_files": [
+        "src/libs/ConfigSources/FileConfigSource.cpp"
+      ]
+    },
+    {
+      "id": "H13",
+      "split": "holdout",
+      "batch": "original",
+      "multiplicity": "single",
+      "category": "",
+      "vocab_mismatch": false,
+      "cov5": 1.0,
+      "hit5": [
+        "src/libs/SlowTicker.cpp"
+      ],
+      "miss5": [],
+      "question": "SlowTicker 定时 tick 和 on_idle 逻辑在哪里？",
+      "expected_files": [
+        "src/libs/SlowTicker.cpp"
+      ]
+    },
+    {
+      "id": "H14",
+      "split": "holdout",
+      "batch": "original",
+      "multiplicity": "single",
+      "category": "",
+      "vocab_mismatch": false,
+      "cov5": 1.0,
+      "hit5": [
+        "src/libs/Adc.cpp"
+      ],
+      "miss5": [],
+      "question": "Adc::read 和 ADC 采样代码在哪里？",
+      "expected_files": [
+        "src/libs/Adc.cpp"
+      ]
+    },
+    {
+      "id": "H15",
+      "split": "holdout",
+      "batch": "original",
+      "multiplicity": "single",
+      "category": "",
+      "vocab_mismatch": false,
+      "cov5": 1.0,
+      "hit5": [
+        "src/libs/Watchdog.cpp"
+      ],
+      "miss5": [],
+      "question": "Watchdog 喂狗 feed 和 on_idle 在哪里？",
+      "expected_files": [
+        "src/libs/Watchdog.cpp"
+      ]
+    },
+    {
+      "id": "H16",
+      "split": "holdout",
+      "batch": "original",
+      "multiplicity": "single",
+      "category": "",
+      "vocab_mismatch": false,
+      "cov5": 1.0,
+      "hit5": [
+        "src/modules/tools/extruder/Extruder.cpp"
+      ],
+      "miss5": [],
+      "question": "Extruder 如何处理挤出相关 G-code？",
+      "expected_files": [
+        "src/modules/tools/extruder/Extruder.cpp"
+      ]
+    },
+    {
+      "id": "H17",
+      "split": "holdout",
+      "batch": "original",
+      "multiplicity": "single",
+      "category": "",
+      "vocab_mismatch": false,
+      "cov5": 1.0,
+      "hit5": [
+        "src/modules/tools/laser/Laser.cpp"
+      ],
+      "miss5": [],
+      "question": "Laser 激光功率和 G-code 控制在哪里？",
+      "expected_files": [
+        "src/modules/tools/laser/Laser.cpp"
+      ]
+    },
+    {
+      "id": "H18",
+      "split": "holdout",
+      "batch": "original",
+      "multiplicity": "single",
+      "category": "",
+      "vocab_mismatch": false,
+      "cov5": 1.0,
+      "hit5": [
+        "src/modules/tools/switch/Switch.cpp"
+      ],
+      "miss5": [],
+      "question": "Switch 模块如何响应 G-code 并切换输出？",
+      "expected_files": [
+        "src/modules/tools/switch/Switch.cpp"
+      ]
+    },
+    {
+      "id": "H19",
+      "split": "holdout",
+      "batch": "original",
+      "multiplicity": "single",
+      "category": "",
+      "vocab_mismatch": false,
+      "cov5": 1.0,
+      "hit5": [
+        "src/modules/tools/filamentdetector/FilamentDetector.cpp"
+      ],
+      "miss5": [],
+      "question": "FilamentDetector 断料检测和 main loop 在哪里？",
+      "expected_files": [
+        "src/modules/tools/filamentdetector/FilamentDetector.cpp"
+      ]
+    },
+    {
+      "id": "H20",
+      "split": "holdout",
+      "batch": "original",
+      "multiplicity": "single",
+      "category": "",
+      "vocab_mismatch": false,
+      "cov5": 1.0,
+      "hit5": [
+        "src/modules/tools/zprobe/ZProbe.cpp"
+      ],
+      "miss5": [],
+      "question": "ZProbe 探针 G-code 和 run_probe 在哪里？",
+      "expected_files": [
+        "src/modules/tools/zprobe/ZProbe.cpp"
+      ]
+    },
+    {
+      "id": "H21",
+      "split": "holdout",
+      "batch": "original",
+      "multiplicity": "single",
+      "category": "",
+      "vocab_mismatch": false,
+      "cov5": 1.0,
+      "hit5": [
+        "src/modules/tools/zprobe/DeltaGridStrategy.cpp"
+      ],
+      "miss5": [],
+      "question": "DeltaGridStrategy 网格探测 probe_grid 在哪里？",
+      "expected_files": [
+        "src/modules/tools/zprobe/DeltaGridStrategy.cpp"
+      ]
+    },
+    {
+      "id": "H22",
+      "split": "holdout",
+      "batch": "original",
+      "multiplicity": "single",
+      "category": "",
+      "vocab_mismatch": false,
+      "cov5": 1.0,
+      "hit5": [
+        "src/modules/tools/zprobe/CartGridStrategy.cpp"
+      ],
+      "miss5": [],
+      "question": "CartGridStrategy 网格保存、扫描和补偿在哪里？",
+      "expected_files": [
+        "src/modules/tools/zprobe/CartGridStrategy.cpp"
+      ]
+    },
+    {
+      "id": "H23",
+      "split": "holdout",
+      "batch": "original",
+      "multiplicity": "single",
+      "category": "",
+      "vocab_mismatch": false,
+      "cov5": 1.0,
+      "hit5": [
+        "src/modules/tools/temperaturecontrol/PID_Autotuner.cpp"
+      ],
+      "miss5": [],
+      "question": "PID_Autotuner 自动整定 G-code 和 tick 逻辑在哪里？",
+      "expected_files": [
+        "src/modules/tools/temperaturecontrol/PID_Autotuner.cpp"
+      ]
+    },
+    {
+      "id": "H24",
+      "split": "holdout",
+      "batch": "original",
+      "multiplicity": "single",
+      "category": "",
+      "vocab_mismatch": false,
+      "cov5": 1.0,
+      "hit5": [
+        "src/modules/tools/temperaturecontrol/Thermistor.cpp"
+      ],
+      "miss5": [],
+      "question": "Thermistor 温度换算 get_temperature 在哪里？",
+      "expected_files": [
+        "src/modules/tools/temperaturecontrol/Thermistor.cpp"
+      ]
+    },
+    {
+      "id": "H25",
+      "split": "holdout",
+      "batch": "original",
+      "multiplicity": "single",
+      "category": "",
+      "vocab_mismatch": false,
+      "cov5": 1.0,
+      "hit5": [
+        "src/modules/utils/currentcontrol/CurrentControl.cpp"
+      ],
+      "miss5": [],
+      "question": "CurrentControl 电流控制 G-code 在哪里处理？",
+      "expected_files": [
+        "src/modules/utils/currentcontrol/CurrentControl.cpp"
+      ]
+    },
+    {
+      "id": "H26",
+      "split": "holdout",
+      "batch": "original",
+      "multiplicity": "single",
+      "category": "",
+      "vocab_mismatch": false,
+      "cov5": 1.0,
+      "hit5": [
+        "src/modules/robot/Robot.cpp"
+      ],
+      "miss5": [],
+      "question": "M17 / M18 / M84 电机使能和关闭命令在哪里处理？",
+      "expected_files": [
+        "src/modules/robot/Robot.cpp"
+      ]
+    },
+    {
+      "id": "H27",
+      "split": "holdout",
+      "batch": "original",
+      "multiplicity": "single",
+      "category": "",
+      "vocab_mismatch": false,
+      "cov5": 1.0,
+      "hit5": [
+        "src/modules/tools/temperaturecontrol/TemperatureControl.cpp"
+      ],
+      "miss5": [],
+      "question": "M104 / M109 温度设定和等待命令在哪里处理？",
+      "expected_files": [
+        "src/modules/tools/temperaturecontrol/TemperatureControl.cpp"
+      ]
+    },
+    {
+      "id": "H28",
+      "split": "holdout",
+      "batch": "original",
+      "multiplicity": "single",
+      "category": "",
+      "vocab_mismatch": false,
+      "cov5": 1.0,
+      "hit5": [
+        "src/modules/tools/laser/Laser.cpp"
+      ],
+      "miss5": [],
+      "question": "M221 激光功率比例命令在哪里处理？",
+      "expected_files": [
+        "src/modules/tools/laser/Laser.cpp"
+      ]
+    },
+    {
+      "id": "H29",
+      "split": "holdout",
+      "batch": "original",
+      "multiplicity": "single",
+      "category": "",
+      "vocab_mismatch": false,
+      "cov5": 1.0,
+      "hit5": [
+        "src/modules/utils/currentcontrol/CurrentControl.cpp"
+      ],
+      "miss5": [],
+      "question": "M907 电流控制命令在哪里处理？",
+      "expected_files": [
+        "src/modules/utils/currentcontrol/CurrentControl.cpp"
+      ]
+    },
+    {
+      "id": "H30",
+      "split": "holdout",
+      "batch": "original",
+      "multiplicity": "single",
+      "category": "",
+      "vocab_mismatch": false,
+      "cov5": 1.0,
+      "hit5": [
+        "src/modules/utils/simpleshell/SimpleShell.cpp"
+      ],
+      "miss5": [],
+      "question": "M20 / M30 SD 文件列表和删除命令在哪里处理？",
+      "expected_files": [
+        "src/modules/utils/simpleshell/SimpleShell.cpp"
+      ]
+    },
+    {
+      "id": "H31",
+      "split": "holdout",
+      "batch": "expansion_v1",
+      "multiplicity": "multi",
+      "category": "hub召回",
+      "vocab_mismatch": true,
+      "cov5": 0.0,
+      "hit5": [],
+      "miss5": [
+        "src/libs/Kernel.cpp",
+        "src/libs/Module.cpp",
+        "src/main.cpp"
+      ],
+      "question": "各功能模块是怎么被挂到系统里并开始参与运行的？",
+      "expected_files": [
+        "src/libs/Kernel.cpp",
+        "src/libs/Module.cpp",
+        "src/main.cpp"
+      ]
+    },
+    {
+      "id": "H32",
+      "split": "holdout",
+      "batch": "expansion_v1",
+      "multiplicity": "multi",
+      "category": "hub召回",
+      "vocab_mismatch": true,
+      "cov5": 0.0,
+      "hit5": [],
+      "miss5": [
+        "src/libs/Kernel.cpp",
+        "src/libs/Module.cpp"
+      ],
+      "question": "内核怎样把事件通知到各个功能模块？",
+      "expected_files": [
+        "src/libs/Kernel.cpp",
+        "src/libs/Module.cpp"
+      ]
+    },
+    {
+      "id": "H33",
+      "split": "holdout",
+      "batch": "expansion_v1",
+      "multiplicity": "multi",
+      "category": "hub召回",
+      "vocab_mismatch": true,
+      "cov5": 0.0,
+      "hit5": [],
+      "miss5": [
+        "src/libs/ConfigSources/FileConfigSource.cpp",
+        "src/libs/Config.cpp"
+      ],
+      "question": "上电后配置文件是在哪里被读入并变成可查询参数的？",
+      "expected_files": [
+        "src/libs/ConfigSources/FileConfigSource.cpp",
+        "src/libs/Config.cpp"
+      ]
+    },
+    {
+      "id": "H34",
+      "split": "holdout",
+      "batch": "expansion_v1",
+      "multiplicity": "multi",
+      "category": "hub召回",
+      "vocab_mismatch": true,
+      "cov5": 0.0,
+      "hit5": [],
+      "miss5": [
+        "src/libs/PublicData.cpp",
+        "src/libs/Kernel.cpp"
+      ],
+      "question": "一个模块想读取另一个模块暴露的运行状态，走什么共享数据机制？",
+      "expected_files": [
+        "src/libs/PublicData.cpp",
+        "src/libs/Kernel.cpp"
+      ]
+    },
+    {
+      "id": "H35",
+      "split": "holdout",
+      "batch": "expansion_v1",
+      "multiplicity": "multi",
+      "category": "hub召回",
+      "vocab_mismatch": true,
+      "cov5": 0.0,
+      "hit5": [],
+      "miss5": [
+        "src/main.cpp",
+        "src/libs/Kernel.cpp"
+      ],
+      "question": "主循环里空闲时各模块的后台处理是在哪里被驱动的？",
+      "expected_files": [
+        "src/main.cpp",
+        "src/libs/Kernel.cpp"
+      ]
+    },
+    {
+      "id": "H36",
+      "split": "holdout",
+      "batch": "expansion_v1",
+      "multiplicity": "multi",
+      "category": "hub召回",
+      "vocab_mismatch": true,
+      "cov5": 0.5,
+      "hit5": [
+        "src/libs/Kernel.cpp"
+      ],
+      "miss5": [
+        "src/libs/SlowTicker.cpp"
+      ],
+      "question": "周期性慢速定时任务是在哪里注册并触发模块回调的？",
+      "expected_files": [
+        "src/libs/SlowTicker.cpp",
+        "src/libs/Kernel.cpp"
+      ]
+    },
+    {
+      "id": "H37",
+      "split": "holdout",
+      "batch": "expansion_v1",
+      "multiplicity": "multi",
+      "category": "hub召回",
+      "vocab_mismatch": true,
+      "cov5": 0.0,
+      "hit5": [],
+      "miss5": [
+        "src/libs/Module.h",
+        "src/libs/Kernel.cpp",
+        "src/main.cpp"
+      ],
+      "question": "开发新硬件功能模块时，必须实现哪些框架接口、在哪里接入系统？",
+      "expected_files": [
+        "src/libs/Module.h",
+        "src/libs/Kernel.cpp",
+        "src/main.cpp"
+      ]
+    },
+    {
+      "id": "H38",
+      "split": "holdout",
+      "batch": "expansion_v1",
+      "multiplicity": "multi",
+      "category": "hub召回",
+      "vocab_mismatch": false,
+      "cov5": 0.0,
+      "hit5": [],
+      "miss5": [
+        "src/modules/utils/configurator/Configurator.cpp",
+        "src/libs/Config.cpp"
+      ],
+      "question": "通过串口命令在线修改配置项时，哪些核心组件会参与？",
+      "expected_files": [
+        "src/modules/utils/configurator/Configurator.cpp",
+        "src/libs/Config.cpp"
+      ]
+    },
+    {
+      "id": "H39",
+      "split": "holdout",
+      "batch": "expansion_v1",
+      "multiplicity": "multi",
+      "category": "跨模块流程",
+      "vocab_mismatch": false,
+      "cov5": 0.16666666666666666,
+      "hit5": [
+        "src/modules/robot/Robot.cpp"
+      ],
+      "miss5": [
+        "src/modules/communication/SerialConsole.cpp",
+        "src/modules/communication/GcodeDispatch.cpp",
+        "src/modules/robot/Planner.cpp",
+        "src/modules/robot/Conveyor.cpp",
+        "src/libs/StepTicker.cpp"
+      ],
+      "question": "G0 快速移动命令从串口收到到步进脉冲输出，经过哪些模块？",
+      "expected_files": [
+        "src/modules/communication/SerialConsole.cpp",
+        "src/modules/communication/GcodeDispatch.cpp",
+        "src/modules/robot/Robot.cpp",
+        "src/modules/robot/Planner.cpp",
+        "src/modules/robot/Conveyor.cpp",
+        "src/libs/StepTicker.cpp"
+      ]
+    },
+    {
+      "id": "H40",
+      "split": "holdout",
+      "batch": "expansion_v1",
+      "multiplicity": "multi",
+      "category": "跨模块流程",
+      "vocab_mismatch": false,
+      "cov5": 0.5,
+      "hit5": [
+        "src/modules/tools/temperaturecontrol/TemperatureControl.cpp"
+      ],
+      "miss5": [
+        "src/modules/communication/GcodeDispatch.cpp"
+      ],
+      "question": "M104 设置喷头温度后，温度控制逻辑在哪里被唤起？",
+      "expected_files": [
+        "src/modules/communication/GcodeDispatch.cpp",
+        "src/modules/tools/temperaturecontrol/TemperatureControl.cpp"
+      ]
+    },
+    {
+      "id": "H41",
+      "split": "holdout",
+      "batch": "expansion_v1",
+      "multiplicity": "multi",
+      "category": "跨模块流程",
+      "vocab_mismatch": true,
+      "cov5": 0.6666666666666666,
+      "hit5": [
+        "src/libs/Kernel.cpp",
+        "src/modules/robot/Conveyor.cpp"
+      ],
+      "miss5": [
+        "src/modules/tools/endstops/Endstops.cpp"
+      ],
+      "question": "限位开关触发后，运动停止和急停处理涉及哪些文件？",
+      "expected_files": [
+        "src/modules/tools/endstops/Endstops.cpp",
+        "src/libs/Kernel.cpp",
+        "src/modules/robot/Conveyor.cpp"
+      ]
+    },
+    {
+      "id": "H42",
+      "split": "holdout",
+      "batch": "expansion_v1",
+      "multiplicity": "multi",
+      "category": "change-impact",
+      "vocab_mismatch": false,
+      "cov5": 0.5,
+      "hit5": [
+        "src/modules/robot/Planner.cpp"
+      ],
+      "miss5": [
+        "src/modules/robot/Robot.cpp"
+      ],
+      "question": "如果修改 Planner::append_block 的行为，哪些文件最可能需要一起检查？",
+      "expected_files": [
+        "src/modules/robot/Planner.cpp",
+        "src/modules/robot/Robot.cpp"
+      ]
+    },
+    {
+      "id": "H43",
+      "split": "holdout",
+      "batch": "expansion_v1",
+      "multiplicity": "multi",
+      "category": "change-impact",
+      "vocab_mismatch": true,
+      "cov5": 0.3333333333333333,
+      "hit5": [
+        "src/libs/Kernel.cpp"
+      ],
+      "miss5": [
+        "src/libs/Module.cpp",
+        "src/main.cpp"
+      ],
+      "question": "如果修改 Kernel 向模块分发事件的机制，哪些框架文件会牵涉？",
+      "expected_files": [
+        "src/libs/Kernel.cpp",
+        "src/libs/Module.cpp",
+        "src/main.cpp"
+      ]
+    }
+  ],
+  "buckets": {
+    "all": {
+      "n": 48,
+      "mean_cov5": 0.7584325396825397,
+      "single_mean": 1.0,
+      "multi_mean": 0.44784580498866217
+    },
+    "original_35": {
+      "n": 35,
+      "mean_cov5": 0.9639455782312926,
+      "single_mean": 1.0,
+      "multi_mean": 0.8422619047619048
+    },
+    "old_holdout": {
+      "n": 30,
+      "mean_cov5": 0.9833333333333333,
+      "single_mean": 1.0,
+      "multi_mean": 0.8333333333333334
+    },
+    "new_holdout": {
+      "n": 13,
+      "mean_cov5": 0.20512820512820512,
+      "single_mean": 0.0,
+      "multi_mean": 0.20512820512820512
+    },
+    "hub_expansion": {
+      "n": 8,
+      "mean_cov5": 0.0625,
+      "single_mean": 0.0,
+      "multi_mean": 0.0625
+    },
+    "by_category": {
+      "change-impact": {
+        "n": 2,
+        "mean_cov5": 0.41666666666666663,
+        "single_mean": 0.0,
+        "multi_mean": 0.41666666666666663
+      },
+      "hub召回": {
+        "n": 8,
+        "mean_cov5": 0.0625,
+        "single_mean": 0.0,
+        "multi_mean": 0.0625
+      },
+      "跨模块流程": {
+        "n": 3,
+        "mean_cov5": 0.4444444444444444,
+        "single_mean": 0.0,
+        "multi_mean": 0.4444444444444444
+      }
+    }
+  },
+  "miss_traces": {
+    "Q3": {
+      "question": "Motion / Planner / Stepper 相关代码在哪里？",
+      "cov5": 0.8333333333333334,
+      "miss5": [
+        "src/modules/robot/Robot.cpp"
+      ],
+      "files": [
+        {
+          "file": "src/modules/robot/Robot.cpp",
+          "chunks_in_pool": 36,
+          "total_chunks": 36,
+          "prefilter_rank": 4,
+          "prefilter_score": 125.0,
+          "prefilter_in_top_n": true,
+          "channels": {
+            "method": {
+              "src_modules_robot_Robot_cpp::109-128": 125.0
+            },
+            "class": {
+              "src_modules_robot_Robot_cpp::298-315": 108.0,
+              "src_modules_robot_Robot_cpp::1585-1749": 108.0,
+              "src_modules_robot_Robot_cpp::1495-1581": 108.0,
+              "src_modules_robot_Robot_cpp::1273-1452": 108.0,
+              "src_modules_robot_Robot_cpp::1413-1463": 108.0,
+              "src_modules_robot_Robot_cpp::470-484": 108.0,
+              "src_modules_robot_Robot_cpp::1775-1778": 108.0,
+              "src_modules_robot_Robot_cpp::1752-1766": 108.0,
+              "src_modules_robot_Robot_cpp::1466-1492": 108.0,
+              "src_modules_robot_Robot_cpp::1034-1041": 108.0,
+              "src_modules_robot_Robot_cpp::366-377": 108.0,
+              "src_modules_robot_Robot_cpp::1785-1788": 108.0,
+              "src_modules_robot_Robot_cpp::354-364": 108.0,
+              "src_modules_robot_Robot_cpp::1790-1804": 108.0,
+              "src_modules_robot_Robot_cpp::148-296": 108.0,
+              "src_modules_robot_Robot_cpp::449-456": 108.0,
+              "src_modules_robot_Robot_cpp::488-667": 108.0,
+              "src_modules_robot_Robot_cpp::628-807": 108.0,
+              "src_modules_robot_Robot_cpp::768-947": 108.0,
+              "src_modules_robot_Robot_cpp::908-1032": 108.0,
+              "src_modules_robot_Robot_cpp::131-137": 108.0,
+              "src_modules_robot_Robot_cpp::340-352": 108.0,
+              "src_modules_robot_Robot_cpp::379-446": 108.0,
+              "src_modules_robot_Robot_cpp::1044-1164": 108.0,
+              "src_modules_robot_Robot_cpp::331-338": 108.0,
+              "src_modules_robot_Robot_cpp::317-329": 108.0,
+              "src_modules_robot_Robot_cpp::1209-1217": 108.0,
+              "src_modules_robot_Robot_cpp::1172-1189": 108.0,
+              "src_modules_robot_Robot_cpp::1192-1205": 108.0,
+              "src_modules_robot_Robot_cpp::1257-1268": 108.0,
+              "src_modules_robot_Robot_cpp::1221-1254": 108.0,
+              "src_modules_robot_Robot_cpp::1768-1773": 108.0,
+              "src_modules_robot_Robot_cpp::1780-1783": 108.0,
+              "src_modules_robot_Robot_cpp::459-466": 108.0
+            },
+            "symbol": {
+              "src_modules_robot_Robot_cpp::109-128": 85.0
+            },
+            "bm25": {
+              "src_modules_robot_Robot_cpp::1-40::overview": 5.761052086572626,
+              "src_modules_robot_Robot_cpp::317-329": 5.43037088143993,
+              "src_modules_robot_Robot_cpp::1413-1463": 5.170090458135379,
+              "src_modules_robot_Robot_cpp::908-1032": 3.0321401846776346,
+              "src_modules_robot_Robot_cpp::768-947": 2.743055384688069,
+              "src_modules_robot_Robot_cpp::1752-1766": 2.6080636490375584,
+              "src_modules_robot_Robot_cpp::1273-1452": 1.9749036220108591,
+              "src_modules_robot_Robot_cpp::488-667": 1.9605253982708115,
+              "src_modules_robot_Robot_cpp::148-296": 1.7236661973631762,
+              "src_modules_robot_Robot_cpp::1775-1778": 1.491019528775074,
+              "src_modules_robot_Robot_cpp::1780-1783": 1.4656812395101206,
+              "src_modules_robot_Robot_cpp::1044-1164": 1.4552261853628385
+            }
+          },
+          "zero_signal": false
+        }
+      ]
+    },
+    "Q4": {
+      "question": "error / stop / halt / emergency 逻辑在哪里？",
+      "cov5": 0.5714285714285714,
+      "miss5": [
+        "src/modules/communication/SerialConsole.cpp",
+        "src/modules/communication/GcodeDispatch.cpp",
+        "src/modules/utils/killbutton/KillButton.cpp"
+      ],
+      "files": [
+        {
+          "file": "src/modules/communication/SerialConsole.cpp",
+          "chunks_in_pool": 14,
+          "total_chunks": 14,
+          "prefilter_rank": 5,
+          "prefilter_score": 125.0,
+          "prefilter_in_top_n": true,
+          "channels": {
+            "method": {
+              "src_modules_communication_SerialConsole_cpp::38-48": 125.0
+            },
+            "class": {
+              "src_modules_communication_SerialConsole_cpp::292-302": 108.0,
+              "src_modules_communication_SerialConsole_cpp::281-285": 108.0,
+              "src_modules_communication_SerialConsole_cpp::106-177": 108.0,
+              "src_modules_communication_SerialConsole_cpp::227-246": 108.0,
+              "src_modules_communication_SerialConsole_cpp::249-272": 108.0,
+              "src_modules_communication_SerialConsole_cpp::180-196": 108.0,
+              "src_modules_communication_SerialConsole_cpp::199-225": 108.0,
+              "src_modules_communication_SerialConsole_cpp::275-279": 108.0,
+              "src_modules_communication_SerialConsole_cpp::287-290": 108.0,
+              "src_modules_communication_SerialConsole_cpp::50-61": 108.0
+            },
+            "symbol": {
+              "src_modules_communication_SerialConsole_cpp::38-48": 85.0
+            },
+            "bm25": {
+              "src_modules_communication_SerialConsole_cpp::199-225": 7.706094346881177,
+              "src_modules_communication_SerialConsole_cpp::227-246": 7.31195524413547,
+              "src_modules_communication_SerialConsole_cpp::180-196": 6.3738844738475064,
+              "src_modules_communication_SerialConsole_cpp::287-290": 2.8076976721869027,
+              "src_modules_communication_SerialConsole_cpp::313-317": 2.6913781802433756,
+              "src_modules_communication_SerialConsole_cpp::281-285": 2.6050392982016435,
+              "src_modules_communication_SerialConsole_cpp::292-302": 2.5639143642395275,
+              "src_modules_communication_SerialConsole_cpp::275-279": 2.543835003707384,
+              "src_modules_communication_SerialConsole_cpp::38-48": 2.504605244403015,
+              "src_modules_communication_SerialConsole_cpp::306-309": 2.504605244403015,
+              "src_modules_communication_SerialConsole_cpp::106-177": 2.3591033703524147,
+              "src_modules_communication_SerialConsole_cpp::50-61": 2.244951317267212,
+              "src_modules_communication_SerialConsole_cpp::249-272": 2.199349736146851,
+              "src_modules_communication_SerialConsole_cpp::1-40::overview": 1.8001277391015422
+            }
+          },
+          "zero_signal": false
+        },
+        {
+          "file": "src/modules/communication/GcodeDispatch.cpp",
+          "chunks_in_pool": 6,
+          "total_chunks": 6,
+          "prefilter_rank": 6,
+          "prefilter_score": 125.0,
+          "prefilter_in_top_n": true,
+          "channels": {
+            "method": {
+              "src_modules_communication_GcodeDispatch_cpp::42-47": 125.0
+            },
+            "class": {
+              "src_modules_communication_GcodeDispatch_cpp::56-235": 108.0,
+              "src_modules_communication_GcodeDispatch_cpp::196-375": 108.0,
+              "src_modules_communication_GcodeDispatch_cpp::336-489": 108.0,
+              "src_modules_communication_GcodeDispatch_cpp::50-53": 108.0
+            },
+            "symbol": {
+              "src_modules_communication_GcodeDispatch_cpp::42-47": 85.0
+            },
+            "bm25": {
+              "src_modules_communication_GcodeDispatch_cpp::196-375": 3.9546334487914776,
+              "src_modules_communication_GcodeDispatch_cpp::1-40::overview": 3.7722017647229795,
+              "src_modules_communication_GcodeDispatch_cpp::42-47": 3.0580075670745965,
+              "src_modules_communication_GcodeDispatch_cpp::336-489": 3.042214103807847,
+              "src_modules_communication_GcodeDispatch_cpp::56-235": 2.9372163484752187,
+              "src_modules_communication_GcodeDispatch_cpp::50-53": 2.8602207655122114
+            }
+          },
+          "zero_signal": false
+        },
+        {
+          "file": "src/modules/utils/killbutton/KillButton.cpp",
+          "chunks_in_pool": 5,
+          "total_chunks": 5,
+          "prefilter_rank": 2,
+          "prefilter_score": 125.0,
+          "prefilter_in_top_n": true,
+          "channels": {
+            "method": {
+              "src_modules_utils_killbutton_KillButton_cpp::22-26": 125.0
+            },
+            "class": {
+              "src_modules_utils_killbutton_KillButton_cpp::78-125": 108.0,
+              "src_modules_utils_killbutton_KillButton_cpp::53-72": 108.0,
+              "src_modules_utils_killbutton_KillButton_cpp::28-51": 108.0
+            },
+            "symbol": {
+              "src_modules_utils_killbutton_KillButton_cpp::22-26": 85.0
+            },
+            "bm25": {
+              "src_modules_utils_killbutton_KillButton_cpp::53-72": 5.505024439549214,
+              "src_modules_utils_killbutton_KillButton_cpp::22-26": 3.2621993270031773,
+              "src_modules_utils_killbutton_KillButton_cpp::1-40::overview": 2.892945884863245,
+              "src_modules_utils_killbutton_KillButton_cpp::28-51": 2.2232164354582897,
+              "src_modules_utils_killbutton_KillButton_cpp::78-125": 2.101522414927996
+            }
+          },
+          "zero_signal": false
+        }
+      ]
+    },
+    "Q5": {
+      "question": "模块系统如何注册、触发、通信？",
+      "cov5": 0.8333333333333334,
+      "miss5": [
+        "src/libs/Kernel.h"
+      ],
+      "files": [
+        {
+          "file": "src/libs/Kernel.h",
+          "chunks_in_pool": 2,
+          "total_chunks": 3,
+          "prefilter_rank": 6,
+          "prefilter_score": 85.0,
+          "prefilter_in_top_n": true,
+          "channels": {
+            "symbol": {
+              "src_libs_Kernel_h::36-97": 85.0
+            },
+            "bm25": {
+              "src_libs_Kernel_h::36-97": 6.220570022017954,
+              "src_libs_Kernel_h::1-40::overview": 5.998613008948485
+            }
+          },
+          "zero_signal": false
+        }
+      ]
+    },
+    "H8": {
+      "question": "main 函数和系统启动入口在哪里？",
+      "cov5": 0.5,
+      "miss5": [
+        "src/libs/Kernel.cpp"
+      ],
+      "files": [
+        {
+          "file": "src/libs/Kernel.cpp",
+          "chunks_in_pool": 0,
+          "total_chunks": 9,
+          "prefilter_rank": null,
+          "prefilter_score": 0.0,
+          "prefilter_in_top_n": false,
+          "channels": {},
+          "zero_signal": true
+        }
+      ]
+    },
+    "H31": {
+      "question": "各功能模块是怎么被挂到系统里并开始参与运行的？",
+      "cov5": 0.0,
+      "miss5": [
+        "src/libs/Kernel.cpp",
+        "src/libs/Module.cpp",
+        "src/main.cpp"
+      ],
+      "files": [
+        {
+          "file": "src/libs/Kernel.cpp",
+          "chunks_in_pool": 0,
+          "total_chunks": 9,
+          "prefilter_rank": null,
+          "prefilter_score": 0.0,
+          "prefilter_in_top_n": false,
+          "channels": {},
+          "zero_signal": true
+        },
+        {
+          "file": "src/libs/Module.cpp",
+          "chunks_in_pool": 0,
+          "total_chunks": 4,
+          "prefilter_rank": null,
+          "prefilter_score": 0.0,
+          "prefilter_in_top_n": false,
+          "channels": {},
+          "zero_signal": true
+        },
+        {
+          "file": "src/main.cpp",
+          "chunks_in_pool": 0,
+          "total_chunks": 3,
+          "prefilter_rank": null,
+          "prefilter_score": 0.0,
+          "prefilter_in_top_n": false,
+          "channels": {},
+          "zero_signal": true
+        }
+      ]
+    },
+    "H32": {
+      "question": "内核怎样把事件通知到各个功能模块？",
+      "cov5": 0.0,
+      "miss5": [
+        "src/libs/Kernel.cpp",
+        "src/libs/Module.cpp"
+      ],
+      "files": [
+        {
+          "file": "src/libs/Kernel.cpp",
+          "chunks_in_pool": 0,
+          "total_chunks": 9,
+          "prefilter_rank": null,
+          "prefilter_score": 0.0,
+          "prefilter_in_top_n": false,
+          "channels": {},
+          "zero_signal": true
+        },
+        {
+          "file": "src/libs/Module.cpp",
+          "chunks_in_pool": 0,
+          "total_chunks": 4,
+          "prefilter_rank": null,
+          "prefilter_score": 0.0,
+          "prefilter_in_top_n": false,
+          "channels": {},
+          "zero_signal": true
+        }
+      ]
+    },
+    "H33": {
+      "question": "上电后配置文件是在哪里被读入并变成可查询参数的？",
+      "cov5": 0.0,
+      "miss5": [
+        "src/libs/ConfigSources/FileConfigSource.cpp",
+        "src/libs/Config.cpp"
+      ],
+      "files": [
+        {
+          "file": "src/libs/ConfigSources/FileConfigSource.cpp",
+          "chunks_in_pool": 0,
+          "total_chunks": 11,
+          "prefilter_rank": null,
+          "prefilter_score": 0.0,
+          "prefilter_in_top_n": false,
+          "channels": {},
+          "zero_signal": true
+        },
+        {
+          "file": "src/libs/Config.cpp",
+          "chunks_in_pool": 0,
+          "total_chunks": 9,
+          "prefilter_rank": null,
+          "prefilter_score": 0.0,
+          "prefilter_in_top_n": false,
+          "channels": {},
+          "zero_signal": true
+        }
+      ]
+    },
+    "H34": {
+      "question": "一个模块想读取另一个模块暴露的运行状态，走什么共享数据机制？",
+      "cov5": 0.0,
+      "miss5": [
+        "src/libs/PublicData.cpp",
+        "src/libs/Kernel.cpp"
+      ],
+      "files": [
+        {
+          "file": "src/libs/PublicData.cpp",
+          "chunks_in_pool": 0,
+          "total_chunks": 3,
+          "prefilter_rank": null,
+          "prefilter_score": 0.0,
+          "prefilter_in_top_n": false,
+          "channels": {},
+          "zero_signal": true
+        },
+        {
+          "file": "src/libs/Kernel.cpp",
+          "chunks_in_pool": 0,
+          "total_chunks": 9,
+          "prefilter_rank": null,
+          "prefilter_score": 0.0,
+          "prefilter_in_top_n": false,
+          "channels": {},
+          "zero_signal": true
+        }
+      ]
+    },
+    "H35": {
+      "question": "主循环里空闲时各模块的后台处理是在哪里被驱动的？",
+      "cov5": 0.0,
+      "miss5": [
+        "src/main.cpp",
+        "src/libs/Kernel.cpp"
+      ],
+      "files": [
+        {
+          "file": "src/main.cpp",
+          "chunks_in_pool": 0,
+          "total_chunks": 3,
+          "prefilter_rank": null,
+          "prefilter_score": 0.0,
+          "prefilter_in_top_n": false,
+          "channels": {},
+          "zero_signal": true
+        },
+        {
+          "file": "src/libs/Kernel.cpp",
+          "chunks_in_pool": 0,
+          "total_chunks": 9,
+          "prefilter_rank": null,
+          "prefilter_score": 0.0,
+          "prefilter_in_top_n": false,
+          "channels": {},
+          "zero_signal": true
+        }
+      ]
+    },
+    "H36": {
+      "question": "周期性慢速定时任务是在哪里注册并触发模块回调的？",
+      "cov5": 0.5,
+      "miss5": [
+        "src/libs/SlowTicker.cpp"
+      ],
+      "files": [
+        {
+          "file": "src/libs/SlowTicker.cpp",
+          "chunks_in_pool": 2,
+          "total_chunks": 9,
+          "prefilter_rank": 10,
+          "prefilter_score": 85.0,
+          "prefilter_in_top_n": true,
+          "channels": {
+            "symbol": {
+              "src_libs_SlowTicker_cpp::46-48": 85.0
+            },
+            "bm25": {
+              "src_libs_SlowTicker_cpp::46-48": 6.457414449441213,
+              "src_libs_SlowTicker_cpp::1-40::overview": 2.427283656239246
+            }
+          },
+          "zero_signal": false
+        }
+      ]
+    },
+    "H37": {
+      "question": "开发新硬件功能模块时，必须实现哪些框架接口、在哪里接入系统？",
+      "cov5": 0.0,
+      "miss5": [
+        "src/libs/Module.h",
+        "src/libs/Kernel.cpp",
+        "src/main.cpp"
+      ],
+      "files": [
+        {
+          "file": "src/libs/Module.h",
+          "chunks_in_pool": 0,
+          "total_chunks": 2,
+          "prefilter_rank": null,
+          "prefilter_score": 0.0,
+          "prefilter_in_top_n": false,
+          "channels": {},
+          "zero_signal": true
+        },
+        {
+          "file": "src/libs/Kernel.cpp",
+          "chunks_in_pool": 0,
+          "total_chunks": 9,
+          "prefilter_rank": null,
+          "prefilter_score": 0.0,
+          "prefilter_in_top_n": false,
+          "channels": {},
+          "zero_signal": true
+        },
+        {
+          "file": "src/main.cpp",
+          "chunks_in_pool": 0,
+          "total_chunks": 3,
+          "prefilter_rank": null,
+          "prefilter_score": 0.0,
+          "prefilter_in_top_n": false,
+          "channels": {},
+          "zero_signal": true
+        }
+      ]
+    },
+    "H38": {
+      "question": "通过串口命令在线修改配置项时，哪些核心组件会参与？",
+      "cov5": 0.0,
+      "miss5": [
+        "src/modules/utils/configurator/Configurator.cpp",
+        "src/libs/Config.cpp"
+      ],
+      "files": [
+        {
+          "file": "src/modules/utils/configurator/Configurator.cpp",
+          "chunks_in_pool": 0,
+          "total_chunks": 4,
+          "prefilter_rank": null,
+          "prefilter_score": 0.0,
+          "prefilter_in_top_n": false,
+          "channels": {},
+          "zero_signal": true
+        },
+        {
+          "file": "src/libs/Config.cpp",
+          "chunks_in_pool": 0,
+          "total_chunks": 9,
+          "prefilter_rank": null,
+          "prefilter_score": 0.0,
+          "prefilter_in_top_n": false,
+          "channels": {},
+          "zero_signal": true
+        }
+      ]
+    },
+    "H39": {
+      "question": "G0 快速移动命令从串口收到到步进脉冲输出，经过哪些模块？",
+      "cov5": 0.16666666666666666,
+      "miss5": [
+        "src/modules/communication/SerialConsole.cpp",
+        "src/modules/communication/GcodeDispatch.cpp",
+        "src/modules/robot/Planner.cpp",
+        "src/modules/robot/Conveyor.cpp",
+        "src/libs/StepTicker.cpp"
+      ],
+      "files": [
+        {
+          "file": "src/modules/communication/SerialConsole.cpp",
+          "chunks_in_pool": 0,
+          "total_chunks": 14,
+          "prefilter_rank": null,
+          "prefilter_score": 0.0,
+          "prefilter_in_top_n": false,
+          "channels": {},
+          "zero_signal": true
+        },
+        {
+          "file": "src/modules/communication/GcodeDispatch.cpp",
+          "chunks_in_pool": 3,
+          "total_chunks": 6,
+          "prefilter_rank": 10,
+          "prefilter_score": 4.548526295470824,
+          "prefilter_in_top_n": true,
+          "channels": {
+            "bm25": {
+              "src_modules_communication_GcodeDispatch_cpp::336-489": 4.548526295470824,
+              "src_modules_communication_GcodeDispatch_cpp::56-235": 4.391540286334223,
+              "src_modules_communication_GcodeDispatch_cpp::196-375": 3.3071836215937056
+            }
+          },
+          "zero_signal": false
+        },
+        {
+          "file": "src/modules/robot/Planner.cpp",
+          "chunks_in_pool": 0,
+          "total_chunks": 6,
+          "prefilter_rank": null,
+          "prefilter_score": 0.0,
+          "prefilter_in_top_n": false,
+          "channels": {},
+          "zero_signal": true
+        },
+        {
+          "file": "src/modules/robot/Conveyor.cpp",
+          "chunks_in_pool": 0,
+          "total_chunks": 15,
+          "prefilter_rank": null,
+          "prefilter_score": 0.0,
+          "prefilter_in_top_n": false,
+          "channels": {},
+          "zero_signal": true
+        },
+        {
+          "file": "src/libs/StepTicker.cpp",
+          "chunks_in_pool": 0,
+          "total_chunks": 14,
+          "prefilter_rank": null,
+          "prefilter_score": 0.0,
+          "prefilter_in_top_n": false,
+          "channels": {},
+          "zero_signal": true
+        }
+      ]
+    },
+    "H40": {
+      "question": "M104 设置喷头温度后，温度控制逻辑在哪里被唤起？",
+      "cov5": 0.5,
+      "miss5": [
+        "src/modules/communication/GcodeDispatch.cpp"
+      ],
+      "files": [
+        {
+          "file": "src/modules/communication/GcodeDispatch.cpp",
+          "chunks_in_pool": 0,
+          "total_chunks": 6,
+          "prefilter_rank": null,
+          "prefilter_score": 0.0,
+          "prefilter_in_top_n": false,
+          "channels": {},
+          "zero_signal": true
+        }
+      ]
+    },
+    "H41": {
+      "question": "限位开关触发后，运动停止和急停处理涉及哪些文件？",
+      "cov5": 0.6666666666666666,
+      "miss5": [
+        "src/modules/tools/endstops/Endstops.cpp"
+      ],
+      "files": [
+        {
+          "file": "src/modules/tools/endstops/Endstops.cpp",
+          "chunks_in_pool": 21,
+          "total_chunks": 21,
+          "prefilter_rank": 3,
+          "prefilter_score": 125.0,
+          "prefilter_in_top_n": true,
+          "channels": {
+            "method": {
+              "src_modules_tools_endstops_Endstops_cpp::107-112": 125.0
+            },
+            "class": {
+              "src_modules_tools_endstops_Endstops_cpp::453-498": 108.0,
+              "src_modules_tools_endstops_Endstops_cpp::537-597": 108.0,
+              "src_modules_tools_endstops_Endstops_cpp::438-449": 108.0,
+              "src_modules_tools_endstops_Endstops_cpp::377-419": 108.0,
+              "src_modules_tools_endstops_Endstops_cpp::1027-1039": 108.0,
+              "src_modules_tools_endstops_Endstops_cpp::672-798": 108.0,
+              "src_modules_tools_endstops_Endstops_cpp::645-670": 108.0,
+              "src_modules_tools_endstops_Endstops_cpp::230-375": 108.0,
+              "src_modules_tools_endstops_Endstops_cpp::140-227": 108.0,
+              "src_modules_tools_endstops_Endstops_cpp::501-534": 108.0,
+              "src_modules_tools_endstops_Endstops_cpp::1042-1217": 108.0,
+              "src_modules_tools_endstops_Endstops_cpp::1219-1253": 108.0,
+              "src_modules_tools_endstops_Endstops_cpp::420-436": 108.0,
+              "src_modules_tools_endstops_Endstops_cpp::114-137": 108.0,
+              "src_modules_tools_endstops_Endstops_cpp::1255-1274": 108.0,
+              "src_modules_tools_endstops_Endstops_cpp::800-979": 108.0,
+              "src_modules_tools_endstops_Endstops_cpp::940-989": 108.0,
+              "src_modules_tools_endstops_Endstops_cpp::600-643": 108.0,
+              "src_modules_tools_endstops_Endstops_cpp::991-1025": 108.0
+            },
+            "symbol": {
+              "src_modules_tools_endstops_Endstops_cpp::107-112": 85.0,
+              "src_modules_tools_endstops_Endstops_cpp::114-137": 85.0
+            },
+            "bm25": {
+              "src_modules_tools_endstops_Endstops_cpp::420-436": 4.704778604096067,
+              "src_modules_tools_endstops_Endstops_cpp::537-597": 3.96962978228042,
+              "src_modules_tools_endstops_Endstops_cpp::114-137": 3.928260574891984,
+              "src_modules_tools_endstops_Endstops_cpp::1-40::overview": 3.157487494519043,
+              "src_modules_tools_endstops_Endstops_cpp::107-112": 2.9524351609939825,
+              "src_modules_tools_endstops_Endstops_cpp::672-798": 2.5411955787491176,
+              "src_modules_tools_endstops_Endstops_cpp::991-1025": 2.0728925467888217
+            }
+          },
+          "zero_signal": false
+        }
+      ]
+    },
+    "H42": {
+      "question": "如果修改 Planner::append_block 的行为，哪些文件最可能需要一起检查？",
+      "cov5": 0.5,
+      "miss5": [
+        "src/modules/robot/Robot.cpp"
+      ],
+      "files": [
+        {
+          "file": "src/modules/robot/Robot.cpp",
+          "chunks_in_pool": 36,
+          "total_chunks": 36,
+          "prefilter_rank": 6,
+          "prefilter_score": 125.0,
+          "prefilter_in_top_n": true,
+          "channels": {
+            "method": {
+              "src_modules_robot_Robot_cpp::109-128": 125.0
+            },
+            "class": {
+              "src_modules_robot_Robot_cpp::298-315": 108.0,
+              "src_modules_robot_Robot_cpp::1585-1749": 108.0,
+              "src_modules_robot_Robot_cpp::1495-1581": 108.0,
+              "src_modules_robot_Robot_cpp::1273-1452": 108.0,
+              "src_modules_robot_Robot_cpp::1413-1463": 108.0,
+              "src_modules_robot_Robot_cpp::470-484": 108.0,
+              "src_modules_robot_Robot_cpp::1775-1778": 108.0,
+              "src_modules_robot_Robot_cpp::1752-1766": 108.0,
+              "src_modules_robot_Robot_cpp::1466-1492": 108.0,
+              "src_modules_robot_Robot_cpp::1034-1041": 108.0,
+              "src_modules_robot_Robot_cpp::366-377": 108.0,
+              "src_modules_robot_Robot_cpp::1785-1788": 108.0,
+              "src_modules_robot_Robot_cpp::354-364": 108.0,
+              "src_modules_robot_Robot_cpp::1790-1804": 108.0,
+              "src_modules_robot_Robot_cpp::148-296": 108.0,
+              "src_modules_robot_Robot_cpp::449-456": 108.0,
+              "src_modules_robot_Robot_cpp::488-667": 108.0,
+              "src_modules_robot_Robot_cpp::628-807": 108.0,
+              "src_modules_robot_Robot_cpp::768-947": 108.0,
+              "src_modules_robot_Robot_cpp::908-1032": 108.0,
+              "src_modules_robot_Robot_cpp::131-137": 108.0,
+              "src_modules_robot_Robot_cpp::340-352": 108.0,
+              "src_modules_robot_Robot_cpp::379-446": 108.0,
+              "src_modules_robot_Robot_cpp::1044-1164": 108.0,
+              "src_modules_robot_Robot_cpp::331-338": 108.0,
+              "src_modules_robot_Robot_cpp::317-329": 108.0,
+              "src_modules_robot_Robot_cpp::1209-1217": 108.0,
+              "src_modules_robot_Robot_cpp::1172-1189": 108.0,
+              "src_modules_robot_Robot_cpp::1192-1205": 108.0,
+              "src_modules_robot_Robot_cpp::1257-1268": 108.0,
+              "src_modules_robot_Robot_cpp::1221-1254": 108.0,
+              "src_modules_robot_Robot_cpp::1768-1773": 108.0,
+              "src_modules_robot_Robot_cpp::1780-1783": 108.0,
+              "src_modules_robot_Robot_cpp::459-466": 108.0
+            },
+            "symbol": {
+              "src_modules_robot_Robot_cpp::109-128": 85.0
+            },
+            "bm25": {
+              "src_modules_robot_Robot_cpp::1413-1463": 5.980113617289722,
+              "src_modules_robot_Robot_cpp::1-40::overview": 4.950942993107697,
+              "src_modules_robot_Robot_cpp::317-329": 3.3121034324831666,
+              "src_modules_robot_Robot_cpp::1752-1766": 3.1012711946101446,
+              "src_modules_robot_Robot_cpp::1257-1268": 2.9609322429639784,
+              "src_modules_robot_Robot_cpp::1466-1492": 2.731387616296281,
+              "src_modules_robot_Robot_cpp::768-947": 2.577350638107796,
+              "src_modules_robot_Robot_cpp::1273-1452": 2.5692677312200756,
+              "src_modules_robot_Robot_cpp::908-1032": 2.272549036262071,
+              "src_modules_robot_Robot_cpp::1495-1581": 2.1663039553026957,
+              "src_modules_robot_Robot_cpp::628-807": 2.113218758153117,
+              "src_modules_robot_Robot_cpp::379-446": 1.8642417720683888,
+              "src_modules_robot_Robot_cpp::1585-1749": 1.8108992922075369,
+              "src_modules_robot_Robot_cpp::1044-1164": 1.7304221282995162,
+              "src_modules_robot_Robot_cpp::1775-1778": 1.4009487943155845,
+              "src_modules_robot_Robot_cpp::1780-1783": 1.3771411612761177,
+              "src_modules_robot_Robot_cpp::1768-1773": 1.3429091935394943,
+              "src_modules_robot_Robot_cpp::131-137": 1.3103377755058983,
+              "src_modules_robot_Robot_cpp::1785-1788": 1.3103377755058983
+            }
+          },
+          "zero_signal": false
+        }
+      ]
+    },
+    "H43": {
+      "question": "如果修改 Kernel 向模块分发事件的机制，哪些框架文件会牵涉？",
+      "cov5": 0.3333333333333333,
+      "miss5": [
+        "src/libs/Module.cpp",
+        "src/main.cpp"
+      ],
+      "files": [
+        {
+          "file": "src/libs/Module.cpp",
+          "chunks_in_pool": 1,
+          "total_chunks": 4,
+          "prefilter_rank": 62,
+          "prefilter_score": 4.279026439344367,
+          "prefilter_in_top_n": false,
+          "channels": {
+            "bm25": {
+              "src_libs_Module_cpp::1-34::overview": 4.279026439344367
+            }
+          },
+          "zero_signal": false
+        },
+        {
+          "file": "src/main.cpp",
+          "chunks_in_pool": 2,
+          "total_chunks": 3,
+          "prefilter_rank": 49,
+          "prefilter_score": 4.499167932936908,
+          "prefilter_in_top_n": false,
+          "channels": {
+            "bm25": {
+              "src_main_cpp::1-40::overview": 4.499167932936908,
+              "src_main_cpp::93-261": 2.7750081716871913
+            }
+          },
+          "zero_signal": false
+        }
+      ]
+    }
+  },
+  "hub_h8_style_zero_signal": [
+    {
+      "id": "H31",
+      "file": "src/libs/Kernel.cpp",
+      "chunks_in_pool": 0,
+      "total_chunks": 9,
+      "prefilter_rank": null,
+      "prefilter_score": 0.0,
+      "prefilter_in_top_n": false,
+      "channels": {},
+      "zero_signal": true
+    },
+    {
+      "id": "H31",
+      "file": "src/libs/Module.cpp",
+      "chunks_in_pool": 0,
+      "total_chunks": 4,
+      "prefilter_rank": null,
+      "prefilter_score": 0.0,
+      "prefilter_in_top_n": false,
+      "channels": {},
+      "zero_signal": true
+    },
+    {
+      "id": "H31",
+      "file": "src/main.cpp",
+      "chunks_in_pool": 0,
+      "total_chunks": 3,
+      "prefilter_rank": null,
+      "prefilter_score": 0.0,
+      "prefilter_in_top_n": false,
+      "channels": {},
+      "zero_signal": true
+    },
+    {
+      "id": "H32",
+      "file": "src/libs/Kernel.cpp",
+      "chunks_in_pool": 0,
+      "total_chunks": 9,
+      "prefilter_rank": null,
+      "prefilter_score": 0.0,
+      "prefilter_in_top_n": false,
+      "channels": {},
+      "zero_signal": true
+    },
+    {
+      "id": "H32",
+      "file": "src/libs/Module.cpp",
+      "chunks_in_pool": 0,
+      "total_chunks": 4,
+      "prefilter_rank": null,
+      "prefilter_score": 0.0,
+      "prefilter_in_top_n": false,
+      "channels": {},
+      "zero_signal": true
+    },
+    {
+      "id": "H33",
+      "file": "src/libs/ConfigSources/FileConfigSource.cpp",
+      "chunks_in_pool": 0,
+      "total_chunks": 11,
+      "prefilter_rank": null,
+      "prefilter_score": 0.0,
+      "prefilter_in_top_n": false,
+      "channels": {},
+      "zero_signal": true
+    },
+    {
+      "id": "H33",
+      "file": "src/libs/Config.cpp",
+      "chunks_in_pool": 0,
+      "total_chunks": 9,
+      "prefilter_rank": null,
+      "prefilter_score": 0.0,
+      "prefilter_in_top_n": false,
+      "channels": {},
+      "zero_signal": true
+    },
+    {
+      "id": "H34",
+      "file": "src/libs/PublicData.cpp",
+      "chunks_in_pool": 0,
+      "total_chunks": 3,
+      "prefilter_rank": null,
+      "prefilter_score": 0.0,
+      "prefilter_in_top_n": false,
+      "channels": {},
+      "zero_signal": true
+    },
+    {
+      "id": "H34",
+      "file": "src/libs/Kernel.cpp",
+      "chunks_in_pool": 0,
+      "total_chunks": 9,
+      "prefilter_rank": null,
+      "prefilter_score": 0.0,
+      "prefilter_in_top_n": false,
+      "channels": {},
+      "zero_signal": true
+    },
+    {
+      "id": "H35",
+      "file": "src/main.cpp",
+      "chunks_in_pool": 0,
+      "total_chunks": 3,
+      "prefilter_rank": null,
+      "prefilter_score": 0.0,
+      "prefilter_in_top_n": false,
+      "channels": {},
+      "zero_signal": true
+    },
+    {
+      "id": "H35",
+      "file": "src/libs/Kernel.cpp",
+      "chunks_in_pool": 0,
+      "total_chunks": 9,
+      "prefilter_rank": null,
+      "prefilter_score": 0.0,
+      "prefilter_in_top_n": false,
+      "channels": {},
+      "zero_signal": true
+    },
+    {
+      "id": "H37",
+      "file": "src/libs/Module.h",
+      "chunks_in_pool": 0,
+      "total_chunks": 2,
+      "prefilter_rank": null,
+      "prefilter_score": 0.0,
+      "prefilter_in_top_n": false,
+      "channels": {},
+      "zero_signal": true
+    },
+    {
+      "id": "H37",
+      "file": "src/libs/Kernel.cpp",
+      "chunks_in_pool": 0,
+      "total_chunks": 9,
+      "prefilter_rank": null,
+      "prefilter_score": 0.0,
+      "prefilter_in_top_n": false,
+      "channels": {},
+      "zero_signal": true
+    },
+    {
+      "id": "H37",
+      "file": "src/main.cpp",
+      "chunks_in_pool": 0,
+      "total_chunks": 3,
+      "prefilter_rank": null,
+      "prefilter_score": 0.0,
+      "prefilter_in_top_n": false,
+      "channels": {},
+      "zero_signal": true
+    },
+    {
+      "id": "H38",
+      "file": "src/modules/utils/configurator/Configurator.cpp",
+      "chunks_in_pool": 0,
+      "total_chunks": 4,
+      "prefilter_rank": null,
+      "prefilter_score": 0.0,
+      "prefilter_in_top_n": false,
+      "channels": {},
+      "zero_signal": true
+    },
+    {
+      "id": "H38",
+      "file": "src/libs/Config.cpp",
+      "chunks_in_pool": 0,
+      "total_chunks": 9,
+      "prefilter_rank": null,
+      "prefilter_score": 0.0,
+      "prefilter_in_top_n": false,
+      "channels": {},
+      "zero_signal": true
+    }
+  ]
+}

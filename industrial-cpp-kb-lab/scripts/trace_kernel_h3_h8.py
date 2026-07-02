@@ -52,7 +52,7 @@ def load_dotenv(path: Path) -> None:
 
 def rg_prefilter_kernel_rank(inst, channels: dict) -> dict:
     """Kernel.cpp rank in BM25/symbol prefilter file list (before rg runs)."""
-    from search.index import rg_candidate_file_limit
+    from search.index import RG_CANDIDATE_FILE_LIMIT
     KERNEL = "src/libs/Kernel.cpp"
     file_scores: dict[str, float] = {}
     for name in ("method", "class", "dispatch", "symbol", "bm25"):
@@ -63,7 +63,7 @@ def rg_prefilter_kernel_rank(inst, channels: dict) -> dict:
             f = chunk["file"]
             file_scores[f] = max(file_scores.get(f, 0.0), float(score))
     ranked = sorted(file_scores.items(), key=lambda x: -x[1])
-    limit = rg_candidate_file_limit()
+    limit = RG_CANDIDATE_FILE_LIMIT
     kernel_rank = None
     kernel_prefilter_score = 0.0
     for i, (f, sc) in enumerate(ranked, 1):

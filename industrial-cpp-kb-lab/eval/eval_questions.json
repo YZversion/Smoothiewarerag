@@ -1,6 +1,6 @@
 {
-  "version": 3,
-  "description": "Phase 8 retrieval eval: 5 tune + 30 holdout. H26-H30 cover dispatch-index questions; holdout 仍只跑分，不作 per-question 文件名特判.",
+  "version": 4,
+  "description": "Phase 8 retrieval eval: 5 tune + 30 holdout + 13 expansion (H31-H43). H26-H30 cover dispatch-index questions; holdout 仍只跑分，不作 per-question 文件名特判.",
   "metrics": {
     "gate": "全体 mean coverage@5 >= 70%（python src/03_search.py --eval 退出码 0）",
     "coverage": "每题 coverage@K = |hit expected files| / |expected_files|",
@@ -447,6 +447,216 @@
       "expected_symbols": [
         "SimpleShell::on_gcode_received"
       ]
+    },
+    {
+      "id": "H31",
+      "split": "holdout",
+      "batch": "expansion_v1",
+      "question": "各功能模块是怎么被挂到系统里并开始参与运行的？",
+      "expected_files": [
+        "src/libs/Kernel.cpp",
+        "src/libs/Module.cpp",
+        "src/main.cpp"
+      ],
+      "expected_symbols": [
+        "Kernel::add_module",
+        "Module::register_for_event",
+        "init"
+      ],
+      "note": "category=hub召回; vocab_mismatch=true; 用户说「挂到系统」对应 add_module/register_for_event; acceptable_optional=src/libs/Module.h,src/libs/Kernel.h"
+    },
+    {
+      "id": "H32",
+      "split": "holdout",
+      "batch": "expansion_v1",
+      "question": "内核怎样把事件通知到各个功能模块？",
+      "expected_files": [
+        "src/libs/Kernel.cpp",
+        "src/libs/Module.cpp"
+      ],
+      "expected_symbols": [
+        "Kernel::call_event",
+        "Module::register_for_event"
+      ],
+      "note": "category=hub召回; vocab_mismatch=true; 「通知/分发」对应 call_event; acceptable_optional=src/libs/Kernel.h,src/libs/Module.h"
+    },
+    {
+      "id": "H33",
+      "split": "holdout",
+      "batch": "expansion_v1",
+      "question": "上电后配置文件是在哪里被读入并变成可查询参数的？",
+      "expected_files": [
+        "src/libs/ConfigSources/FileConfigSource.cpp",
+        "src/libs/Config.cpp"
+      ],
+      "expected_symbols": [
+        "FileConfigSource::read",
+        "Config::value"
+      ],
+      "note": "category=hub召回; vocab_mismatch=true; acceptable_optional=src/libs/ConfigSource.cpp,src/main.cpp"
+    },
+    {
+      "id": "H34",
+      "split": "holdout",
+      "batch": "expansion_v1",
+      "question": "一个模块想读取另一个模块暴露的运行状态，走什么共享数据机制？",
+      "expected_files": [
+        "src/libs/PublicData.cpp",
+        "src/libs/Kernel.cpp"
+      ],
+      "expected_symbols": [
+        "PublicData::get_value",
+        "Kernel::call_event"
+      ],
+      "note": "category=hub召回; vocab_mismatch=true; PublicData 经 Kernel 事件总线分发; acceptable_optional=src/libs/PublicData.h,src/libs/Module.cpp"
+    },
+    {
+      "id": "H35",
+      "split": "holdout",
+      "batch": "expansion_v1",
+      "question": "主循环里空闲时各模块的后台处理是在哪里被驱动的？",
+      "expected_files": [
+        "src/main.cpp",
+        "src/libs/Kernel.cpp"
+      ],
+      "expected_symbols": [
+        "main",
+        "Kernel::call_event"
+      ],
+      "note": "category=hub召回; vocab_mismatch=true; main 循环调用 ON_IDLE/ON_MAIN_LOOP; acceptable_optional=src/libs/SlowTicker.cpp"
+    },
+    {
+      "id": "H36",
+      "split": "holdout",
+      "batch": "expansion_v1",
+      "question": "周期性慢速定时任务是在哪里注册并触发模块回调的？",
+      "expected_files": [
+        "src/libs/SlowTicker.cpp",
+        "src/libs/Kernel.cpp"
+      ],
+      "expected_symbols": [
+        "SlowTicker::tick",
+        "Kernel::call_event"
+      ],
+      "note": "category=hub召回; vocab_mismatch=true; SlowTicker 注册 ON_SECOND_TICK 等; acceptable_optional=src/libs/Module.cpp"
+    },
+    {
+      "id": "H37",
+      "split": "holdout",
+      "batch": "expansion_v1",
+      "question": "开发新硬件功能模块时，必须实现哪些框架接口、在哪里接入系统？",
+      "expected_files": [
+        "src/libs/Module.h",
+        "src/libs/Kernel.cpp",
+        "src/main.cpp"
+      ],
+      "expected_symbols": [
+        "Module::register_for_event",
+        "Kernel::add_module"
+      ],
+      "note": "category=hub召回; vocab_mismatch=true; Module 基类 + main 中实例化; acceptable_optional=src/libs/Module.cpp"
+    },
+    {
+      "id": "H38",
+      "split": "holdout",
+      "batch": "expansion_v1",
+      "question": "通过串口命令在线修改配置项时，哪些核心组件会参与？",
+      "expected_files": [
+        "src/modules/utils/configurator/Configurator.cpp",
+        "src/libs/Config.cpp"
+      ],
+      "expected_symbols": [
+        "Configurator::config_set_command",
+        "Config::value"
+      ],
+      "note": "category=hub召回; vocab_mismatch=false; acceptable_optional=src/modules/communication/GcodeDispatch.cpp"
+    },
+    {
+      "id": "H39",
+      "split": "holdout",
+      "batch": "expansion_v1",
+      "question": "G0 快速移动命令从串口收到到步进脉冲输出，经过哪些模块？",
+      "expected_files": [
+        "src/modules/communication/SerialConsole.cpp",
+        "src/modules/communication/GcodeDispatch.cpp",
+        "src/modules/robot/Robot.cpp",
+        "src/modules/robot/Planner.cpp",
+        "src/modules/robot/Conveyor.cpp",
+        "src/libs/StepTicker.cpp"
+      ],
+      "expected_symbols": [
+        "SerialConsole::on_main_loop",
+        "GcodeDispatch::on_console_line_received",
+        "Robot::on_gcode_received",
+        "Planner::append_block",
+        "Conveyor::queue_head_block",
+        "StepTicker::step_tick"
+      ],
+      "note": "category=跨模块流程; vocab_mismatch=false; 区别于 tune Q2（G0 SEEK 链路）; acceptable_optional=src/libs/StepperMotor.cpp"
+    },
+    {
+      "id": "H40",
+      "split": "holdout",
+      "batch": "expansion_v1",
+      "question": "M104 设置喷头温度后，温度控制逻辑在哪里被唤起？",
+      "expected_files": [
+        "src/modules/communication/GcodeDispatch.cpp",
+        "src/modules/tools/temperaturecontrol/TemperatureControl.cpp"
+      ],
+      "expected_symbols": [
+        "GcodeDispatch::on_console_line_received",
+        "TemperatureControl::on_gcode_received"
+      ],
+      "note": "category=跨模块流程; vocab_mismatch=false; communication→tools 两层"
+    },
+    {
+      "id": "H41",
+      "split": "holdout",
+      "batch": "expansion_v1",
+      "question": "限位开关触发后，运动停止和急停处理涉及哪些文件？",
+      "expected_files": [
+        "src/modules/tools/endstops/Endstops.cpp",
+        "src/libs/Kernel.cpp",
+        "src/modules/robot/Conveyor.cpp"
+      ],
+      "expected_symbols": [
+        "Endstops::on_halt",
+        "Kernel::immediate_halt",
+        "Conveyor::on_halt"
+      ],
+      "note": "category=跨模块流程; vocab_mismatch=true; acceptable_optional=src/libs/StepperMotor.cpp"
+    },
+    {
+      "id": "H42",
+      "split": "holdout",
+      "batch": "expansion_v1",
+      "question": "如果修改 Planner::append_block 的行为，哪些文件最可能需要一起检查？",
+      "expected_files": [
+        "src/modules/robot/Planner.cpp",
+        "src/modules/robot/Robot.cpp"
+      ],
+      "expected_symbols": [
+        "Planner::append_block",
+        "Robot::on_gcode_received"
+      ],
+      "note": "category=change-impact; vocab_mismatch=false; callgraph: Robot.cpp 调用 append_block; acceptable_optional=src/modules/robot/Planner.h"
+    },
+    {
+      "id": "H43",
+      "split": "holdout",
+      "batch": "expansion_v1",
+      "question": "如果修改 Kernel 向模块分发事件的机制，哪些框架文件会牵涉？",
+      "expected_files": [
+        "src/libs/Kernel.cpp",
+        "src/libs/Module.cpp",
+        "src/main.cpp"
+      ],
+      "expected_symbols": [
+        "Kernel::call_event",
+        "Module::register_for_event",
+        "main"
+      ],
+      "note": "category=change-impact; vocab_mismatch=true; 人工核对 callgraph + 启动循环; acceptable_optional=src/libs/Kernel.h"
     }
   ]
 }
