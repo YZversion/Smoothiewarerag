@@ -1,0 +1,1616 @@
+[
+  {
+    "path": "src/libs/Adc.cpp",
+    "size_bytes": 5780,
+    "lines": 144,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/Adc.h",
+    "size_bytes": 1904,
+    "lines": 57,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/ahbmalloc.cpp",
+    "size_bytes": 504,
+    "lines": 35,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/ahbmalloc.h",
+    "size_bytes": 379,
+    "lines": 16,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/AppendFileStream.cpp",
+    "size_bytes": 250,
+    "lines": 12,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/AppendFileStream.h",
+    "size_bytes": 399,
+    "lines": 18,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/AutoPushPop.h",
+    "size_bytes": 165,
+    "lines": 10,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/checksumm.h",
+    "size_bytes": 9911,
+    "lines": 204,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/Config.cpp",
+    "size_bytes": 4651,
+    "lines": 130,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/Config.h",
+    "size_bytes": 1865,
+    "lines": 45,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/ConfigCache.cpp",
+    "size_bytes": 2215,
+    "lines": 83,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/ConfigCache.h",
+    "size_bytes": 1777,
+    "lines": 47,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/ConfigSource.cpp",
+    "size_bytes": 2417,
+    "lines": 73,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/ConfigSource.h",
+    "size_bytes": 1715,
+    "lines": 38,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/ConfigSources/FileConfigSource.cpp",
+    "size_bytes": 8374,
+    "lines": 249,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/ConfigSources/FileConfigSource.h",
+    "size_bytes": 1677,
+    "lines": 40,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/ConfigSources/FirmConfigSource.cpp",
+    "size_bytes": 3107,
+    "lines": 85,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/ConfigSources/FirmConfigSource.h",
+    "size_bytes": 1403,
+    "lines": 36,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/ConfigValue.cpp",
+    "size_bytes": 4050,
+    "lines": 150,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/ConfigValue.h",
+    "size_bytes": 1839,
+    "lines": 56,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/FileStream.h",
+    "size_bytes": 546,
+    "lines": 20,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/FPointer.h",
+    "size_bytes": 5752,
+    "lines": 166,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/gpio.cpp",
+    "size_bytes": 1335,
+    "lines": 79,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/gpio.h",
+    "size_bytes": 545,
+    "lines": 31,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/Hook.cpp",
+    "size_bytes": 118,
+    "lines": 8,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/Hook.h",
+    "size_bytes": 233,
+    "lines": 14,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/Kernel.cpp",
+    "size_bytes": 15352,
+    "lines": 401,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/Kernel.h",
+    "size_bytes": 3666,
+    "lines": 99,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/md5.cpp",
+    "size_bytes": 11272,
+    "lines": 368,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/md5.h",
+    "size_bytes": 3202,
+    "lines": 92,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/Median.h",
+    "size_bytes": 1406,
+    "lines": 37,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/MemoryPool.cpp",
+    "size_bytes": 7285,
+    "lines": 249,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/MemoryPool.h",
+    "size_bytes": 1084,
+    "lines": 58,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/Module.cpp",
+    "size_bytes": 1813,
+    "lines": 34,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/Module.h",
+    "size_bytes": 2230,
+    "lines": 56,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/MRI_Hooks.cpp",
+    "size_bytes": 2113,
+    "lines": 74,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/MRI_Hooks.h",
+    "size_bytes": 284,
+    "lines": 12,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/nist_float.cpp",
+    "size_bytes": 1240,
+    "lines": 47,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/nist_float.h",
+    "size_bytes": 69,
+    "lines": 3,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/nuts_bolts.h",
+    "size_bytes": 1052,
+    "lines": 40,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/Pin.cpp",
+    "size_bytes": 9414,
+    "lines": 210,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/Pin.h",
+    "size_bytes": 1953,
+    "lines": 89,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/platform_memory.cpp",
+    "size_bytes": 72,
+    "lines": 4,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/platform_memory.h",
+    "size_bytes": 222,
+    "lines": 12,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/PublicData.cpp",
+    "size_bytes": 976,
+    "lines": 23,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/PublicData.h",
+    "size_bytes": 2094,
+    "lines": 28,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/PublicDataRequest.h",
+    "size_bytes": 2341,
+    "lines": 38,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/Pwm.cpp",
+    "size_bytes": 3874,
+    "lines": 135,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/Pwm.h",
+    "size_bytes": 511,
+    "lines": 30,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/RingBuffer.h",
+    "size_bytes": 4025,
+    "lines": 120,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/SDFAT.cpp",
+    "size_bytes": 676,
+    "lines": 42,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/SDFAT.h",
+    "size_bytes": 514,
+    "lines": 24,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/SerialMessage.h",
+    "size_bytes": 193,
+    "lines": 12,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/SlowTicker.cpp",
+    "size_bytes": 4335,
+    "lines": 131,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/SlowTicker.h",
+    "size_bytes": 2345,
+    "lines": 65,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/SoftPWM.cpp",
+    "size_bytes": 1483,
+    "lines": 85,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/SoftPWM.h",
+    "size_bytes": 705,
+    "lines": 36,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/StepperMotor.cpp",
+    "size_bytes": 3903,
+    "lines": 123,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/StepperMotor.h",
+    "size_bytes": 3696,
+    "lines": 85,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/StepTicker.cpp",
+    "size_bytes": 10111,
+    "lines": 288,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/StepTicker.h",
+    "size_bytes": 2240,
+    "lines": 65,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/StreamOutput.cpp",
+    "size_bytes": 621,
+    "lines": 29,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/StreamOutput.h",
+    "size_bytes": 1883,
+    "lines": 41,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/StreamOutputPool.h",
+    "size_bytes": 1605,
+    "lines": 51,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/StringStream.h",
+    "size_bytes": 425,
+    "lines": 19,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/TSRingBuffer.h",
+    "size_bytes": 1399,
+    "lines": 64,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/utils.cpp",
+    "size_bytes": 7491,
+    "lines": 277,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/utils.h",
+    "size_bytes": 1353,
+    "lines": 43,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/Vector3.cpp",
+    "size_bytes": 1696,
+    "lines": 87,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/Vector3.h",
+    "size_bytes": 1000,
+    "lines": 40,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/Watchdog.cpp",
+    "size_bytes": 1263,
+    "lines": 58,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/libs/Watchdog.h",
+    "size_bytes": 358,
+    "lines": 24,
+    "top_dir": "libs"
+  },
+  {
+    "path": "src/main.cpp",
+    "size_bytes": 10034,
+    "lines": 277,
+    "top_dir": "."
+  },
+  {
+    "path": "src/modules/communication/GcodeDispatch.cpp",
+    "size_bytes": 24274,
+    "lines": 490,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/communication/GcodeDispatch.h",
+    "size_bytes": 1351,
+    "lines": 35,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/communication/SerialConsole.cpp",
+    "size_bytes": 10425,
+    "lines": 317,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/communication/SerialConsole.h",
+    "size_bytes": 1703,
+    "lines": 45,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/communication/utils/Gcode.cpp",
+    "size_bytes": 7695,
+    "lines": 244,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/communication/utils/Gcode.h",
+    "size_bytes": 2082,
+    "lines": 56,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/robot/ActuatorCoordinates.h",
+    "size_bytes": 1573,
+    "lines": 36,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/robot/arm_solutions/BaseSolution.h",
+    "size_bytes": 805,
+    "lines": 22,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/robot/arm_solutions/CartesianSolution.cpp",
+    "size_bytes": 669,
+    "lines": 15,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/robot/arm_solutions/CartesianSolution.h",
+    "size_bytes": 510,
+    "lines": 16,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/robot/arm_solutions/CoreXZSolution.cpp",
+    "size_bytes": 1293,
+    "lines": 25,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/robot/arm_solutions/CoreXZSolution.h",
+    "size_bytes": 506,
+    "lines": 19,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/robot/arm_solutions/ExperimentalDeltaSolution.cpp",
+    "size_bytes": 3162,
+    "lines": 76,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/robot/arm_solutions/ExperimentalDeltaSolution.h",
+    "size_bytes": 764,
+    "lines": 27,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/robot/arm_solutions/HBotSolution.cpp",
+    "size_bytes": 774,
+    "lines": 17,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/robot/arm_solutions/HBotSolution.h",
+    "size_bytes": 455,
+    "lines": 16,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/robot/arm_solutions/LinearDeltaSolution.cpp",
+    "size_bytes": 7400,
+    "lines": 165,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/robot/arm_solutions/LinearDeltaSolution.h",
+    "size_bytes": 1051,
+    "lines": 37,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/robot/arm_solutions/MorganSCARASolution.cpp",
+    "size_bytes": 8090,
+    "lines": 196,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/robot/arm_solutions/MorganSCARASolution.h",
+    "size_bytes": 1011,
+    "lines": 33,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/robot/arm_solutions/RotaryDeltaSolution.cpp",
+    "size_bytes": 10356,
+    "lines": 255,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/robot/arm_solutions/RotaryDeltaSolution.h",
+    "size_bytes": 1454,
+    "lines": 38,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/robot/arm_solutions/RotatableCartesianSolution.cpp",
+    "size_bytes": 1196,
+    "lines": 32,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/robot/arm_solutions/RotatableCartesianSolution.h",
+    "size_bytes": 671,
+    "lines": 23,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/robot/Block.cpp",
+    "size_bytes": 18852,
+    "lines": 381,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/robot/Block.h",
+    "size_bytes": 4018,
+    "lines": 83,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/robot/BlockQueue.cpp",
+    "size_bytes": 3592,
+    "lines": 201,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/robot/BlockQueue.h",
+    "size_bytes": 1263,
+    "lines": 67,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/robot/Conveyor.cpp",
+    "size_bytes": 11416,
+    "lines": 316,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/robot/Conveyor.h",
+    "size_bytes": 2262,
+    "lines": 63,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/robot/Planner.cpp",
+    "size_bytes": 14144,
+    "lines": 308,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/robot/Planner.h",
+    "size_bytes": 1517,
+    "lines": 34,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/robot/Robot.cpp",
+    "size_bytes": 86163,
+    "lines": 1804,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/robot/Robot.h",
+    "size_bytes": 9607,
+    "lines": 163,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/drillingcycles/Drillingcycles.cpp",
+    "size_bytes": 8693,
+    "lines": 254,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/drillingcycles/Drillingcycles.h",
+    "size_bytes": 1805,
+    "lines": 47,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/endstops/Endstops.cpp",
+    "size_bytes": 54143,
+    "lines": 1274,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/endstops/Endstops.h",
+    "size_bytes": 3667,
+    "lines": 106,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/endstops/EndstopsPublicAccess.h",
+    "size_bytes": 457,
+    "lines": 12,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/extruder/Extruder.cpp",
+    "size_bytes": 21137,
+    "lines": 406,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/extruder/Extruder.h",
+    "size_bytes": 2606,
+    "lines": 66,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/extruder/ExtruderMaker.cpp",
+    "size_bytes": 3131,
+    "lines": 90,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/extruder/ExtruderMaker.h",
+    "size_bytes": 908,
+    "lines": 18,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/extruder/ExtruderPublicAccess.h",
+    "size_bytes": 498,
+    "lines": 15,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/filamentdetector/FilamentDetector.cpp",
+    "size_bytes": 9598,
+    "lines": 283,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/filamentdetector/FilamentDetector.h",
+    "size_bytes": 1129,
+    "lines": 50,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/laser/Laser.cpp",
+    "size_bytes": 12488,
+    "lines": 320,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/laser/Laser.h",
+    "size_bytes": 2718,
+    "lines": 58,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/rotarydeltacalibration/RotaryDeltaCalibration.cpp",
+    "size_bytes": 5868,
+    "lines": 134,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/rotarydeltacalibration/RotaryDeltaCalibration.h",
+    "size_bytes": 318,
+    "lines": 18,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/scaracal/SCARAcal.cpp",
+    "size_bytes": 14271,
+    "lines": 337,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/scaracal/SCARAcal.h",
+    "size_bytes": 1631,
+    "lines": 48,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/spindle/AnalogSpindleControl.cpp",
+    "size_bytes": 4521,
+    "lines": 123,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/spindle/AnalogSpindleControl.h",
+    "size_bytes": 1717,
+    "lines": 45,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/spindle/HuanyangSpindleControl.cpp",
+    "size_bytes": 7452,
+    "lines": 197,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/spindle/HuanyangSpindleControl.h",
+    "size_bytes": 1327,
+    "lines": 29,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/spindle/Modbus/Modbus.cpp",
+    "size_bytes": 8883,
+    "lines": 213,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/spindle/Modbus/Modbus.h",
+    "size_bytes": 2252,
+    "lines": 46,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/spindle/ModbusSpindleControl.cpp",
+    "size_bytes": 2427,
+    "lines": 52,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/spindle/ModbusSpindleControl.h",
+    "size_bytes": 1380,
+    "lines": 32,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/spindle/PWMSpindleControl.cpp",
+    "size_bytes": 7611,
+    "lines": 211,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/spindle/PWMSpindleControl.h",
+    "size_bytes": 2548,
+    "lines": 70,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/spindle/SoftSerial/BufferedSoftSerial.cpp",
+    "size_bytes": 3556,
+    "lines": 140,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/spindle/SoftSerial/BufferedSoftSerial.h",
+    "size_bytes": 3321,
+    "lines": 98,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/spindle/SoftSerial/SoftSerial.cpp",
+    "size_bytes": 1134,
+    "lines": 47,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/spindle/SoftSerial/SoftSerial.h",
+    "size_bytes": 3464,
+    "lines": 127,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/spindle/SoftSerial/SoftSerial_rx.cpp",
+    "size_bytes": 2435,
+    "lines": 95,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/spindle/SoftSerial/SoftSerial_Ticker.h",
+    "size_bytes": 927,
+    "lines": 45,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/spindle/SoftSerial/SoftSerial_tx.cpp",
+    "size_bytes": 1931,
+    "lines": 86,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/spindle/SpindleControl.cpp",
+    "size_bytes": 2502,
+    "lines": 74,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/spindle/SpindleControl.h",
+    "size_bytes": 1557,
+    "lines": 36,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/spindle/SpindleMaker.cpp",
+    "size_bytes": 3189,
+    "lines": 69,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/spindle/SpindleMaker.h",
+    "size_bytes": 1143,
+    "lines": 25,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/switch/Switch.cpp",
+    "size_bytes": 22487,
+    "lines": 524,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/switch/Switch.h",
+    "size_bytes": 2765,
+    "lines": 74,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/switch/SwitchPool.cpp",
+    "size_bytes": 1570,
+    "lines": 40,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/switch/SwitchPool.h",
+    "size_bytes": 910,
+    "lines": 16,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/switch/SwitchPublicAccess.h",
+    "size_bytes": 388,
+    "lines": 15,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/temperaturecontrol/AD8495.cpp",
+    "size_bytes": 3034,
+    "lines": 90,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/temperaturecontrol/AD8495.h",
+    "size_bytes": 1440,
+    "lines": 42,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/temperaturecontrol/max31855.cpp",
+    "size_bytes": 3984,
+    "lines": 126,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/temperaturecontrol/max31855.h",
+    "size_bytes": 1349,
+    "lines": 33,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/temperaturecontrol/PID_Autotuner.cpp",
+    "size_bytes": 8703,
+    "lines": 287,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/temperaturecontrol/PID_Autotuner.h",
+    "size_bytes": 1039,
+    "lines": 53,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/temperaturecontrol/predefined_thermistors.h",
+    "size_bytes": 2146,
+    "lines": 38,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/temperaturecontrol/PT1000.cpp",
+    "size_bytes": 2565,
+    "lines": 74,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/temperaturecontrol/PT1000.h",
+    "size_bytes": 1255,
+    "lines": 34,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/temperaturecontrol/PT100_E3D.cpp",
+    "size_bytes": 2547,
+    "lines": 70,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/temperaturecontrol/PT100_E3D.h",
+    "size_bytes": 1290,
+    "lines": 34,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/temperaturecontrol/TemperatureControl.cpp",
+    "size_bytes": 28535,
+    "lines": 629,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/temperaturecontrol/TemperatureControl.h",
+    "size_bytes": 3255,
+    "lines": 99,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/temperaturecontrol/TemperatureControlPool.cpp",
+    "size_bytes": 1848,
+    "lines": 41,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/temperaturecontrol/TemperatureControlPool.h",
+    "size_bytes": 935,
+    "lines": 18,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/temperaturecontrol/TemperatureControlPublicAccess.h",
+    "size_bytes": 897,
+    "lines": 25,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/temperaturecontrol/TempSensor.h",
+    "size_bytes": 1458,
+    "lines": 32,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/temperaturecontrol/Thermistor.cpp",
+    "size_bytes": 16606,
+    "lines": 421,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/temperaturecontrol/Thermistor.h",
+    "size_bytes": 2459,
+    "lines": 73,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/temperatureswitch/TemperatureSwitch.cpp",
+    "size_bytes": 10130,
+    "lines": 241,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/temperatureswitch/TemperatureSwitch.h",
+    "size_bytes": 3083,
+    "lines": 82,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/toolmanager/Tool.h",
+    "size_bytes": 1276,
+    "lines": 30,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/toolmanager/ToolManager.cpp",
+    "size_bytes": 5324,
+    "lines": 148,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/toolmanager/ToolManager.h",
+    "size_bytes": 1318,
+    "lines": 37,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/toolmanager/ToolManagerPublicAccess.h",
+    "size_bytes": 443,
+    "lines": 11,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/zprobe/CartGridStrategy.cpp",
+    "size_bytes": 36754,
+    "lines": 841,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/zprobe/CartGridStrategy.h",
+    "size_bytes": 1491,
+    "lines": 62,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/zprobe/DeltaCalibrationStrategy.cpp",
+    "size_bytes": 15488,
+    "lines": 421,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/zprobe/DeltaCalibrationStrategy.h",
+    "size_bytes": 807,
+    "lines": 30,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/zprobe/DeltaGridStrategy.cpp",
+    "size_bytes": 23417,
+    "lines": 598,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/zprobe/DeltaGridStrategy.h",
+    "size_bytes": 1231,
+    "lines": 49,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/zprobe/LevelingStrategy.h",
+    "size_bytes": 505,
+    "lines": 24,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/zprobe/Plane3D.cpp",
+    "size_bytes": 1112,
+    "lines": 47,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/zprobe/Plane3D.h",
+    "size_bytes": 487,
+    "lines": 23,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/zprobe/ThreePointStrategy.cpp",
+    "size_bytes": 16359,
+    "lines": 401,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/zprobe/ThreePointStrategy.h",
+    "size_bytes": 990,
+    "lines": 41,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/zprobe/ZProbe.cpp",
+    "size_bytes": 22464,
+    "lines": 550,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/tools/zprobe/ZProbe.h",
+    "size_bytes": 2568,
+    "lines": 74,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/configurator/Configurator.cpp",
+    "size_bytes": 5959,
+    "lines": 132,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/configurator/Configurator.h",
+    "size_bytes": 1200,
+    "lines": 28,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/currentcontrol/ad5206.h",
+    "size_bytes": 1528,
+    "lines": 60,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/currentcontrol/CurrentControl.cpp",
+    "size_bytes": 5489,
+    "lines": 124,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/currentcontrol/CurrentControl.h",
+    "size_bytes": 366,
+    "lines": 25,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/currentcontrol/DigipotBase.h",
+    "size_bytes": 456,
+    "lines": 20,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/currentcontrol/mcp4451.h",
+    "size_bytes": 1898,
+    "lines": 73,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/killbutton/KillButton.cpp",
+    "size_bytes": 5104,
+    "lines": 125,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/killbutton/KillButton.h",
+    "size_bytes": 815,
+    "lines": 35,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/motordrivercontrol/drivers/DRV8711/drv8711.cpp",
+    "size_bytes": 18086,
+    "lines": 459,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/motordrivercontrol/drivers/DRV8711/drv8711.h",
+    "size_bytes": 3817,
+    "lines": 149,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/motordrivercontrol/drivers/TMC26X/TMC26X.cpp",
+    "size_bytes": 42743,
+    "lines": 1137,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/motordrivercontrol/drivers/TMC26X/TMC26X.h",
+    "size_bytes": 25395,
+    "lines": 451,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/motordrivercontrol/MotorDriverControl.cpp",
+    "size_bytes": 18128,
+    "lines": 474,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/motordrivercontrol/MotorDriverControl.h",
+    "size_bytes": 1840,
+    "lines": 75,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/bitmaps.h",
+    "size_bytes": 2570,
+    "lines": 85,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/Button.cpp",
+    "size_bytes": 2183,
+    "lines": 93,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/Button.h",
+    "size_bytes": 969,
+    "lines": 52,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/Panel.cpp",
+    "size_bytes": 25754,
+    "lines": 726,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/Panel.h",
+    "size_bytes": 5684,
+    "lines": 166,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/panels/LcdBase.cpp",
+    "size_bytes": 393,
+    "lines": 17,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/panels/LcdBase.h",
+    "size_bytes": 5487,
+    "lines": 148,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/panels/ReprapDiscountGLCD.cpp",
+    "size_bytes": 6038,
+    "lines": 139,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/panels/ReprapDiscountGLCD.h",
+    "size_bytes": 2159,
+    "lines": 54,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/panels/rrdglcd/RrdGlcd.cpp",
+    "size_bytes": 19410,
+    "lines": 324,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/panels/rrdglcd/RrdGlcd.h",
+    "size_bytes": 2284,
+    "lines": 67,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/panels/ST7565/glcdfont.h",
+    "size_bytes": 6989,
+    "lines": 260,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/panels/ST7565.cpp",
+    "size_bytes": 18107,
+    "lines": 596,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/panels/ST7565.h",
+    "size_bytes": 2880,
+    "lines": 99,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/panels/UniversalAdapter.cpp",
+    "size_bytes": 6693,
+    "lines": 216,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/panels/UniversalAdapter.h",
+    "size_bytes": 2074,
+    "lines": 59,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/PanelScreen.cpp",
+    "size_bytes": 4035,
+    "lines": 111,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/PanelScreen.h",
+    "size_bytes": 1853,
+    "lines": 45,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/screens/3dprinter/ExtruderScreen.cpp",
+    "size_bytes": 4262,
+    "lines": 113,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/screens/3dprinter/ExtruderScreen.h",
+    "size_bytes": 1205,
+    "lines": 26,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/screens/3dprinter/JogScreen.cpp",
+    "size_bytes": 2477,
+    "lines": 67,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/screens/3dprinter/JogScreen.h",
+    "size_bytes": 1176,
+    "lines": 32,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/screens/3dprinter/MainMenuScreen.cpp",
+    "size_bytes": 5541,
+    "lines": 154,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/screens/3dprinter/MainMenuScreen.h",
+    "size_bytes": 1375,
+    "lines": 37,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/screens/3dprinter/PrepareScreen.cpp",
+    "size_bytes": 5625,
+    "lines": 155,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/screens/3dprinter/PrepareScreen.h",
+    "size_bytes": 1255,
+    "lines": 32,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/screens/3dprinter/ProbeScreen.cpp",
+    "size_bytes": 3526,
+    "lines": 107,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/screens/3dprinter/ProbeScreen.h",
+    "size_bytes": 1408,
+    "lines": 37,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/screens/3dprinter/WatchScreen.cpp",
+    "size_bytes": 14972,
+    "lines": 423,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/screens/3dprinter/WatchScreen.h",
+    "size_bytes": 1681,
+    "lines": 52,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/screens/cnc/DirectJogScreen.cpp",
+    "size_bytes": 5852,
+    "lines": 179,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/screens/cnc/DirectJogScreen.h",
+    "size_bytes": 1481,
+    "lines": 39,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/screens/cnc/JogScreen.cpp",
+    "size_bytes": 3869,
+    "lines": 106,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/screens/cnc/JogScreen.h",
+    "size_bytes": 1208,
+    "lines": 33,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/screens/cnc/LaserScreen.cpp",
+    "size_bytes": 4047,
+    "lines": 124,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/screens/cnc/LaserScreen.h",
+    "size_bytes": 1165,
+    "lines": 26,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/screens/cnc/MainMenuScreen.cpp",
+    "size_bytes": 5882,
+    "lines": 156,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/screens/cnc/MainMenuScreen.h",
+    "size_bytes": 1448,
+    "lines": 38,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/screens/cnc/PrepareScreen.cpp",
+    "size_bytes": 3073,
+    "lines": 79,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/screens/cnc/PrepareScreen.h",
+    "size_bytes": 1125,
+    "lines": 25,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/screens/cnc/ProbeScreen.cpp",
+    "size_bytes": 6247,
+    "lines": 170,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/screens/cnc/ProbeScreen.h",
+    "size_bytes": 1501,
+    "lines": 40,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/screens/cnc/WatchScreen.cpp",
+    "size_bytes": 8417,
+    "lines": 254,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/screens/cnc/WatchScreen.h",
+    "size_bytes": 1620,
+    "lines": 49,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/screens/cnc/WCSScreen.cpp",
+    "size_bytes": 1741,
+    "lines": 57,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/screens/cnc/WCSScreen.h",
+    "size_bytes": 1098,
+    "lines": 26,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/screens/ControlScreen.cpp",
+    "size_bytes": 4480,
+    "lines": 139,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/screens/ControlScreen.h",
+    "size_bytes": 1510,
+    "lines": 42,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/screens/CustomScreen.cpp",
+    "size_bytes": 3258,
+    "lines": 84,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/screens/CustomScreen.h",
+    "size_bytes": 1239,
+    "lines": 31,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/screens/DynMenuScreen.cpp",
+    "size_bytes": 3590,
+    "lines": 129,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/screens/DynMenuScreen.h",
+    "size_bytes": 1791,
+    "lines": 44,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/screens/FileScreen.cpp",
+    "size_bytes": 5730,
+    "lines": 187,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/screens/FileScreen.h",
+    "size_bytes": 1474,
+    "lines": 41,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/screens/ModifyValuesScreen.cpp",
+    "size_bytes": 5896,
+    "lines": 172,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/panel/screens/ModifyValuesScreen.h",
+    "size_bytes": 2064,
+    "lines": 54,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/player/Player.cpp",
+    "size_bytes": 29102,
+    "lines": 768,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/player/Player.h",
+    "size_bytes": 2645,
+    "lines": 67,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/player/PlayerPublicAccess.h",
+    "size_bytes": 481,
+    "lines": 15,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/PlayLed/PlayLed.cpp",
+    "size_bytes": 1506,
+    "lines": 60,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/PlayLed/PlayLed.h",
+    "size_bytes": 364,
+    "lines": 24,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/simpleshell/SimpleShell.cpp",
+    "size_bytes": 54362,
+    "lines": 1481,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/modules/utils/simpleshell/SimpleShell.h",
+    "size_bytes": 3716,
+    "lines": 76,
+    "top_dir": "modules"
+  },
+  {
+    "path": "src/version.cpp",
+    "size_bytes": 194,
+    "lines": 7,
+    "top_dir": "."
+  },
+  {
+    "path": "src/version.h",
+    "size_bytes": 177,
+    "lines": 8,
+    "top_dir": "."
+  }
+]

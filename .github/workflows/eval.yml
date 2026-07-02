@@ -61,13 +61,19 @@ jobs:
       - name: Install Python dependencies
         run: pip install -r requirements.txt
 
-      - name: Build index pipeline
+      - name: Build index pipeline (lexical-tier only)
+        if: env.CI_EVAL_TIER != 'full'
         run: |
           python src/01_scan_files.py
           python src/02_extract_symbols.py
           python src/03_build_chunks.py
           python src/05_extract_dispatch_index.py
           python src/03_build_callgraph.py
+
+      - name: Use committed index artifacts (full-tier only)
+        if: env.CI_EVAL_TIER == 'full'
+        run: |
+          echo "[INFO] full-tier uses committed lexical+dense index artifacts."
 
       - name: Configure eval tier and gates
         run: |
