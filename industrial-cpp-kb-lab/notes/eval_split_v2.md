@@ -44,3 +44,10 @@
 ## Dense 实验输出要求（Step 2 预授权）
 
 - 对 `Q3` / `Q4` / `Q5` 同时报告 **cov@5** 和 **cov@5 ÷ 理论上限** 的归一化值（理论上限见上表：83.3% / 71.4% / 83.3%）。
+
+## 事故记录：sealed 明细泄露（2026-07-02）
+
+- 泄露范围：`H31/H33/H34/H41/H43` 共 5 道 sealed 题的 `miss@5` 明细进入公开 CI 日志。
+- 影响评估：sealed 裁决效力受损（尤其是机制验证场景），后续重大机制验收前需评估是否更换 sealed 题集。
+- 根因：存在 eval 输出路径直接消费 `eval_summary().details`，未统一走 `run_eval()` 的 sealed 输出保护。
+- 修复：sealed 脱敏下沉到 `eval_summary(unseal=False)` 默认行为；所有入口默认仅保留 sealed PASS/FAIL。仅 `--unseal` 显式开启明细，并保留 `[UNSEAL]` 日志。

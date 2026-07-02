@@ -1243,6 +1243,7 @@ class SearchIndex:
         repo_root: Path | None = None,
         rg_bin: str | None = None,        # kept for backward compat; ignored
         enable_reporank: bool | None = None,
+        unseal: bool = False,
     ) -> dict:
         data = json.loads(eval_path.read_text(encoding="utf-8"))
         questions = data["questions"]
@@ -1259,13 +1260,22 @@ class SearchIndex:
         details = []
         for r5 in rows5:
             r10 = by_id10[r5["id"]]
+            q = next((x for x in questions if x["id"] == r5["id"]), None)
+            is_sealed = bool(q and q.get("dev_split") == "sealed")
+            if is_sealed and not unseal:
+                hit5 = []
+                miss5 = []
+            else:
+                hit5 = r5["hit"]
+                miss5 = r5["miss"]
             details.append({
                 "id": r5["id"], "split": r5["split"],
                 "ok5": r5["passed"], "ok10": r10["passed"],
                 "cov5": r5["coverage"], "cov10": r10["coverage"],
                 "hit5_n": r5["hit_n"], "hit10_n": r10["hit_n"],
                 "exp_n": r5["expected_n"],
-                "hit5": r5["hit"], "miss5": r5["miss"],
+                "hit5": hit5, "miss5": miss5,
+                "is_sealed": is_sealed,
             })
 
         tune5 = self._aggregate(rows5, "tune")
@@ -1305,7 +1315,7 @@ class SearchIndex:
             print("[UNSEAL] sealed details enabled for this run.\n")
         summary = self.eval_summary(
             eval_path, src_root=src_root, repo_root=repo_root,
-            enable_reporank=enable_reporank,
+            enable_reporank=enable_reporank, unseal=unseal,
         )
         question_map = {q["id"]: q for q in questions}
         sealed_rows = []
