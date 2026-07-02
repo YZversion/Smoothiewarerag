@@ -51,7 +51,8 @@ def chunks_fingerprint(chunks_path: Path) -> str:
     h = hashlib.sha256()
     with chunks_path.open("rb") as f:
         for block in iter(lambda: f.read(1 << 20), b""):
-            h.update(block)
+            # Normalize CRLF/LF to keep fingerprint stable across OS checkouts.
+            h.update(block.replace(b"\r\n", b"\n"))
     return h.hexdigest()[:16]
 
 
