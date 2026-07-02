@@ -1,0 +1,11 @@
+{
+  "model": "BAAI/bge-m3",
+  "dim": 1024,
+  "chunk_count": 1569,
+  "chunks_fingerprint": "ab144e1b8e428ad3",
+  "chunks_path": "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\data\\chunks.jsonl",
+  "built_at_utc": "2026-07-02T06:03:16+00:00",
+  "index_type": "IndexFlatIP",
+  "embed_template": "file/class/symbol/type + text",
+  "encode_sec": 562.17
+}

@@ -8,6 +8,10 @@ industrial-cpp-kb-lab/repos/**
 # ── Phase 2：扫描与符号提取产物 ──
 industrial-cpp-kb-lab/data/**
 !industrial-cpp-kb-lab/data/.gitkeep
+!industrial-cpp-kb-lab/data/dense_index/
+!industrial-cpp-kb-lab/data/dense_index/chunk_ids.json
+!industrial-cpp-kb-lab/data/dense_index/index.faiss
+!industrial-cpp-kb-lab/data/dense_index/manifest.json
 # 典型文件：file_manifest.json, symbol_index.json
 
 # ── Phase 3：分块与 BM25 索引 ──

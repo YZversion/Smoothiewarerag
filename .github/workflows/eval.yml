@@ -9,6 +9,8 @@ on:
     branches: [main, master]
   pull_request:
     branches: [main, master]
+  schedule:
+    - cron: "0 3 * * 1"
   workflow_dispatch:
     inputs:
       tier:
@@ -25,7 +27,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
-      CI_EVAL_TIER: ${{ github.event.inputs.tier || 'lexical' }}
+      # Trigger strategy:
+      # - push/PR default lexical-tier (fast/stable, catches ranking/index regressions)
+      # - full-tier only for manual dispatch and weekly schedule
+      # Reason: dense path/weights are frozen and change infrequently; weekly full-tier acts as safety net.
+      CI_EVAL_TIER: ${{ github.event_name == 'schedule' && 'full' || github.event.inputs.tier || 'lexical' }}
+      BGE_M3_MODEL: BAAI/bge-m3
+      BGE_M3_REVISION: main
 
     steps:
       - name: Checkout lab
@@ -78,11 +86,13 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.cache/huggingface
-          key: ${{ runner.os }}-hf-bge-m3-v1
+          key: ${{ runner.os }}-hf-${{ env.BGE_M3_MODEL }}-${{ env.BGE_M3_REVISION }}
 
-      - name: Build dense index (full-tier only)
+      - name: Validate committed dense index (full-tier only)
         if: env.CI_EVAL_TIER == 'full'
-        run: python scripts/build_dense_index.py
+        run: |
+          echo "[INFO] full-tier uses committed dense index artifacts; CI does not rebuild dense index."
+          python scripts/ci_validate_dense_index.py
 
       - name: Retrieval eval (tier gate)
         run: python src/03_search.py --eval
