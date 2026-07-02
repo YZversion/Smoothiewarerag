@@ -4,3 +4,7 @@ rich>=13.0
 typer>=0.12
 prompt_toolkit>=3.0
 textual>=0.70
+
+# dense retrieval (production default)
+faiss-cpu>=1.7.4
+sentence-transformers>=2.2.0

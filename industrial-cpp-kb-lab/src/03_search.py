@@ -142,6 +142,10 @@ def _parse_args() -> argparse.Namespace:
         "--enable-reporank", action="store_true",
         help="Phase 9 A/B: use optional repomap PageRank extras",
     )
+    p.add_argument(
+        "--unseal", action="store_true",
+        help="allow sealed-question details (logged with [UNSEAL])",
+    )
     return p.parse_args()
 
 
@@ -163,6 +167,7 @@ def main() -> None:
             idx.run_eval(
                 Path(args.eval_file), src_root=src_root,
                 repo_root=repo_root, enable_reporank=enable_reporank,
+                unseal=args.unseal,
             )
         )
 

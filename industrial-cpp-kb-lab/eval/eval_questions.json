@@ -463,7 +463,8 @@
         "Module::register_for_event",
         "init"
       ],
-      "note": "category=hub召回; vocab_mismatch=true; 用户说「挂到系统」对应 add_module/register_for_event; acceptable_optional=src/libs/Module.h,src/libs/Kernel.h"
+      "note": "category=hub召回; vocab_mismatch=true; 用户说「挂到系统」对应 add_module/register_for_event; acceptable_optional=src/libs/Module.h,src/libs/Kernel.h",
+      "dev_split": "sealed"
     },
     {
       "id": "H32",
@@ -478,7 +479,8 @@
         "Kernel::call_event",
         "Module::register_for_event"
       ],
-      "note": "category=hub召回; vocab_mismatch=true; 「通知/分发」对应 call_event; acceptable_optional=src/libs/Kernel.h,src/libs/Module.h"
+      "note": "category=hub召回; vocab_mismatch=true; 「通知/分发」对应 call_event; acceptable_optional=src/libs/Kernel.h,src/libs/Module.h",
+      "dev_split": "tune"
     },
     {
       "id": "H33",
@@ -493,7 +495,8 @@
         "FileConfigSource::read",
         "Config::value"
       ],
-      "note": "category=hub召回; vocab_mismatch=true; acceptable_optional=src/libs/ConfigSource.cpp,src/main.cpp"
+      "note": "category=hub召回; vocab_mismatch=true; acceptable_optional=src/libs/ConfigSource.cpp,src/main.cpp",
+      "dev_split": "sealed"
     },
     {
       "id": "H34",
@@ -508,7 +511,8 @@
         "PublicData::get_value",
         "Kernel::call_event"
       ],
-      "note": "category=hub召回; vocab_mismatch=true; PublicData 经 Kernel 事件总线分发; acceptable_optional=src/libs/PublicData.h,src/libs/Module.cpp"
+      "note": "category=hub召回; vocab_mismatch=true; PublicData 经 Kernel 事件总线分发; acceptable_optional=src/libs/PublicData.h,src/libs/Module.cpp",
+      "dev_split": "sealed"
     },
     {
       "id": "H35",
@@ -523,7 +527,8 @@
         "main",
         "Kernel::call_event"
       ],
-      "note": "category=hub召回; vocab_mismatch=true; main 循环调用 ON_IDLE/ON_MAIN_LOOP; acceptable_optional=src/libs/SlowTicker.cpp"
+      "note": "category=hub召回; vocab_mismatch=true; main 循环调用 ON_IDLE/ON_MAIN_LOOP; acceptable_optional=src/libs/SlowTicker.cpp",
+      "dev_split": "tune"
     },
     {
       "id": "H36",
@@ -538,7 +543,8 @@
         "SlowTicker::tick",
         "Kernel::call_event"
       ],
-      "note": "category=hub召回; vocab_mismatch=true; SlowTicker 注册 ON_SECOND_TICK 等; acceptable_optional=src/libs/Module.cpp"
+      "note": "category=hub召回; vocab_mismatch=true; SlowTicker 注册 ON_SECOND_TICK 等; acceptable_optional=src/libs/Module.cpp",
+      "dev_split": "tune"
     },
     {
       "id": "H37",
@@ -554,7 +560,8 @@
         "Module::register_for_event",
         "Kernel::add_module"
       ],
-      "note": "category=hub召回; vocab_mismatch=true; Module 基类 + main 中实例化; acceptable_optional=src/libs/Module.cpp"
+      "note": "category=hub召回; vocab_mismatch=true; Module 基类 + main 中实例化; acceptable_optional=src/libs/Module.cpp",
+      "dev_split": "tune"
     },
     {
       "id": "H38",
@@ -569,7 +576,8 @@
         "Configurator::config_set_command",
         "Config::value"
       ],
-      "note": "category=hub召回; vocab_mismatch=false; acceptable_optional=src/modules/communication/GcodeDispatch.cpp"
+      "note": "category=hub召回; vocab_mismatch=false; acceptable_optional=src/modules/communication/GcodeDispatch.cpp",
+      "dev_split": "tune"
     },
     {
       "id": "H39",
@@ -580,7 +588,6 @@
         "src/modules/communication/SerialConsole.cpp",
         "src/modules/communication/GcodeDispatch.cpp",
         "src/modules/robot/Robot.cpp",
-        "src/modules/robot/Planner.cpp",
         "src/modules/robot/Conveyor.cpp",
         "src/libs/StepTicker.cpp"
       ],
@@ -588,11 +595,11 @@
         "SerialConsole::on_main_loop",
         "GcodeDispatch::on_console_line_received",
         "Robot::on_gcode_received",
-        "Planner::append_block",
         "Conveyor::queue_head_block",
         "StepTicker::step_tick"
       ],
-      "note": "category=跨模块流程; vocab_mismatch=false; 区别于 tune Q2（G0 SEEK 链路）; acceptable_optional=src/libs/StepperMotor.cpp"
+      "note": "category=跨模块流程; vocab_mismatch=false; 区别于 tune Q2（G0 SEEK 链路）; acceptable_optional=src/modules/robot/Planner.cpp",
+      "dev_split": "tune"
     },
     {
       "id": "H40",
@@ -607,7 +614,8 @@
         "GcodeDispatch::on_console_line_received",
         "TemperatureControl::on_gcode_received"
       ],
-      "note": "category=跨模块流程; vocab_mismatch=false; communication→tools 两层"
+      "note": "category=跨模块流程; vocab_mismatch=false; communication→tools 两层",
+      "dev_split": "tune"
     },
     {
       "id": "H41",
@@ -624,7 +632,8 @@
         "Kernel::immediate_halt",
         "Conveyor::on_halt"
       ],
-      "note": "category=跨模块流程; vocab_mismatch=true; acceptable_optional=src/libs/StepperMotor.cpp"
+      "note": "category=跨模块流程; vocab_mismatch=true; acceptable_optional=src/libs/StepperMotor.cpp",
+      "dev_split": "sealed"
     },
     {
       "id": "H42",
@@ -639,7 +648,8 @@
         "Planner::append_block",
         "Robot::on_gcode_received"
       ],
-      "note": "category=change-impact; vocab_mismatch=false; callgraph: Robot.cpp 调用 append_block; acceptable_optional=src/modules/robot/Planner.h"
+      "note": "category=change-impact; vocab_mismatch=false; callgraph: Robot.cpp 调用 append_block; acceptable_optional=src/modules/robot/Planner.h",
+      "dev_split": "tune"
     },
     {
       "id": "H43",
@@ -656,7 +666,8 @@
         "Module::register_for_event",
         "main"
       ],
-      "note": "category=change-impact; vocab_mismatch=true; 人工核对 callgraph + 启动循环; acceptable_optional=src/libs/Kernel.h"
+      "note": "category=change-impact; vocab_mismatch=true; 人工核对 callgraph + 启动循环; acceptable_optional=src/libs/Kernel.h",
+      "dev_split": "sealed"
     }
   ]
 }

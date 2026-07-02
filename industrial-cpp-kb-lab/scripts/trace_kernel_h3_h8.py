@@ -596,6 +596,7 @@ def main() -> int:
     p = argparse.ArgumentParser(description="H3/H8 Kernel.cpp trace")
     p.add_argument("--ids", default=",".join(TARGET_IDS))
     p.add_argument("--llm", action="store_true", help="run LLM layer (needs API key)")
+    p.add_argument("--unseal", action="store_true", help="allow tracing sealed questions")
     p.add_argument("-o", "--output", type=Path, default=LAB_ROOT / "notes" / "kernel_trace_H3_H8.md")
     p.add_argument("--json", action="store_true")
     args = p.parse_args()
@@ -608,6 +609,17 @@ def main() -> int:
     ids = {x.strip() for x in args.ids.split(",") if x.strip()}
     data = json.loads(EVAL_PATH.read_text(encoding="utf-8"))
     questions = [q for q in data["questions"] if q["id"] in ids]
+    sealed_ids = [q["id"] for q in questions if q.get("dev_split") == "sealed"]
+    if sealed_ids and not args.unseal:
+        print(
+            "[SEALED] trace refused for sealed questions: "
+            + ",".join(sealed_ids)
+            + " (use --unseal to override)",
+            file=sys.stderr,
+        )
+        return 2
+    if sealed_ids and args.unseal:
+        print("[UNSEAL] tracing sealed questions: " + ",".join(sealed_ids), file=sys.stderr)
 
     traces = []
     for q in questions:

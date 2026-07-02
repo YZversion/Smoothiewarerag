@@ -1,0 +1,4177 @@
+{
+  "model": "BAAI/bge-m3",
+  "dim": 1024,
+  "chunk_count": 1569,
+  "questions": [
+    {
+      "id": "Q1",
+      "split": "tune",
+      "question": "G-code 从哪里进入系统？",
+      "expected_files": [
+        "src/modules/communication/SerialConsole.cpp",
+        "src/modules/communication/GcodeDispatch.cpp",
+        "src/modules/utils/player/Player.cpp"
+      ],
+      "expected_symbols": [
+        "SerialConsole::on_main_loop",
+        "GcodeDispatch::on_console_line_received",
+        "Player::on_main_loop"
+      ]
+    },
+    {
+      "id": "Q2",
+      "split": "tune",
+      "question": "G-code 如何变成运动命令？",
+      "expected_files": [
+        "src/modules/communication/GcodeDispatch.cpp",
+        "src/modules/robot/Robot.cpp",
+        "src/modules/robot/Planner.cpp",
+        "src/modules/robot/Conveyor.cpp",
+        "src/libs/StepTicker.cpp"
+      ],
+      "expected_symbols": [
+        "GcodeDispatch::on_console_line_received",
+        "Robot::on_gcode_received",
+        "Planner::append_block",
+        "Conveyor::queue_head_block",
+        "StepTicker::step_tick"
+      ]
+    },
+    {
+      "id": "Q3",
+      "split": "tune",
+      "question": "Motion / Planner / Stepper 相关代码在哪里？",
+      "expected_files": [
+        "src/modules/robot/Robot.cpp",
+        "src/modules/robot/Planner.cpp",
+        "src/modules/robot/Block.cpp",
+        "src/modules/robot/Conveyor.cpp",
+        "src/libs/StepTicker.cpp",
+        "src/libs/StepperMotor.cpp"
+      ],
+      "expected_symbols": [
+        "Planner::append_block",
+        "Block::calculate_trapezoid",
+        "StepTicker::step_tick",
+        "StepperMotor::manual_step"
+      ]
+    },
+    {
+      "id": "Q4",
+      "split": "tune",
+      "question": "error / stop / halt / emergency 逻辑在哪里？",
+      "expected_files": [
+        "src/libs/Kernel.cpp",
+        "src/modules/communication/SerialConsole.cpp",
+        "src/modules/communication/GcodeDispatch.cpp",
+        "src/modules/utils/killbutton/KillButton.cpp",
+        "src/modules/tools/endstops/Endstops.cpp",
+        "src/modules/robot/Conveyor.cpp",
+        "src/libs/StepperMotor.cpp"
+      ],
+      "expected_symbols": [
+        "Kernel::immediate_halt",
+        "KillButton::on_idle",
+        "Endstops::on_halt",
+        "Conveyor::on_halt"
+      ]
+    },
+    {
+      "id": "Q5",
+      "split": "tune",
+      "question": "模块系统如何注册、触发、通信？",
+      "expected_files": [
+        "src/libs/Module.h",
+        "src/libs/Module.cpp",
+        "src/libs/Kernel.h",
+        "src/libs/Kernel.cpp",
+        "src/main.cpp",
+        "src/libs/PublicData.cpp"
+      ],
+      "expected_symbols": [
+        "Module::register_for_event",
+        "Kernel::add_module",
+        "Kernel::call_event",
+        "PublicData::get_value"
+      ]
+    },
+    {
+      "id": "H1",
+      "split": "holdout",
+      "question": "Planner::append_block 在哪个文件实现？",
+      "expected_files": [
+        "src/modules/robot/Planner.cpp"
+      ],
+      "expected_symbols": [
+        "Planner::append_block"
+      ]
+    },
+    {
+      "id": "H2",
+      "split": "holdout",
+      "question": "immediate_halt 停机函数在哪里？",
+      "expected_files": [
+        "src/libs/Kernel.cpp"
+      ],
+      "expected_symbols": [
+        "Kernel::immediate_halt"
+      ]
+    },
+    {
+      "id": "H3",
+      "split": "holdout",
+      "question": "硬件急停按钮 KillButton 如何处理？",
+      "expected_files": [
+        "src/modules/utils/killbutton/KillButton.cpp",
+        "src/libs/Kernel.cpp"
+      ],
+      "expected_symbols": [
+        "KillButton::on_idle",
+        "Kernel::immediate_halt"
+      ]
+    },
+    {
+      "id": "H4",
+      "split": "holdout",
+      "question": "回零 / homing / G28 命令在哪里处理？",
+      "expected_files": [
+        "src/modules/tools/endstops/Endstops.cpp"
+      ],
+      "expected_symbols": [
+        "Endstops::home",
+        "Endstops::process_home_command"
+      ]
+    },
+    {
+      "id": "H5",
+      "split": "holdout",
+      "question": "Block 梯形速度规划 calculate_trapezoid 在哪？",
+      "expected_files": [
+        "src/modules/robot/Block.cpp"
+      ],
+      "expected_symbols": [
+        "Block::calculate_trapezoid"
+      ]
+    },
+    {
+      "id": "H6",
+      "split": "holdout",
+      "question": "StepTicker 步进中断 step_tick 在哪里？",
+      "expected_files": [
+        "src/libs/StepTicker.cpp"
+      ],
+      "expected_symbols": [
+        "StepTicker::step_tick"
+      ]
+    },
+    {
+      "id": "H7",
+      "split": "holdout",
+      "question": "StepperMotor 单轴步进电机控制在哪个文件？",
+      "expected_files": [
+        "src/libs/StepperMotor.cpp"
+      ],
+      "expected_symbols": [
+        "StepperMotor::manual_step"
+      ]
+    },
+    {
+      "id": "H8",
+      "split": "holdout",
+      "question": "main 函数和系统启动入口在哪里？",
+      "expected_files": [
+        "src/main.cpp",
+        "src/libs/Kernel.cpp"
+      ],
+      "expected_symbols": [
+        "main",
+        "Kernel::add_module"
+      ]
+    },
+    {
+      "id": "H9",
+      "split": "holdout",
+      "question": "PublicData 模块间共享数据怎么读写？",
+      "expected_files": [
+        "src/libs/PublicData.cpp",
+        "src/libs/PublicData.h"
+      ],
+      "expected_symbols": [
+        "PublicData::get_value",
+        "PublicData::set_value"
+      ]
+    },
+    {
+      "id": "H10",
+      "split": "holdout",
+      "question": "TemperatureControl 如何响应 G-code 温度命令？",
+      "expected_files": [
+        "src/modules/tools/temperaturecontrol/TemperatureControl.cpp"
+      ],
+      "expected_symbols": [
+        "TemperatureControl::on_gcode_received"
+      ]
+    },
+    {
+      "id": "H11",
+      "split": "holdout",
+      "question": "Config::value 配置读取和查找在哪里实现？",
+      "expected_files": [
+        "src/libs/Config.cpp"
+      ],
+      "expected_symbols": [
+        "Config::value"
+      ]
+    },
+    {
+      "id": "H12",
+      "split": "holdout",
+      "question": "FileConfigSource 如何读取配置文件？",
+      "expected_files": [
+        "src/libs/ConfigSources/FileConfigSource.cpp"
+      ],
+      "expected_symbols": [
+        "FileConfigSource::read",
+        "FileConfigSource::readLine"
+      ]
+    },
+    {
+      "id": "H13",
+      "split": "holdout",
+      "question": "SlowTicker 定时 tick 和 on_idle 逻辑在哪里？",
+      "expected_files": [
+        "src/libs/SlowTicker.cpp"
+      ],
+      "expected_symbols": [
+        "SlowTicker::tick",
+        "SlowTicker::on_idle"
+      ]
+    },
+    {
+      "id": "H14",
+      "split": "holdout",
+      "question": "Adc::read 和 ADC 采样代码在哪里？",
+      "expected_files": [
+        "src/libs/Adc.cpp"
+      ],
+      "expected_symbols": [
+        "Adc::read",
+        "Adc::new_sample"
+      ]
+    },
+    {
+      "id": "H15",
+      "split": "holdout",
+      "question": "Watchdog 喂狗 feed 和 on_idle 在哪里？",
+      "expected_files": [
+        "src/libs/Watchdog.cpp"
+      ],
+      "expected_symbols": [
+        "Watchdog::feed",
+        "Watchdog::on_idle"
+      ]
+    },
+    {
+      "id": "H16",
+      "split": "holdout",
+      "question": "Extruder 如何处理挤出相关 G-code？",
+      "expected_files": [
+        "src/modules/tools/extruder/Extruder.cpp"
+      ],
+      "expected_symbols": [
+        "Extruder::on_gcode_received"
+      ]
+    },
+    {
+      "id": "H17",
+      "split": "holdout",
+      "question": "Laser 激光功率和 G-code 控制在哪里？",
+      "expected_files": [
+        "src/modules/tools/laser/Laser.cpp"
+      ],
+      "expected_symbols": [
+        "Laser::on_gcode_received",
+        "Laser::set_laser_power"
+      ]
+    },
+    {
+      "id": "H18",
+      "split": "holdout",
+      "question": "Switch 模块如何响应 G-code 并切换输出？",
+      "expected_files": [
+        "src/modules/tools/switch/Switch.cpp"
+      ],
+      "expected_symbols": [
+        "Switch::on_gcode_received",
+        "Switch::flip"
+      ]
+    },
+    {
+      "id": "H19",
+      "split": "holdout",
+      "question": "FilamentDetector 断料检测和 main loop 在哪里？",
+      "expected_files": [
+        "src/modules/tools/filamentdetector/FilamentDetector.cpp"
+      ],
+      "expected_symbols": [
+        "FilamentDetector::on_main_loop",
+        "FilamentDetector::check_encoder"
+      ]
+    },
+    {
+      "id": "H20",
+      "split": "holdout",
+      "question": "ZProbe 探针 G-code 和 run_probe 在哪里？",
+      "expected_files": [
+        "src/modules/tools/zprobe/ZProbe.cpp"
+      ],
+      "expected_symbols": [
+        "ZProbe::on_gcode_received",
+        "ZProbe::run_probe"
+      ]
+    },
+    {
+      "id": "H21",
+      "split": "holdout",
+      "question": "DeltaGridStrategy 网格探测 probe_grid 在哪里？",
+      "expected_files": [
+        "src/modules/tools/zprobe/DeltaGridStrategy.cpp"
+      ],
+      "expected_symbols": [
+        "DeltaGridStrategy::probe_grid"
+      ]
+    },
+    {
+      "id": "H22",
+      "split": "holdout",
+      "question": "CartGridStrategy 网格保存、扫描和补偿在哪里？",
+      "expected_files": [
+        "src/modules/tools/zprobe/CartGridStrategy.cpp"
+      ],
+      "expected_symbols": [
+        "CartGridStrategy::scan_bed",
+        "CartGridStrategy::doCompensation"
+      ]
+    },
+    {
+      "id": "H23",
+      "split": "holdout",
+      "question": "PID_Autotuner 自动整定 G-code 和 tick 逻辑在哪里？",
+      "expected_files": [
+        "src/modules/tools/temperaturecontrol/PID_Autotuner.cpp"
+      ],
+      "expected_symbols": [
+        "PID_Autotuner::on_gcode_received",
+        "PID_Autotuner::on_tick"
+      ]
+    },
+    {
+      "id": "H24",
+      "split": "holdout",
+      "question": "Thermistor 温度换算 get_temperature 在哪里？",
+      "expected_files": [
+        "src/modules/tools/temperaturecontrol/Thermistor.cpp"
+      ],
+      "expected_symbols": [
+        "Thermistor::get_temperature",
+        "Thermistor::adc_value_to_temperature"
+      ]
+    },
+    {
+      "id": "H25",
+      "split": "holdout",
+      "question": "CurrentControl 电流控制 G-code 在哪里处理？",
+      "expected_files": [
+        "src/modules/utils/currentcontrol/CurrentControl.cpp"
+      ],
+      "expected_symbols": [
+        "CurrentControl::on_gcode_received"
+      ]
+    },
+    {
+      "id": "H26",
+      "split": "holdout",
+      "question": "M17 / M18 / M84 电机使能和关闭命令在哪里处理？",
+      "expected_files": [
+        "src/modules/robot/Robot.cpp"
+      ],
+      "expected_symbols": [
+        "Robot::on_gcode_received"
+      ]
+    },
+    {
+      "id": "H27",
+      "split": "holdout",
+      "question": "M104 / M109 温度设定和等待命令在哪里处理？",
+      "expected_files": [
+        "src/modules/tools/temperaturecontrol/TemperatureControl.cpp"
+      ],
+      "expected_symbols": [
+        "TemperatureControl::on_gcode_received"
+      ]
+    },
+    {
+      "id": "H28",
+      "split": "holdout",
+      "question": "M221 激光功率比例命令在哪里处理？",
+      "expected_files": [
+        "src/modules/tools/laser/Laser.cpp"
+      ],
+      "expected_symbols": [
+        "Laser::on_gcode_received"
+      ]
+    },
+    {
+      "id": "H29",
+      "split": "holdout",
+      "question": "M907 电流控制命令在哪里处理？",
+      "expected_files": [
+        "src/modules/utils/currentcontrol/CurrentControl.cpp"
+      ],
+      "expected_symbols": [
+        "CurrentControl::on_gcode_received"
+      ]
+    },
+    {
+      "id": "H30",
+      "split": "holdout",
+      "question": "M20 / M30 SD 文件列表和删除命令在哪里处理？",
+      "expected_files": [
+        "src/modules/utils/simpleshell/SimpleShell.cpp"
+      ],
+      "expected_symbols": [
+        "SimpleShell::on_gcode_received"
+      ]
+    },
+    {
+      "id": "H31",
+      "split": "holdout",
+      "batch": "expansion_v1",
+      "question": "各功能模块是怎么被挂到系统里并开始参与运行的？",
+      "expected_files": [
+        "src/libs/Kernel.cpp",
+        "src/libs/Module.cpp",
+        "src/main.cpp"
+      ],
+      "expected_symbols": [
+        "Kernel::add_module",
+        "Module::register_for_event",
+        "init"
+      ],
+      "note": "category=hub召回; vocab_mismatch=true; 用户说「挂到系统」对应 add_module/register_for_event; acceptable_optional=src/libs/Module.h,src/libs/Kernel.h",
+      "dev_split": "sealed"
+    },
+    {
+      "id": "H32",
+      "split": "holdout",
+      "batch": "expansion_v1",
+      "question": "内核怎样把事件通知到各个功能模块？",
+      "expected_files": [
+        "src/libs/Kernel.cpp",
+        "src/libs/Module.cpp"
+      ],
+      "expected_symbols": [
+        "Kernel::call_event",
+        "Module::register_for_event"
+      ],
+      "note": "category=hub召回; vocab_mismatch=true; 「通知/分发」对应 call_event; acceptable_optional=src/libs/Kernel.h,src/libs/Module.h",
+      "dev_split": "tune"
+    },
+    {
+      "id": "H33",
+      "split": "holdout",
+      "batch": "expansion_v1",
+      "question": "上电后配置文件是在哪里被读入并变成可查询参数的？",
+      "expected_files": [
+        "src/libs/ConfigSources/FileConfigSource.cpp",
+        "src/libs/Config.cpp"
+      ],
+      "expected_symbols": [
+        "FileConfigSource::read",
+        "Config::value"
+      ],
+      "note": "category=hub召回; vocab_mismatch=true; acceptable_optional=src/libs/ConfigSource.cpp,src/main.cpp",
+      "dev_split": "sealed"
+    },
+    {
+      "id": "H34",
+      "split": "holdout",
+      "batch": "expansion_v1",
+      "question": "一个模块想读取另一个模块暴露的运行状态，走什么共享数据机制？",
+      "expected_files": [
+        "src/libs/PublicData.cpp",
+        "src/libs/Kernel.cpp"
+      ],
+      "expected_symbols": [
+        "PublicData::get_value",
+        "Kernel::call_event"
+      ],
+      "note": "category=hub召回; vocab_mismatch=true; PublicData 经 Kernel 事件总线分发; acceptable_optional=src/libs/PublicData.h,src/libs/Module.cpp",
+      "dev_split": "sealed"
+    },
+    {
+      "id": "H35",
+      "split": "holdout",
+      "batch": "expansion_v1",
+      "question": "主循环里空闲时各模块的后台处理是在哪里被驱动的？",
+      "expected_files": [
+        "src/main.cpp",
+        "src/libs/Kernel.cpp"
+      ],
+      "expected_symbols": [
+        "main",
+        "Kernel::call_event"
+      ],
+      "note": "category=hub召回; vocab_mismatch=true; main 循环调用 ON_IDLE/ON_MAIN_LOOP; acceptable_optional=src/libs/SlowTicker.cpp",
+      "dev_split": "tune"
+    },
+    {
+      "id": "H36",
+      "split": "holdout",
+      "batch": "expansion_v1",
+      "question": "周期性慢速定时任务是在哪里注册并触发模块回调的？",
+      "expected_files": [
+        "src/libs/SlowTicker.cpp",
+        "src/libs/Kernel.cpp"
+      ],
+      "expected_symbols": [
+        "SlowTicker::tick",
+        "Kernel::call_event"
+      ],
+      "note": "category=hub召回; vocab_mismatch=true; SlowTicker 注册 ON_SECOND_TICK 等; acceptable_optional=src/libs/Module.cpp",
+      "dev_split": "tune"
+    },
+    {
+      "id": "H37",
+      "split": "holdout",
+      "batch": "expansion_v1",
+      "question": "开发新硬件功能模块时，必须实现哪些框架接口、在哪里接入系统？",
+      "expected_files": [
+        "src/libs/Module.h",
+        "src/libs/Kernel.cpp",
+        "src/main.cpp"
+      ],
+      "expected_symbols": [
+        "Module::register_for_event",
+        "Kernel::add_module"
+      ],
+      "note": "category=hub召回; vocab_mismatch=true; Module 基类 + main 中实例化; acceptable_optional=src/libs/Module.cpp",
+      "dev_split": "tune"
+    },
+    {
+      "id": "H38",
+      "split": "holdout",
+      "batch": "expansion_v1",
+      "question": "通过串口命令在线修改配置项时，哪些核心组件会参与？",
+      "expected_files": [
+        "src/modules/utils/configurator/Configurator.cpp",
+        "src/libs/Config.cpp"
+      ],
+      "expected_symbols": [
+        "Configurator::config_set_command",
+        "Config::value"
+      ],
+      "note": "category=hub召回; vocab_mismatch=false; acceptable_optional=src/modules/communication/GcodeDispatch.cpp",
+      "dev_split": "tune"
+    },
+    {
+      "id": "H39",
+      "split": "holdout",
+      "batch": "expansion_v1",
+      "question": "G0 快速移动命令从串口收到到步进脉冲输出，经过哪些模块？",
+      "expected_files": [
+        "src/modules/communication/SerialConsole.cpp",
+        "src/modules/communication/GcodeDispatch.cpp",
+        "src/modules/robot/Robot.cpp",
+        "src/modules/robot/Conveyor.cpp",
+        "src/libs/StepTicker.cpp"
+      ],
+      "expected_symbols": [
+        "SerialConsole::on_main_loop",
+        "GcodeDispatch::on_console_line_received",
+        "Robot::on_gcode_received",
+        "Conveyor::queue_head_block",
+        "StepTicker::step_tick"
+      ],
+      "note": "category=跨模块流程; vocab_mismatch=false; 区别于 tune Q2（G0 SEEK 链路）; acceptable_optional=src/modules/robot/Planner.cpp",
+      "dev_split": "tune"
+    },
+    {
+      "id": "H40",
+      "split": "holdout",
+      "batch": "expansion_v1",
+      "question": "M104 设置喷头温度后，温度控制逻辑在哪里被唤起？",
+      "expected_files": [
+        "src/modules/communication/GcodeDispatch.cpp",
+        "src/modules/tools/temperaturecontrol/TemperatureControl.cpp"
+      ],
+      "expected_symbols": [
+        "GcodeDispatch::on_console_line_received",
+        "TemperatureControl::on_gcode_received"
+      ],
+      "note": "category=跨模块流程; vocab_mismatch=false; communication→tools 两层",
+      "dev_split": "tune"
+    },
+    {
+      "id": "H41",
+      "split": "holdout",
+      "batch": "expansion_v1",
+      "question": "限位开关触发后，运动停止和急停处理涉及哪些文件？",
+      "expected_files": [
+        "src/modules/tools/endstops/Endstops.cpp",
+        "src/libs/Kernel.cpp",
+        "src/modules/robot/Conveyor.cpp"
+      ],
+      "expected_symbols": [
+        "Endstops::on_halt",
+        "Kernel::immediate_halt",
+        "Conveyor::on_halt"
+      ],
+      "note": "category=跨模块流程; vocab_mismatch=true; acceptable_optional=src/libs/StepperMotor.cpp",
+      "dev_split": "sealed"
+    },
+    {
+      "id": "H42",
+      "split": "holdout",
+      "batch": "expansion_v1",
+      "question": "如果修改 Planner::append_block 的行为，哪些文件最可能需要一起检查？",
+      "expected_files": [
+        "src/modules/robot/Planner.cpp",
+        "src/modules/robot/Robot.cpp"
+      ],
+      "expected_symbols": [
+        "Planner::append_block",
+        "Robot::on_gcode_received"
+      ],
+      "note": "category=change-impact; vocab_mismatch=false; callgraph: Robot.cpp 调用 append_block; acceptable_optional=src/modules/robot/Planner.h",
+      "dev_split": "tune"
+    },
+    {
+      "id": "H43",
+      "split": "holdout",
+      "batch": "expansion_v1",
+      "question": "如果修改 Kernel 向模块分发事件的机制，哪些框架文件会牵涉？",
+      "expected_files": [
+        "src/libs/Kernel.cpp",
+        "src/libs/Module.cpp",
+        "src/main.cpp"
+      ],
+      "expected_symbols": [
+        "Kernel::call_event",
+        "Module::register_for_event",
+        "main"
+      ],
+      "note": "category=change-impact; vocab_mismatch=true; 人工核对 callgraph + 启动循环; acceptable_optional=src/libs/Kernel.h",
+      "dev_split": "sealed"
+    }
+  ],
+  "weight_sweep": [
+    {
+      "w_dense": 0,
+      "disable_halt_syn": false,
+      "rows": [
+        {
+          "id": "Q1",
+          "split": "tune",
+          "dev_split": null,
+          "cov5": 1.0,
+          "hit_n": 3,
+          "exp_n": 3,
+          "passed": true,
+          "hit": [
+            "src/modules/communication/SerialConsole.cpp",
+            "src/modules/communication/GcodeDispatch.cpp",
+            "src/modules/utils/player/Player.cpp"
+          ],
+          "miss": [],
+          "vocab_mismatch": false,
+          "category": "",
+          "batch": "original"
+        },
+        {
+          "id": "Q2",
+          "split": "tune",
+          "dev_split": null,
+          "cov5": 1.0,
+          "hit_n": 5,
+          "exp_n": 5,
+          "passed": true,
+          "hit": [
+            "src/modules/communication/GcodeDispatch.cpp",
+            "src/modules/robot/Robot.cpp",
+            "src/modules/robot/Planner.cpp",
+            "src/modules/robot/Conveyor.cpp",
+            "src/libs/StepTicker.cpp"
+          ],
+          "miss": [],
+          "vocab_mismatch": false,
+          "category": "",
+          "batch": "original"
+        },
+        {
+          "id": "Q3",
+          "split": "tune",
+          "dev_split": null,
+          "cov5": 0.8333333333333334,
+          "hit_n": 5,
+          "exp_n": 6,
+          "passed": true,
+          "hit": [
+            "src/modules/robot/Planner.cpp",
+            "src/modules/robot/Block.cpp",
+            "src/modules/robot/Conveyor.cpp",
+            "src/libs/StepTicker.cpp",
+            "src/libs/StepperMotor.cpp"
+          ],
+          "miss": [
+            "src/modules/robot/Robot.cpp"
+          ],
+          "vocab_mismatch": false,
+          "category": "",
+          "batch": "original"
+        },
+        {
+          "id": "Q4",
+          "split": "tune",
+          "dev_split": null,
+          "cov5": 0.5714285714285714,
+          "hit_n": 4,
+          "exp_n": 7,
+          "passed": true,
+          "hit": [
+            "src/libs/Kernel.cpp",
+            "src/modules/tools/endstops/Endstops.cpp",
+            "src/modules/robot/Conveyor.cpp",
+            "src/libs/StepperMotor.cpp"
+          ],
+          "miss": [
+            "src/modules/communication/SerialConsole.cpp",
+            "src/modules/communication/GcodeDispatch.cpp",
+            "src/modules/utils/killbutton/KillButton.cpp"
+          ],
+          "vocab_mismatch": false,
+          "category": "",
+          "batch": "original"
+        },
+        {
+          "id": "Q5",
+          "split": "tune",
+          "dev_split": null,
+          "cov5": 0.8333333333333334,
+          "hit_n": 5,
+          "exp_n": 6,
+          "passed": true,
+          "hit": [
+            "src/libs/Module.h",
+            "src/libs/Module.cpp",
+            "src/libs/Kernel.cpp",
+            "src/main.cpp",
+            "src/libs/PublicData.cpp"
+          ],
+          "miss": [
+            "src/libs/Kernel.h"
+          ],
+          "vocab_mismatch": false,
+          "category": "",
+          "batch": "original"
+        },
+        {
+          "id": "H32",
+          "split": "holdout",
+          "dev_split": "tune",
+          "cov5": 0.0,
+          "hit_n": 0,
+          "exp_n": 2,
+          "passed": false,
+          "hit": [],
+          "miss": [
+            "src/libs/Kernel.cpp",
+            "src/libs/Module.cpp"
+          ],
+          "vocab_mismatch": true,
+          "category": "hub召回",
+          "batch": "expansion_v1"
+        },
+        {
+          "id": "H35",
+          "split": "holdout",
+          "dev_split": "tune",
+          "cov5": 0.0,
+          "hit_n": 0,
+          "exp_n": 2,
+          "passed": false,
+          "hit": [],
+          "miss": [
+            "src/main.cpp",
+            "src/libs/Kernel.cpp"
+          ],
+          "vocab_mismatch": true,
+          "category": "hub召回",
+          "batch": "expansion_v1"
+        },
+        {
+          "id": "H36",
+          "split": "holdout",
+          "dev_split": "tune",
+          "cov5": 0.5,
+          "hit_n": 1,
+          "exp_n": 2,
+          "passed": true,
+          "hit": [
+            "src/libs/Kernel.cpp"
+          ],
+          "miss": [
+            "src/libs/SlowTicker.cpp"
+          ],
+          "vocab_mismatch": true,
+          "category": "hub召回",
+          "batch": "expansion_v1"
+        },
+        {
+          "id": "H37",
+          "split": "holdout",
+          "dev_split": "tune",
+          "cov5": 0.0,
+          "hit_n": 0,
+          "exp_n": 3,
+          "passed": false,
+          "hit": [],
+          "miss": [
+            "src/libs/Module.h",
+            "src/libs/Kernel.cpp",
+            "src/main.cpp"
+          ],
+          "vocab_mismatch": true,
+          "category": "hub召回",
+          "batch": "expansion_v1"
+        },
+        {
+          "id": "H38",
+          "split": "holdout",
+          "dev_split": "tune",
+          "cov5": 0.0,
+          "hit_n": 0,
+          "exp_n": 2,
+          "passed": false,
+          "hit": [],
+          "miss": [
+            "src/modules/utils/configurator/Configurator.cpp",
+            "src/libs/Config.cpp"
+          ],
+          "vocab_mismatch": false,
+          "category": "hub召回",
+          "batch": "expansion_v1"
+        },
+        {
+          "id": "H39",
+          "split": "holdout",
+          "dev_split": "tune",
+          "cov5": 0.2,
+          "hit_n": 1,
+          "exp_n": 5,
+          "passed": true,
+          "hit": [
+            "src/modules/robot/Robot.cpp"
+          ],
+          "miss": [
+            "src/modules/communication/SerialConsole.cpp",
+            "src/modules/communication/GcodeDispatch.cpp",
+            "src/modules/robot/Conveyor.cpp",
+            "src/libs/StepTicker.cpp"
+          ],
+          "vocab_mismatch": false,
+          "category": "跨模块流程",
+          "batch": "expansion_v1"
+        },
+        {
+          "id": "H40",
+          "split": "holdout",
+          "dev_split": "tune",
+          "cov5": 0.5,
+          "hit_n": 1,
+          "exp_n": 2,
+          "passed": true,
+          "hit": [
+            "src/modules/tools/temperaturecontrol/TemperatureControl.cpp"
+          ],
+          "miss": [
+            "src/modules/communication/GcodeDispatch.cpp"
+          ],
+          "vocab_mismatch": false,
+          "category": "跨模块流程",
+          "batch": "expansion_v1"
+        },
+        {
+          "id": "H42",
+          "split": "holdout",
+          "dev_split": "tune",
+          "cov5": 0.5,
+          "hit_n": 1,
+          "exp_n": 2,
+          "passed": true,
+          "hit": [
+            "src/modules/robot/Planner.cpp"
+          ],
+          "miss": [
+            "src/modules/robot/Robot.cpp"
+          ],
+          "vocab_mismatch": false,
+          "category": "change-impact",
+          "batch": "expansion_v1"
+        }
+      ],
+      "stats": {
+        "all_mean": 0.4567765567765568,
+        "orig35_mean": 0.8476190476190476,
+        "vocab_mismatch_mean": 0.125,
+        "vocab_mismatch_n": 4,
+        "single_holdout_pass": 0,
+        "single_holdout_n": 0,
+        "single_holdout_miss": [],
+        "sealed_pass5": 0,
+        "sealed_n": 0,
+        "q_caps": {
+          "Q3": {
+            "cov5": 0.8333333333333334,
+            "cap": 1.0,
+            "normalized": 0.8333333333333334
+          },
+          "Q4": {
+            "cov5": 0.5714285714285714,
+            "cap": 0.7142857142857143,
+            "normalized": 0.7999999999999999
+          },
+          "Q5": {
+            "cov5": 0.8333333333333334,
+            "cap": 0.8333333333333334,
+            "normalized": 1.0
+          }
+        }
+      },
+      "timing": {
+        "mean_query_ms": 72.92,
+        "mean_dense_ms": 0.0
+      }
+    },
+    {
+      "w_dense": 5,
+      "disable_halt_syn": false,
+      "rows": [
+        {
+          "id": "Q1",
+          "split": "tune",
+          "dev_split": null,
+          "cov5": 1.0,
+          "hit_n": 3,
+          "exp_n": 3,
+          "passed": true,
+          "hit": [
+            "src/modules/communication/SerialConsole.cpp",
+            "src/modules/communication/GcodeDispatch.cpp",
+            "src/modules/utils/player/Player.cpp"
+          ],
+          "miss": [],
+          "vocab_mismatch": false,
+          "category": "",
+          "batch": "original"
+        },
+        {
+          "id": "Q2",
+          "split": "tune",
+          "dev_split": null,
+          "cov5": 1.0,
+          "hit_n": 5,
+          "exp_n": 5,
+          "passed": true,
+          "hit": [
+            "src/modules/communication/GcodeDispatch.cpp",
+            "src/modules/robot/Robot.cpp",
+            "src/modules/robot/Planner.cpp",
+            "src/modules/robot/Conveyor.cpp",
+            "src/libs/StepTicker.cpp"
+          ],
+          "miss": [],
+          "vocab_mismatch": false,
+          "category": "",
+          "batch": "original"
+        },
+        {
+          "id": "Q3",
+          "split": "tune",
+          "dev_split": null,
+          "cov5": 0.8333333333333334,
+          "hit_n": 5,
+          "exp_n": 6,
+          "passed": true,
+          "hit": [
+            "src/modules/robot/Planner.cpp",
+            "src/modules/robot/Block.cpp",
+            "src/modules/robot/Conveyor.cpp",
+            "src/libs/StepTicker.cpp",
+            "src/libs/StepperMotor.cpp"
+          ],
+          "miss": [
+            "src/modules/robot/Robot.cpp"
+          ],
+          "vocab_mismatch": false,
+          "category": "",
+          "batch": "original"
+        },
+        {
+          "id": "Q4",
+          "split": "tune",
+          "dev_split": null,
+          "cov5": 0.5714285714285714,
+          "hit_n": 4,
+          "exp_n": 7,
+          "passed": true,
+          "hit": [
+            "src/libs/Kernel.cpp",
+            "src/modules/tools/endstops/Endstops.cpp",
+            "src/modules/robot/Conveyor.cpp",
+            "src/libs/StepperMotor.cpp"
+          ],
+          "miss": [
+            "src/modules/communication/SerialConsole.cpp",
+            "src/modules/communication/GcodeDispatch.cpp",
+            "src/modules/utils/killbutton/KillButton.cpp"
+          ],
+          "vocab_mismatch": false,
+          "category": "",
+          "batch": "original"
+        },
+        {
+          "id": "Q5",
+          "split": "tune",
+          "dev_split": null,
+          "cov5": 0.8333333333333334,
+          "hit_n": 5,
+          "exp_n": 6,
+          "passed": true,
+          "hit": [
+            "src/libs/Module.h",
+            "src/libs/Module.cpp",
+            "src/libs/Kernel.cpp",
+            "src/main.cpp",
+            "src/libs/PublicData.cpp"
+          ],
+          "miss": [
+            "src/libs/Kernel.h"
+          ],
+          "vocab_mismatch": false,
+          "category": "",
+          "batch": "original"
+        },
+        {
+          "id": "H32",
+          "split": "holdout",
+          "dev_split": "tune",
+          "cov5": 0.5,
+          "hit_n": 1,
+          "exp_n": 2,
+          "passed": true,
+          "hit": [
+            "src/libs/Module.cpp"
+          ],
+          "miss": [
+            "src/libs/Kernel.cpp"
+          ],
+          "vocab_mismatch": true,
+          "category": "hub召回",
+          "batch": "expansion_v1"
+        },
+        {
+          "id": "H35",
+          "split": "holdout",
+          "dev_split": "tune",
+          "cov5": 0.5,
+          "hit_n": 1,
+          "exp_n": 2,
+          "passed": true,
+          "hit": [
+            "src/main.cpp"
+          ],
+          "miss": [
+            "src/libs/Kernel.cpp"
+          ],
+          "vocab_mismatch": true,
+          "category": "hub召回",
+          "batch": "expansion_v1"
+        },
+        {
+          "id": "H36",
+          "split": "holdout",
+          "dev_split": "tune",
+          "cov5": 0.5,
+          "hit_n": 1,
+          "exp_n": 2,
+          "passed": true,
+          "hit": [
+            "src/libs/Kernel.cpp"
+          ],
+          "miss": [
+            "src/libs/SlowTicker.cpp"
+          ],
+          "vocab_mismatch": true,
+          "category": "hub召回",
+          "batch": "expansion_v1"
+        },
+        {
+          "id": "H37",
+          "split": "holdout",
+          "dev_split": "tune",
+          "cov5": 0.0,
+          "hit_n": 0,
+          "exp_n": 3,
+          "passed": false,
+          "hit": [],
+          "miss": [
+            "src/libs/Module.h",
+            "src/libs/Kernel.cpp",
+            "src/main.cpp"
+          ],
+          "vocab_mismatch": true,
+          "category": "hub召回",
+          "batch": "expansion_v1"
+        },
+        {
+          "id": "H38",
+          "split": "holdout",
+          "dev_split": "tune",
+          "cov5": 0.5,
+          "hit_n": 1,
+          "exp_n": 2,
+          "passed": true,
+          "hit": [
+            "src/modules/utils/configurator/Configurator.cpp"
+          ],
+          "miss": [
+            "src/libs/Config.cpp"
+          ],
+          "vocab_mismatch": false,
+          "category": "hub召回",
+          "batch": "expansion_v1"
+        },
+        {
+          "id": "H39",
+          "split": "holdout",
+          "dev_split": "tune",
+          "cov5": 0.2,
+          "hit_n": 1,
+          "exp_n": 5,
+          "passed": true,
+          "hit": [
+            "src/modules/robot/Robot.cpp"
+          ],
+          "miss": [
+            "src/modules/communication/SerialConsole.cpp",
+            "src/modules/communication/GcodeDispatch.cpp",
+            "src/modules/robot/Conveyor.cpp",
+            "src/libs/StepTicker.cpp"
+          ],
+          "vocab_mismatch": false,
+          "category": "跨模块流程",
+          "batch": "expansion_v1"
+        },
+        {
+          "id": "H40",
+          "split": "holdout",
+          "dev_split": "tune",
+          "cov5": 0.5,
+          "hit_n": 1,
+          "exp_n": 2,
+          "passed": true,
+          "hit": [
+            "src/modules/tools/temperaturecontrol/TemperatureControl.cpp"
+          ],
+          "miss": [
+            "src/modules/communication/GcodeDispatch.cpp"
+          ],
+          "vocab_mismatch": false,
+          "category": "跨模块流程",
+          "batch": "expansion_v1"
+        },
+        {
+          "id": "H42",
+          "split": "holdout",
+          "dev_split": "tune",
+          "cov5": 0.5,
+          "hit_n": 1,
+          "exp_n": 2,
+          "passed": true,
+          "hit": [
+            "src/modules/robot/Planner.cpp"
+          ],
+          "miss": [
+            "src/modules/robot/Robot.cpp"
+          ],
+          "vocab_mismatch": false,
+          "category": "change-impact",
+          "batch": "expansion_v1"
+        }
+      ],
+      "stats": {
+        "all_mean": 0.5721611721611721,
+        "orig35_mean": 0.8476190476190476,
+        "vocab_mismatch_mean": 0.375,
+        "vocab_mismatch_n": 4,
+        "single_holdout_pass": 0,
+        "single_holdout_n": 0,
+        "single_holdout_miss": [],
+        "sealed_pass5": 0,
+        "sealed_n": 0,
+        "q_caps": {
+          "Q3": {
+            "cov5": 0.8333333333333334,
+            "cap": 1.0,
+            "normalized": 0.8333333333333334
+          },
+          "Q4": {
+            "cov5": 0.5714285714285714,
+            "cap": 0.7142857142857143,
+            "normalized": 0.7999999999999999
+          },
+          "Q5": {
+            "cov5": 0.8333333333333334,
+            "cap": 0.8333333333333334,
+            "normalized": 1.0
+          }
+        }
+      },
+      "timing": {
+        "mean_query_ms": 103.58,
+        "mean_dense_ms": 28.19
+      }
+    },
+    {
+      "w_dense": 10,
+      "disable_halt_syn": false,
+      "rows": [
+        {
+          "id": "Q1",
+          "split": "tune",
+          "dev_split": null,
+          "cov5": 1.0,
+          "hit_n": 3,
+          "exp_n": 3,
+          "passed": true,
+          "hit": [
+            "src/modules/communication/SerialConsole.cpp",
+            "src/modules/communication/GcodeDispatch.cpp",
+            "src/modules/utils/player/Player.cpp"
+          ],
+          "miss": [],
+          "vocab_mismatch": false,
+          "category": "",
+          "batch": "original"
+        },
+        {
+          "id": "Q2",
+          "split": "tune",
+          "dev_split": null,
+          "cov5": 1.0,
+          "hit_n": 5,
+          "exp_n": 5,
+          "passed": true,
+          "hit": [
+            "src/modules/communication/GcodeDispatch.cpp",
+            "src/modules/robot/Robot.cpp",
+            "src/modules/robot/Planner.cpp",
+            "src/modules/robot/Conveyor.cpp",
+            "src/libs/StepTicker.cpp"
+          ],
+          "miss": [],
+          "vocab_mismatch": false,
+          "category": "",
+          "batch": "original"
+        },
+        {
+          "id": "Q3",
+          "split": "tune",
+          "dev_split": null,
+          "cov5": 0.8333333333333334,
+          "hit_n": 5,
+          "exp_n": 6,
+          "passed": true,
+          "hit": [
+            "src/modules/robot/Planner.cpp",
+            "src/modules/robot/Block.cpp",
+            "src/modules/robot/Conveyor.cpp",
+            "src/libs/StepTicker.cpp",
+            "src/libs/StepperMotor.cpp"
+          ],
+          "miss": [
+            "src/modules/robot/Robot.cpp"
+          ],
+          "vocab_mismatch": false,
+          "category": "",
+          "batch": "original"
+        },
+        {
+          "id": "Q4",
+          "split": "tune",
+          "dev_split": null,
+          "cov5": 0.5714285714285714,
+          "hit_n": 4,
+          "exp_n": 7,
+          "passed": true,
+          "hit": [
+            "src/libs/Kernel.cpp",
+            "src/modules/tools/endstops/Endstops.cpp",
+            "src/modules/robot/Conveyor.cpp",
+            "src/libs/StepperMotor.cpp"
+          ],
+          "miss": [
+            "src/modules/communication/SerialConsole.cpp",
+            "src/modules/communication/GcodeDispatch.cpp",
+            "src/modules/utils/killbutton/KillButton.cpp"
+          ],
+          "vocab_mismatch": false,
+          "category": "",
+          "batch": "original"
+        },
+        {
+          "id": "Q5",
+          "split": "tune",
+          "dev_split": null,
+          "cov5": 0.8333333333333334,
+          "hit_n": 5,
+          "exp_n": 6,
+          "passed": true,
+          "hit": [
+            "src/libs/Module.h",
+            "src/libs/Module.cpp",
+            "src/libs/Kernel.cpp",
+            "src/main.cpp",
+            "src/libs/PublicData.cpp"
+          ],
+          "miss": [
+            "src/libs/Kernel.h"
+          ],
+          "vocab_mismatch": false,
+          "category": "",
+          "batch": "original"
+        },
+        {
+          "id": "H32",
+          "split": "holdout",
+          "dev_split": "tune",
+          "cov5": 0.5,
+          "hit_n": 1,
+          "exp_n": 2,
+          "passed": true,
+          "hit": [
+            "src/libs/Module.cpp"
+          ],
+          "miss": [
+            "src/libs/Kernel.cpp"
+          ],
+          "vocab_mismatch": true,
+          "category": "hub召回",
+          "batch": "expansion_v1"
+        },
+        {
+          "id": "H35",
+          "split": "holdout",
+          "dev_split": "tune",
+          "cov5": 0.5,
+          "hit_n": 1,
+          "exp_n": 2,
+          "passed": true,
+          "hit": [
+            "src/main.cpp"
+          ],
+          "miss": [
+            "src/libs/Kernel.cpp"
+          ],
+          "vocab_mismatch": true,
+          "category": "hub召回",
+          "batch": "expansion_v1"
+        },
+        {
+          "id": "H36",
+          "split": "holdout",
+          "dev_split": "tune",
+          "cov5": 0.5,
+          "hit_n": 1,
+          "exp_n": 2,
+          "passed": true,
+          "hit": [
+            "src/libs/Kernel.cpp"
+          ],
+          "miss": [
+            "src/libs/SlowTicker.cpp"
+          ],
+          "vocab_mismatch": true,
+          "category": "hub召回",
+          "batch": "expansion_v1"
+        },
+        {
+          "id": "H37",
+          "split": "holdout",
+          "dev_split": "tune",
+          "cov5": 0.0,
+          "hit_n": 0,
+          "exp_n": 3,
+          "passed": false,
+          "hit": [],
+          "miss": [
+            "src/libs/Module.h",
+            "src/libs/Kernel.cpp",
+            "src/main.cpp"
+          ],
+          "vocab_mismatch": true,
+          "category": "hub召回",
+          "batch": "expansion_v1"
+        },
+        {
+          "id": "H38",
+          "split": "holdout",
+          "dev_split": "tune",
+          "cov5": 0.5,
+          "hit_n": 1,
+          "exp_n": 2,
+          "passed": true,
+          "hit": [
+            "src/modules/utils/configurator/Configurator.cpp"
+          ],
+          "miss": [
+            "src/libs/Config.cpp"
+          ],
+          "vocab_mismatch": false,
+          "category": "hub召回",
+          "batch": "expansion_v1"
+        },
+        {
+          "id": "H39",
+          "split": "holdout",
+          "dev_split": "tune",
+          "cov5": 0.2,
+          "hit_n": 1,
+          "exp_n": 5,
+          "passed": true,
+          "hit": [
+            "src/modules/robot/Robot.cpp"
+          ],
+          "miss": [
+            "src/modules/communication/SerialConsole.cpp",
+            "src/modules/communication/GcodeDispatch.cpp",
+            "src/modules/robot/Conveyor.cpp",
+            "src/libs/StepTicker.cpp"
+          ],
+          "vocab_mismatch": false,
+          "category": "跨模块流程",
+          "batch": "expansion_v1"
+        },
+        {
+          "id": "H40",
+          "split": "holdout",
+          "dev_split": "tune",
+          "cov5": 0.5,
+          "hit_n": 1,
+          "exp_n": 2,
+          "passed": true,
+          "hit": [
+            "src/modules/tools/temperaturecontrol/TemperatureControl.cpp"
+          ],
+          "miss": [
+            "src/modules/communication/GcodeDispatch.cpp"
+          ],
+          "vocab_mismatch": false,
+          "category": "跨模块流程",
+          "batch": "expansion_v1"
+        },
+        {
+          "id": "H42",
+          "split": "holdout",
+          "dev_split": "tune",
+          "cov5": 0.5,
+          "hit_n": 1,
+          "exp_n": 2,
+          "passed": true,
+          "hit": [
+            "src/modules/robot/Planner.cpp"
+          ],
+          "miss": [
+            "src/modules/robot/Robot.cpp"
+          ],
+          "vocab_mismatch": false,
+          "category": "change-impact",
+          "batch": "expansion_v1"
+        }
+      ],
+      "stats": {
+        "all_mean": 0.5721611721611721,
+        "orig35_mean": 0.8476190476190476,
+        "vocab_mismatch_mean": 0.375,
+        "vocab_mismatch_n": 4,
+        "single_holdout_pass": 0,
+        "single_holdout_n": 0,
+        "single_holdout_miss": [],
+        "sealed_pass5": 0,
+        "sealed_n": 0,
+        "q_caps": {
+          "Q3": {
+            "cov5": 0.8333333333333334,
+            "cap": 1.0,
+            "normalized": 0.8333333333333334
+          },
+          "Q4": {
+            "cov5": 0.5714285714285714,
+            "cap": 0.7142857142857143,
+            "normalized": 0.7999999999999999
+          },
+          "Q5": {
+            "cov5": 0.8333333333333334,
+            "cap": 0.8333333333333334,
+            "normalized": 1.0
+          }
+        }
+      },
+      "timing": {
+        "mean_query_ms": 88.62,
+        "mean_dense_ms": 14.47
+      }
+    },
+    {
+      "w_dense": 15,
+      "disable_halt_syn": false,
+      "rows": [
+        {
+          "id": "Q1",
+          "split": "tune",
+          "dev_split": null,
+          "cov5": 1.0,
+          "hit_n": 3,
+          "exp_n": 3,
+          "passed": true,
+          "hit": [
+            "src/modules/communication/SerialConsole.cpp",
+            "src/modules/communication/GcodeDispatch.cpp",
+            "src/modules/utils/player/Player.cpp"
+          ],
+          "miss": [],
+          "vocab_mismatch": false,
+          "category": "",
+          "batch": "original"
+        },
+        {
+          "id": "Q2",
+          "split": "tune",
+          "dev_split": null,
+          "cov5": 1.0,
+          "hit_n": 5,
+          "exp_n": 5,
+          "passed": true,
+          "hit": [
+            "src/modules/communication/GcodeDispatch.cpp",
+            "src/modules/robot/Robot.cpp",
+            "src/modules/robot/Planner.cpp",
+            "src/modules/robot/Conveyor.cpp",
+            "src/libs/StepTicker.cpp"
+          ],
+          "miss": [],
+          "vocab_mismatch": false,
+          "category": "",
+          "batch": "original"
+        },
+        {
+          "id": "Q3",
+          "split": "tune",
+          "dev_split": null,
+          "cov5": 0.8333333333333334,
+          "hit_n": 5,
+          "exp_n": 6,
+          "passed": true,
+          "hit": [
+            "src/modules/robot/Planner.cpp",
+            "src/modules/robot/Block.cpp",
+            "src/modules/robot/Conveyor.cpp",
+            "src/libs/StepTicker.cpp",
+            "src/libs/StepperMotor.cpp"
+          ],
+          "miss": [
+            "src/modules/robot/Robot.cpp"
+          ],
+          "vocab_mismatch": false,
+          "category": "",
+          "batch": "original"
+        },
+        {
+          "id": "Q4",
+          "split": "tune",
+          "dev_split": null,
+          "cov5": 0.5714285714285714,
+          "hit_n": 4,
+          "exp_n": 7,
+          "passed": true,
+          "hit": [
+            "src/libs/Kernel.cpp",
+            "src/modules/tools/endstops/Endstops.cpp",
+            "src/modules/robot/Conveyor.cpp",
+            "src/libs/StepperMotor.cpp"
+          ],
+          "miss": [
+            "src/modules/communication/SerialConsole.cpp",
+            "src/modules/communication/GcodeDispatch.cpp",
+            "src/modules/utils/killbutton/KillButton.cpp"
+          ],
+          "vocab_mismatch": false,
+          "category": "",
+          "batch": "original"
+        },
+        {
+          "id": "Q5",
+          "split": "tune",
+          "dev_split": null,
+          "cov5": 0.8333333333333334,
+          "hit_n": 5,
+          "exp_n": 6,
+          "passed": true,
+          "hit": [
+            "src/libs/Module.cpp",
+            "src/libs/Kernel.h",
+            "src/libs/Kernel.cpp",
+            "src/main.cpp",
+            "src/libs/PublicData.cpp"
+          ],
+          "miss": [
+            "src/libs/Module.h"
+          ],
+          "vocab_mismatch": false,
+          "category": "",
+          "batch": "original"
+        },
+        {
+          "id": "H32",
+          "split": "holdout",
+          "dev_split": "tune",
+          "cov5": 0.5,
+          "hit_n": 1,
+          "exp_n": 2,
+          "passed": true,
+          "hit": [
+            "src/libs/Module.cpp"
+          ],
+          "miss": [
+            "src/libs/Kernel.cpp"
+          ],
+          "vocab_mismatch": true,
+          "category": "hub召回",
+          "batch": "expansion_v1"
+        },
+        {
+          "id": "H35",
+          "split": "holdout",
+          "dev_split": "tune",
+          "cov5": 0.5,
+          "hit_n": 1,
+          "exp_n": 2,
+          "passed": true,
+          "hit": [
+            "src/main.cpp"
+          ],
+          "miss": [
+            "src/libs/Kernel.cpp"
+          ],
+          "vocab_mismatch": true,
+          "category": "hub召回",
+          "batch": "expansion_v1"
+        },
+        {
+          "id": "H36",
+          "split": "holdout",
+          "dev_split": "tune",
+          "cov5": 0.5,
+          "hit_n": 1,
+          "exp_n": 2,
+          "passed": true,
+          "hit": [
+            "src/libs/Kernel.cpp"
+          ],
+          "miss": [
+            "src/libs/SlowTicker.cpp"
+          ],
+          "vocab_mismatch": true,
+          "category": "hub召回",
+          "batch": "expansion_v1"
+        },
+        {
+          "id": "H37",
+          "split": "holdout",
+          "dev_split": "tune",
+          "cov5": 0.0,
+          "hit_n": 0,
+          "exp_n": 3,
+          "passed": false,
+          "hit": [],
+          "miss": [
+            "src/libs/Module.h",
+            "src/libs/Kernel.cpp",
+            "src/main.cpp"
+          ],
+          "vocab_mismatch": true,
+          "category": "hub召回",
+          "batch": "expansion_v1"
+        },
+        {
+          "id": "H38",
+          "split": "holdout",
+          "dev_split": "tune",
+          "cov5": 0.5,
+          "hit_n": 1,
+          "exp_n": 2,
+          "passed": true,
+          "hit": [
+            "src/modules/utils/configurator/Configurator.cpp"
+          ],
+          "miss": [
+            "src/libs/Config.cpp"
+          ],
+          "vocab_mismatch": false,
+          "category": "hub召回",
+          "batch": "expansion_v1"
+        },
+        {
+          "id": "H39",
+          "split": "holdout",
+          "dev_split": "tune",
+          "cov5": 0.2,
+          "hit_n": 1,
+          "exp_n": 5,
+          "passed": true,
+          "hit": [
+            "src/modules/robot/Robot.cpp"
+          ],
+          "miss": [
+            "src/modules/communication/SerialConsole.cpp",
+            "src/modules/communication/GcodeDispatch.cpp",
+            "src/modules/robot/Conveyor.cpp",
+            "src/libs/StepTicker.cpp"
+          ],
+          "vocab_mismatch": false,
+          "category": "跨模块流程",
+          "batch": "expansion_v1"
+        },
+        {
+          "id": "H40",
+          "split": "holdout",
+          "dev_split": "tune",
+          "cov5": 0.5,
+          "hit_n": 1,
+          "exp_n": 2,
+          "passed": true,
+          "hit": [
+            "src/modules/tools/temperaturecontrol/TemperatureControl.cpp"
+          ],
+          "miss": [
+            "src/modules/communication/GcodeDispatch.cpp"
+          ],
+          "vocab_mismatch": false,
+          "category": "跨模块流程",
+          "batch": "expansion_v1"
+        },
+        {
+          "id": "H42",
+          "split": "holdout",
+          "dev_split": "tune",
+          "cov5": 0.5,
+          "hit_n": 1,
+          "exp_n": 2,
+          "passed": true,
+          "hit": [
+            "src/modules/robot/Planner.cpp"
+          ],
+          "miss": [
+            "src/modules/robot/Robot.cpp"
+          ],
+          "vocab_mismatch": false,
+          "category": "change-impact",
+          "batch": "expansion_v1"
+        }
+      ],
+      "stats": {
+        "all_mean": 0.5721611721611721,
+        "orig35_mean": 0.8476190476190476,
+        "vocab_mismatch_mean": 0.375,
+        "vocab_mismatch_n": 4,
+        "single_holdout_pass": 0,
+        "single_holdout_n": 0,
+        "single_holdout_miss": [],
+        "sealed_pass5": 0,
+        "sealed_n": 0,
+        "q_caps": {
+          "Q3": {
+            "cov5": 0.8333333333333334,
+            "cap": 1.0,
+            "normalized": 0.8333333333333334
+          },
+          "Q4": {
+            "cov5": 0.5714285714285714,
+            "cap": 0.7142857142857143,
+            "normalized": 0.7999999999999999
+          },
+          "Q5": {
+            "cov5": 0.8333333333333334,
+            "cap": 0.8333333333333334,
+            "normalized": 1.0
+          }
+        }
+      },
+      "timing": {
+        "mean_query_ms": 95.21,
+        "mean_dense_ms": 19.0
+      }
+    },
+    {
+      "w_dense": 20,
+      "disable_halt_syn": false,
+      "rows": [
+        {
+          "id": "Q1",
+          "split": "tune",
+          "dev_split": null,
+          "cov5": 1.0,
+          "hit_n": 3,
+          "exp_n": 3,
+          "passed": true,
+          "hit": [
+            "src/modules/communication/SerialConsole.cpp",
+            "src/modules/communication/GcodeDispatch.cpp",
+            "src/modules/utils/player/Player.cpp"
+          ],
+          "miss": [],
+          "vocab_mismatch": false,
+          "category": "",
+          "batch": "original"
+        },
+        {
+          "id": "Q2",
+          "split": "tune",
+          "dev_split": null,
+          "cov5": 1.0,
+          "hit_n": 5,
+          "exp_n": 5,
+          "passed": true,
+          "hit": [
+            "src/modules/communication/GcodeDispatch.cpp",
+            "src/modules/robot/Robot.cpp",
+            "src/modules/robot/Planner.cpp",
+            "src/modules/robot/Conveyor.cpp",
+            "src/libs/StepTicker.cpp"
+          ],
+          "miss": [],
+          "vocab_mismatch": false,
+          "category": "",
+          "batch": "original"
+        },
+        {
+          "id": "Q3",
+          "split": "tune",
+          "dev_split": null,
+          "cov5": 0.8333333333333334,
+          "hit_n": 5,
+          "exp_n": 6,
+          "passed": true,
+          "hit": [
+            "src/modules/robot/Planner.cpp",
+            "src/modules/robot/Block.cpp",
+            "src/modules/robot/Conveyor.cpp",
+            "src/libs/StepTicker.cpp",
+            "src/libs/StepperMotor.cpp"
+          ],
+          "miss": [
+            "src/modules/robot/Robot.cpp"
+          ],
+          "vocab_mismatch": false,
+          "category": "",
+          "batch": "original"
+        },
+        {
+          "id": "Q4",
+          "split": "tune",
+          "dev_split": null,
+          "cov5": 0.5714285714285714,
+          "hit_n": 4,
+          "exp_n": 7,
+          "passed": true,
+          "hit": [
+            "src/libs/Kernel.cpp",
+            "src/modules/tools/endstops/Endstops.cpp",
+            "src/modules/robot/Conveyor.cpp",
+            "src/libs/StepperMotor.cpp"
+          ],
+          "miss": [
+            "src/modules/communication/SerialConsole.cpp",
+            "src/modules/communication/GcodeDispatch.cpp",
+            "src/modules/utils/killbutton/KillButton.cpp"
+          ],
+          "vocab_mismatch": false,
+          "category": "",
+          "batch": "original"
+        },
+        {
+          "id": "Q5",
+          "split": "tune",
+          "dev_split": null,
+          "cov5": 0.8333333333333334,
+          "hit_n": 5,
+          "exp_n": 6,
+          "passed": true,
+          "hit": [
+            "src/libs/Module.cpp",
+            "src/libs/Kernel.h",
+            "src/libs/Kernel.cpp",
+            "src/main.cpp",
+            "src/libs/PublicData.cpp"
+          ],
+          "miss": [
+            "src/libs/Module.h"
+          ],
+          "vocab_mismatch": false,
+          "category": "",
+          "batch": "original"
+        },
+        {
+          "id": "H32",
+          "split": "holdout",
+          "dev_split": "tune",
+          "cov5": 0.5,
+          "hit_n": 1,
+          "exp_n": 2,
+          "passed": true,
+          "hit": [
+            "src/libs/Module.cpp"
+          ],
+          "miss": [
+            "src/libs/Kernel.cpp"
+          ],
+          "vocab_mismatch": true,
+          "category": "hub召回",
+          "batch": "expansion_v1"
+        },
+        {
+          "id": "H35",
+          "split": "holdout",
+          "dev_split": "tune",
+          "cov5": 0.5,
+          "hit_n": 1,
+          "exp_n": 2,
+          "passed": true,
+          "hit": [
+            "src/main.cpp"
+          ],
+          "miss": [
+            "src/libs/Kernel.cpp"
+          ],
+          "vocab_mismatch": true,
+          "category": "hub召回",
+          "batch": "expansion_v1"
+        },
+        {
+          "id": "H36",
+          "split": "holdout",
+          "dev_split": "tune",
+          "cov5": 1.0,
+          "hit_n": 2,
+          "exp_n": 2,
+          "passed": true,
+          "hit": [
+            "src/libs/SlowTicker.cpp",
+            "src/libs/Kernel.cpp"
+          ],
+          "miss": [],
+          "vocab_mismatch": true,
+          "category": "hub召回",
+          "batch": "expansion_v1"
+        },
+        {
+          "id": "H37",
+          "split": "holdout",
+          "dev_split": "tune",
+          "cov5": 0.0,
+          "hit_n": 0,
+          "exp_n": 3,
+          "passed": false,
+          "hit": [],
+          "miss": [
+            "src/libs/Module.h",
+            "src/libs/Kernel.cpp",
+            "src/main.cpp"
+          ],
+          "vocab_mismatch": true,
+          "category": "hub召回",
+          "batch": "expansion_v1"
+        },
+        {
+          "id": "H38",
+          "split": "holdout",
+          "dev_split": "tune",
+          "cov5": 0.5,
+          "hit_n": 1,
+          "exp_n": 2,
+          "passed": true,
+          "hit": [
+            "src/modules/utils/configurator/Configurator.cpp"
+          ],
+          "miss": [
+            "src/libs/Config.cpp"
+          ],
+          "vocab_mismatch": false,
+          "category": "hub召回",
+          "batch": "expansion_v1"
+        },
+        {
+          "id": "H39",
+          "split": "holdout",
+          "dev_split": "tune",
+          "cov5": 0.2,
+          "hit_n": 1,
+          "exp_n": 5,
+          "passed": true,
+          "hit": [
+            "src/modules/robot/Robot.cpp"
+          ],
+          "miss": [
+            "src/modules/communication/SerialConsole.cpp",
+            "src/modules/communication/GcodeDispatch.cpp",
+            "src/modules/robot/Conveyor.cpp",
+            "src/libs/StepTicker.cpp"
+          ],
+          "vocab_mismatch": false,
+          "category": "跨模块流程",
+          "batch": "expansion_v1"
+        },
+        {
+          "id": "H40",
+          "split": "holdout",
+          "dev_split": "tune",
+          "cov5": 0.5,
+          "hit_n": 1,
+          "exp_n": 2,
+          "passed": true,
+          "hit": [
+            "src/modules/tools/temperaturecontrol/TemperatureControl.cpp"
+          ],
+          "miss": [
+            "src/modules/communication/GcodeDispatch.cpp"
+          ],
+          "vocab_mismatch": false,
+          "category": "跨模块流程",
+          "batch": "expansion_v1"
+        },
+        {
+          "id": "H42",
+          "split": "holdout",
+          "dev_split": "tune",
+          "cov5": 0.5,
+          "hit_n": 1,
+          "exp_n": 2,
+          "passed": true,
+          "hit": [
+            "src/modules/robot/Planner.cpp"
+          ],
+          "miss": [
+            "src/modules/robot/Robot.cpp"
+          ],
+          "vocab_mismatch": false,
+          "category": "change-impact",
+          "batch": "expansion_v1"
+        }
+      ],
+      "stats": {
+        "all_mean": 0.6106227106227107,
+        "orig35_mean": 0.8476190476190476,
+        "vocab_mismatch_mean": 0.5,
+        "vocab_mismatch_n": 4,
+        "single_holdout_pass": 0,
+        "single_holdout_n": 0,
+        "single_holdout_miss": [],
+        "sealed_pass5": 0,
+        "sealed_n": 0,
+        "q_caps": {
+          "Q3": {
+            "cov5": 0.8333333333333334,
+            "cap": 1.0,
+            "normalized": 0.8333333333333334
+          },
+          "Q4": {
+            "cov5": 0.5714285714285714,
+            "cap": 0.7142857142857143,
+            "normalized": 0.7999999999999999
+          },
+          "Q5": {
+            "cov5": 0.8333333333333334,
+            "cap": 0.8333333333333334,
+            "normalized": 1.0
+          }
+        }
+      },
+      "timing": {
+        "mean_query_ms": 93.79,
+        "mean_dense_ms": 19.07
+      }
+    },
+    {
+      "w_dense": 25,
+      "disable_halt_syn": false,
+      "rows": [
+        {
+          "id": "Q1",
+          "split": "tune",
+          "dev_split": null,
+          "cov5": 1.0,
+          "hit_n": 3,
+          "exp_n": 3,
+          "passed": true,
+          "hit": [
+            "src/modules/communication/SerialConsole.cpp",
+            "src/modules/communication/GcodeDispatch.cpp",
+            "src/modules/utils/player/Player.cpp"
+          ],
+          "miss": [],
+          "vocab_mismatch": false,
+          "category": "",
+          "batch": "original"
+        },
+        {
+          "id": "Q2",
+          "split": "tune",
+          "dev_split": null,
+          "cov5": 1.0,
+          "hit_n": 5,
+          "exp_n": 5,
+          "passed": true,
+          "hit": [
+            "src/modules/communication/GcodeDispatch.cpp",
+            "src/modules/robot/Robot.cpp",
+            "src/modules/robot/Planner.cpp",
+            "src/modules/robot/Conveyor.cpp",
+            "src/libs/StepTicker.cpp"
+          ],
+          "miss": [],
+          "vocab_mismatch": false,
+          "category": "",
+          "batch": "original"
+        },
+        {
+          "id": "Q3",
+          "split": "tune",
+          "dev_split": null,
+          "cov5": 0.8333333333333334,
+          "hit_n": 5,
+          "exp_n": 6,
+          "passed": true,
+          "hit": [
+            "src/modules/robot/Planner.cpp",
+            "src/modules/robot/Block.cpp",
+            "src/modules/robot/Conveyor.cpp",
+            "src/libs/StepTicker.cpp",
+            "src/libs/StepperMotor.cpp"
+          ],
+          "miss": [
+            "src/modules/robot/Robot.cpp"
+          ],
+          "vocab_mismatch": false,
+          "category": "",
+          "batch": "original"
+        },
+        {
+          "id": "Q4",
+          "split": "tune",
+          "dev_split": null,
+          "cov5": 0.5714285714285714,
+          "hit_n": 4,
+          "exp_n": 7,
+          "passed": true,
+          "hit": [
+            "src/libs/Kernel.cpp",
+            "src/modules/tools/endstops/Endstops.cpp",
+            "src/modules/robot/Conveyor.cpp",
+            "src/libs/StepperMotor.cpp"
+          ],
+          "miss": [
+            "src/modules/communication/SerialConsole.cpp",
+            "src/modules/communication/GcodeDispatch.cpp",
+            "src/modules/utils/killbutton/KillButton.cpp"
+          ],
+          "vocab_mismatch": false,
+          "category": "",
+          "batch": "original"
+        },
+        {
+          "id": "Q5",
+          "split": "tune",
+          "dev_split": null,
+          "cov5": 0.8333333333333334,
+          "hit_n": 5,
+          "exp_n": 6,
+          "passed": true,
+          "hit": [
+            "src/libs/Module.cpp",
+            "src/libs/Kernel.h",
+            "src/libs/Kernel.cpp",
+            "src/main.cpp",
+            "src/libs/PublicData.cpp"
+          ],
+          "miss": [
+            "src/libs/Module.h"
+          ],
+          "vocab_mismatch": false,
+          "category": "",
+          "batch": "original"
+        },
+        {
+          "id": "H32",
+          "split": "holdout",
+          "dev_split": "tune",
+          "cov5": 0.5,
+          "hit_n": 1,
+          "exp_n": 2,
+          "passed": true,
+          "hit": [
+            "src/libs/Module.cpp"
+          ],
+          "miss": [
+            "src/libs/Kernel.cpp"
+          ],
+          "vocab_mismatch": true,
+          "category": "hub召回",
+          "batch": "expansion_v1"
+        },
+        {
+          "id": "H35",
+          "split": "holdout",
+          "dev_split": "tune",
+          "cov5": 0.5,
+          "hit_n": 1,
+          "exp_n": 2,
+          "passed": true,
+          "hit": [
+            "src/main.cpp"
+          ],
+          "miss": [
+            "src/libs/Kernel.cpp"
+          ],
+          "vocab_mismatch": true,
+          "category": "hub召回",
+          "batch": "expansion_v1"
+        },
+        {
+          "id": "H36",
+          "split": "holdout",
+          "dev_split": "tune",
+          "cov5": 0.5,
+          "hit_n": 1,
+          "exp_n": 2,
+          "passed": true,
+          "hit": [
+            "src/libs/Kernel.cpp"
+          ],
+          "miss": [
+            "src/libs/SlowTicker.cpp"
+          ],
+          "vocab_mismatch": true,
+          "category": "hub召回",
+          "batch": "expansion_v1"
+        },
+        {
+          "id": "H37",
+          "split": "holdout",
+          "dev_split": "tune",
+          "cov5": 0.0,
+          "hit_n": 0,
+          "exp_n": 3,
+          "passed": false,
+          "hit": [],
+          "miss": [
+            "src/libs/Module.h",
+            "src/libs/Kernel.cpp",
+            "src/main.cpp"
+          ],
+          "vocab_mismatch": true,
+          "category": "hub召回",
+          "batch": "expansion_v1"
+        },
+        {
+          "id": "H38",
+          "split": "holdout",
+          "dev_split": "tune",
+          "cov5": 0.5,
+          "hit_n": 1,
+          "exp_n": 2,
+          "passed": true,
+          "hit": [
+            "src/modules/utils/configurator/Configurator.cpp"
+          ],
+          "miss": [
+            "src/libs/Config.cpp"
+          ],
+          "vocab_mismatch": false,
+          "category": "hub召回",
+          "batch": "expansion_v1"
+        },
+        {
+          "id": "H39",
+          "split": "holdout",
+          "dev_split": "tune",
+          "cov5": 0.2,
+          "hit_n": 1,
+          "exp_n": 5,
+          "passed": true,
+          "hit": [
+            "src/modules/robot/Robot.cpp"
+          ],
+          "miss": [
+            "src/modules/communication/SerialConsole.cpp",
+            "src/modules/communication/GcodeDispatch.cpp",
+            "src/modules/robot/Conveyor.cpp",
+            "src/libs/StepTicker.cpp"
+          ],
+          "vocab_mismatch": false,
+          "category": "跨模块流程",
+          "batch": "expansion_v1"
+        },
+        {
+          "id": "H40",
+          "split": "holdout",
+          "dev_split": "tune",
+          "cov5": 0.5,
+          "hit_n": 1,
+          "exp_n": 2,
+          "passed": true,
+          "hit": [
+            "src/modules/tools/temperaturecontrol/TemperatureControl.cpp"
+          ],
+          "miss": [
+            "src/modules/communication/GcodeDispatch.cpp"
+          ],
+          "vocab_mismatch": false,
+          "category": "跨模块流程",
+          "batch": "expansion_v1"
+        },
+        {
+          "id": "H42",
+          "split": "holdout",
+          "dev_split": "tune",
+          "cov5": 0.5,
+          "hit_n": 1,
+          "exp_n": 2,
+          "passed": true,
+          "hit": [
+            "src/modules/robot/Planner.cpp"
+          ],
+          "miss": [
+            "src/modules/robot/Robot.cpp"
+          ],
+          "vocab_mismatch": false,
+          "category": "change-impact",
+          "batch": "expansion_v1"
+        }
+      ],
+      "stats": {
+        "all_mean": 0.5721611721611721,
+        "orig35_mean": 0.8476190476190476,
+        "vocab_mismatch_mean": 0.375,
+        "vocab_mismatch_n": 4,
+        "single_holdout_pass": 0,
+        "single_holdout_n": 0,
+        "single_holdout_miss": [],
+        "sealed_pass5": 0,
+        "sealed_n": 0,
+        "q_caps": {
+          "Q3": {
+            "cov5": 0.8333333333333334,
+            "cap": 1.0,
+            "normalized": 0.8333333333333334
+          },
+          "Q4": {
+            "cov5": 0.5714285714285714,
+            "cap": 0.7142857142857143,
+            "normalized": 0.7999999999999999
+          },
+          "Q5": {
+            "cov5": 0.8333333333333334,
+            "cap": 0.8333333333333334,
+            "normalized": 1.0
+          }
+        }
+      },
+      "timing": {
+        "mean_query_ms": 88.25,
+        "mean_dense_ms": 15.63
+      }
+    }
+  ],
+  "best_w": 20,
+  "baseline_dense0": {
+    "w_dense": 0,
+    "disable_halt_syn": false,
+    "rows": [
+      {
+        "id": "Q1",
+        "split": "tune",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 3,
+        "exp_n": 3,
+        "passed": true,
+        "hit": [
+          "src/modules/communication/SerialConsole.cpp",
+          "src/modules/communication/GcodeDispatch.cpp",
+          "src/modules/utils/player/Player.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "Q2",
+        "split": "tune",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 5,
+        "exp_n": 5,
+        "passed": true,
+        "hit": [
+          "src/modules/communication/GcodeDispatch.cpp",
+          "src/modules/robot/Robot.cpp",
+          "src/modules/robot/Planner.cpp",
+          "src/modules/robot/Conveyor.cpp",
+          "src/libs/StepTicker.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "Q3",
+        "split": "tune",
+        "dev_split": null,
+        "cov5": 0.8333333333333334,
+        "hit_n": 5,
+        "exp_n": 6,
+        "passed": true,
+        "hit": [
+          "src/modules/robot/Planner.cpp",
+          "src/modules/robot/Block.cpp",
+          "src/modules/robot/Conveyor.cpp",
+          "src/libs/StepTicker.cpp",
+          "src/libs/StepperMotor.cpp"
+        ],
+        "miss": [
+          "src/modules/robot/Robot.cpp"
+        ],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "Q4",
+        "split": "tune",
+        "dev_split": null,
+        "cov5": 0.5714285714285714,
+        "hit_n": 4,
+        "exp_n": 7,
+        "passed": true,
+        "hit": [
+          "src/libs/Kernel.cpp",
+          "src/modules/tools/endstops/Endstops.cpp",
+          "src/modules/robot/Conveyor.cpp",
+          "src/libs/StepperMotor.cpp"
+        ],
+        "miss": [
+          "src/modules/communication/SerialConsole.cpp",
+          "src/modules/communication/GcodeDispatch.cpp",
+          "src/modules/utils/killbutton/KillButton.cpp"
+        ],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "Q5",
+        "split": "tune",
+        "dev_split": null,
+        "cov5": 0.8333333333333334,
+        "hit_n": 5,
+        "exp_n": 6,
+        "passed": true,
+        "hit": [
+          "src/libs/Module.h",
+          "src/libs/Module.cpp",
+          "src/libs/Kernel.cpp",
+          "src/main.cpp",
+          "src/libs/PublicData.cpp"
+        ],
+        "miss": [
+          "src/libs/Kernel.h"
+        ],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H1",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 1,
+        "exp_n": 1,
+        "passed": true,
+        "hit": [
+          "src/modules/robot/Planner.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H2",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 1,
+        "exp_n": 1,
+        "passed": true,
+        "hit": [
+          "src/libs/Kernel.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H3",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 2,
+        "exp_n": 2,
+        "passed": true,
+        "hit": [
+          "src/modules/utils/killbutton/KillButton.cpp",
+          "src/libs/Kernel.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H4",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 1,
+        "exp_n": 1,
+        "passed": true,
+        "hit": [
+          "src/modules/tools/endstops/Endstops.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H5",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 1,
+        "exp_n": 1,
+        "passed": true,
+        "hit": [
+          "src/modules/robot/Block.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H6",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 1,
+        "exp_n": 1,
+        "passed": true,
+        "hit": [
+          "src/libs/StepTicker.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H7",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 1,
+        "exp_n": 1,
+        "passed": true,
+        "hit": [
+          "src/libs/StepperMotor.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H8",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 0.5,
+        "hit_n": 1,
+        "exp_n": 2,
+        "passed": true,
+        "hit": [
+          "src/main.cpp"
+        ],
+        "miss": [
+          "src/libs/Kernel.cpp"
+        ],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H9",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 2,
+        "exp_n": 2,
+        "passed": true,
+        "hit": [
+          "src/libs/PublicData.cpp",
+          "src/libs/PublicData.h"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H10",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 1,
+        "exp_n": 1,
+        "passed": true,
+        "hit": [
+          "src/modules/tools/temperaturecontrol/TemperatureControl.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H11",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 1,
+        "exp_n": 1,
+        "passed": true,
+        "hit": [
+          "src/libs/Config.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H12",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 1,
+        "exp_n": 1,
+        "passed": true,
+        "hit": [
+          "src/libs/ConfigSources/FileConfigSource.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H13",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 1,
+        "exp_n": 1,
+        "passed": true,
+        "hit": [
+          "src/libs/SlowTicker.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H14",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 1,
+        "exp_n": 1,
+        "passed": true,
+        "hit": [
+          "src/libs/Adc.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H15",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 1,
+        "exp_n": 1,
+        "passed": true,
+        "hit": [
+          "src/libs/Watchdog.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H16",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 1,
+        "exp_n": 1,
+        "passed": true,
+        "hit": [
+          "src/modules/tools/extruder/Extruder.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H17",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 1,
+        "exp_n": 1,
+        "passed": true,
+        "hit": [
+          "src/modules/tools/laser/Laser.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H18",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 1,
+        "exp_n": 1,
+        "passed": true,
+        "hit": [
+          "src/modules/tools/switch/Switch.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H19",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 1,
+        "exp_n": 1,
+        "passed": true,
+        "hit": [
+          "src/modules/tools/filamentdetector/FilamentDetector.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H20",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 1,
+        "exp_n": 1,
+        "passed": true,
+        "hit": [
+          "src/modules/tools/zprobe/ZProbe.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H21",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 1,
+        "exp_n": 1,
+        "passed": true,
+        "hit": [
+          "src/modules/tools/zprobe/DeltaGridStrategy.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H22",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 1,
+        "exp_n": 1,
+        "passed": true,
+        "hit": [
+          "src/modules/tools/zprobe/CartGridStrategy.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H23",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 1,
+        "exp_n": 1,
+        "passed": true,
+        "hit": [
+          "src/modules/tools/temperaturecontrol/PID_Autotuner.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H24",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 1,
+        "exp_n": 1,
+        "passed": true,
+        "hit": [
+          "src/modules/tools/temperaturecontrol/Thermistor.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H25",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 1,
+        "exp_n": 1,
+        "passed": true,
+        "hit": [
+          "src/modules/utils/currentcontrol/CurrentControl.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H26",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 1,
+        "exp_n": 1,
+        "passed": true,
+        "hit": [
+          "src/modules/robot/Robot.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H27",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 1,
+        "exp_n": 1,
+        "passed": true,
+        "hit": [
+          "src/modules/tools/temperaturecontrol/TemperatureControl.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H28",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 1,
+        "exp_n": 1,
+        "passed": true,
+        "hit": [
+          "src/modules/tools/laser/Laser.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H29",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 1,
+        "exp_n": 1,
+        "passed": true,
+        "hit": [
+          "src/modules/utils/currentcontrol/CurrentControl.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H30",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 1,
+        "exp_n": 1,
+        "passed": true,
+        "hit": [
+          "src/modules/utils/simpleshell/SimpleShell.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H31",
+        "split": "holdout",
+        "dev_split": "sealed",
+        "cov5": 0.0,
+        "hit_n": 0,
+        "exp_n": 3,
+        "passed": false,
+        "hit": [],
+        "miss": [
+          "src/libs/Kernel.cpp",
+          "src/libs/Module.cpp",
+          "src/main.cpp"
+        ],
+        "vocab_mismatch": true,
+        "category": "hub召回",
+        "batch": "expansion_v1"
+      },
+      {
+        "id": "H32",
+        "split": "holdout",
+        "dev_split": "tune",
+        "cov5": 0.0,
+        "hit_n": 0,
+        "exp_n": 2,
+        "passed": false,
+        "hit": [],
+        "miss": [
+          "src/libs/Kernel.cpp",
+          "src/libs/Module.cpp"
+        ],
+        "vocab_mismatch": true,
+        "category": "hub召回",
+        "batch": "expansion_v1"
+      },
+      {
+        "id": "H33",
+        "split": "holdout",
+        "dev_split": "sealed",
+        "cov5": 0.0,
+        "hit_n": 0,
+        "exp_n": 2,
+        "passed": false,
+        "hit": [],
+        "miss": [
+          "src/libs/ConfigSources/FileConfigSource.cpp",
+          "src/libs/Config.cpp"
+        ],
+        "vocab_mismatch": true,
+        "category": "hub召回",
+        "batch": "expansion_v1"
+      },
+      {
+        "id": "H34",
+        "split": "holdout",
+        "dev_split": "sealed",
+        "cov5": 0.0,
+        "hit_n": 0,
+        "exp_n": 2,
+        "passed": false,
+        "hit": [],
+        "miss": [
+          "src/libs/PublicData.cpp",
+          "src/libs/Kernel.cpp"
+        ],
+        "vocab_mismatch": true,
+        "category": "hub召回",
+        "batch": "expansion_v1"
+      },
+      {
+        "id": "H35",
+        "split": "holdout",
+        "dev_split": "tune",
+        "cov5": 0.0,
+        "hit_n": 0,
+        "exp_n": 2,
+        "passed": false,
+        "hit": [],
+        "miss": [
+          "src/main.cpp",
+          "src/libs/Kernel.cpp"
+        ],
+        "vocab_mismatch": true,
+        "category": "hub召回",
+        "batch": "expansion_v1"
+      },
+      {
+        "id": "H36",
+        "split": "holdout",
+        "dev_split": "tune",
+        "cov5": 0.5,
+        "hit_n": 1,
+        "exp_n": 2,
+        "passed": true,
+        "hit": [
+          "src/libs/Kernel.cpp"
+        ],
+        "miss": [
+          "src/libs/SlowTicker.cpp"
+        ],
+        "vocab_mismatch": true,
+        "category": "hub召回",
+        "batch": "expansion_v1"
+      },
+      {
+        "id": "H37",
+        "split": "holdout",
+        "dev_split": "tune",
+        "cov5": 0.0,
+        "hit_n": 0,
+        "exp_n": 3,
+        "passed": false,
+        "hit": [],
+        "miss": [
+          "src/libs/Module.h",
+          "src/libs/Kernel.cpp",
+          "src/main.cpp"
+        ],
+        "vocab_mismatch": true,
+        "category": "hub召回",
+        "batch": "expansion_v1"
+      },
+      {
+        "id": "H38",
+        "split": "holdout",
+        "dev_split": "tune",
+        "cov5": 0.0,
+        "hit_n": 0,
+        "exp_n": 2,
+        "passed": false,
+        "hit": [],
+        "miss": [
+          "src/modules/utils/configurator/Configurator.cpp",
+          "src/libs/Config.cpp"
+        ],
+        "vocab_mismatch": false,
+        "category": "hub召回",
+        "batch": "expansion_v1"
+      },
+      {
+        "id": "H39",
+        "split": "holdout",
+        "dev_split": "tune",
+        "cov5": 0.2,
+        "hit_n": 1,
+        "exp_n": 5,
+        "passed": true,
+        "hit": [
+          "src/modules/robot/Robot.cpp"
+        ],
+        "miss": [
+          "src/modules/communication/SerialConsole.cpp",
+          "src/modules/communication/GcodeDispatch.cpp",
+          "src/modules/robot/Conveyor.cpp",
+          "src/libs/StepTicker.cpp"
+        ],
+        "vocab_mismatch": false,
+        "category": "跨模块流程",
+        "batch": "expansion_v1"
+      },
+      {
+        "id": "H40",
+        "split": "holdout",
+        "dev_split": "tune",
+        "cov5": 0.5,
+        "hit_n": 1,
+        "exp_n": 2,
+        "passed": true,
+        "hit": [
+          "src/modules/tools/temperaturecontrol/TemperatureControl.cpp"
+        ],
+        "miss": [
+          "src/modules/communication/GcodeDispatch.cpp"
+        ],
+        "vocab_mismatch": false,
+        "category": "跨模块流程",
+        "batch": "expansion_v1"
+      },
+      {
+        "id": "H41",
+        "split": "holdout",
+        "dev_split": "sealed",
+        "cov5": 0.6666666666666666,
+        "hit_n": 2,
+        "exp_n": 3,
+        "passed": true,
+        "hit": [
+          "src/libs/Kernel.cpp",
+          "src/modules/robot/Conveyor.cpp"
+        ],
+        "miss": [
+          "src/modules/tools/endstops/Endstops.cpp"
+        ],
+        "vocab_mismatch": true,
+        "category": "跨模块流程",
+        "batch": "expansion_v1"
+      },
+      {
+        "id": "H42",
+        "split": "holdout",
+        "dev_split": "tune",
+        "cov5": 0.5,
+        "hit_n": 1,
+        "exp_n": 2,
+        "passed": true,
+        "hit": [
+          "src/modules/robot/Planner.cpp"
+        ],
+        "miss": [
+          "src/modules/robot/Robot.cpp"
+        ],
+        "vocab_mismatch": false,
+        "category": "change-impact",
+        "batch": "expansion_v1"
+      },
+      {
+        "id": "H43",
+        "split": "holdout",
+        "dev_split": "sealed",
+        "cov5": 0.3333333333333333,
+        "hit_n": 1,
+        "exp_n": 3,
+        "passed": true,
+        "hit": [
+          "src/libs/Kernel.cpp"
+        ],
+        "miss": [
+          "src/libs/Module.cpp",
+          "src/main.cpp"
+        ],
+        "vocab_mismatch": true,
+        "category": "change-impact",
+        "batch": "expansion_v1"
+      }
+    ],
+    "stats": {
+      "all_mean": 0.7591269841269842,
+      "orig35_mean": 0.9639455782312926,
+      "vocab_mismatch_mean": 0.16666666666666663,
+      "vocab_mismatch_n": 9,
+      "single_holdout_pass": 27,
+      "single_holdout_n": 27,
+      "single_holdout_miss": [],
+      "sealed_pass5": 2,
+      "sealed_n": 5,
+      "q_caps": {
+        "Q3": {
+          "cov5": 0.8333333333333334,
+          "cap": 1.0,
+          "normalized": 0.8333333333333334
+        },
+        "Q4": {
+          "cov5": 0.5714285714285714,
+          "cap": 0.7142857142857143,
+          "normalized": 0.7999999999999999
+        },
+        "Q5": {
+          "cov5": 0.8333333333333334,
+          "cap": 0.8333333333333334,
+          "normalized": 1.0
+        }
+      }
+    },
+    "timing": {
+      "mean_query_ms": 99.09,
+      "mean_dense_ms": 0.0
+    }
+  },
+  "final": {
+    "w_dense": 20,
+    "disable_halt_syn": false,
+    "rows": [
+      {
+        "id": "Q1",
+        "split": "tune",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 3,
+        "exp_n": 3,
+        "passed": true,
+        "hit": [
+          "src/modules/communication/SerialConsole.cpp",
+          "src/modules/communication/GcodeDispatch.cpp",
+          "src/modules/utils/player/Player.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "Q2",
+        "split": "tune",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 5,
+        "exp_n": 5,
+        "passed": true,
+        "hit": [
+          "src/modules/communication/GcodeDispatch.cpp",
+          "src/modules/robot/Robot.cpp",
+          "src/modules/robot/Planner.cpp",
+          "src/modules/robot/Conveyor.cpp",
+          "src/libs/StepTicker.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "Q3",
+        "split": "tune",
+        "dev_split": null,
+        "cov5": 0.8333333333333334,
+        "hit_n": 5,
+        "exp_n": 6,
+        "passed": true,
+        "hit": [
+          "src/modules/robot/Planner.cpp",
+          "src/modules/robot/Block.cpp",
+          "src/modules/robot/Conveyor.cpp",
+          "src/libs/StepTicker.cpp",
+          "src/libs/StepperMotor.cpp"
+        ],
+        "miss": [
+          "src/modules/robot/Robot.cpp"
+        ],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "Q4",
+        "split": "tune",
+        "dev_split": null,
+        "cov5": 0.5714285714285714,
+        "hit_n": 4,
+        "exp_n": 7,
+        "passed": true,
+        "hit": [
+          "src/libs/Kernel.cpp",
+          "src/modules/tools/endstops/Endstops.cpp",
+          "src/modules/robot/Conveyor.cpp",
+          "src/libs/StepperMotor.cpp"
+        ],
+        "miss": [
+          "src/modules/communication/SerialConsole.cpp",
+          "src/modules/communication/GcodeDispatch.cpp",
+          "src/modules/utils/killbutton/KillButton.cpp"
+        ],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "Q5",
+        "split": "tune",
+        "dev_split": null,
+        "cov5": 0.8333333333333334,
+        "hit_n": 5,
+        "exp_n": 6,
+        "passed": true,
+        "hit": [
+          "src/libs/Module.cpp",
+          "src/libs/Kernel.h",
+          "src/libs/Kernel.cpp",
+          "src/main.cpp",
+          "src/libs/PublicData.cpp"
+        ],
+        "miss": [
+          "src/libs/Module.h"
+        ],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H1",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 1,
+        "exp_n": 1,
+        "passed": true,
+        "hit": [
+          "src/modules/robot/Planner.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H2",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 1,
+        "exp_n": 1,
+        "passed": true,
+        "hit": [
+          "src/libs/Kernel.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H3",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 2,
+        "exp_n": 2,
+        "passed": true,
+        "hit": [
+          "src/modules/utils/killbutton/KillButton.cpp",
+          "src/libs/Kernel.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H4",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 1,
+        "exp_n": 1,
+        "passed": true,
+        "hit": [
+          "src/modules/tools/endstops/Endstops.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H5",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 1,
+        "exp_n": 1,
+        "passed": true,
+        "hit": [
+          "src/modules/robot/Block.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H6",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 1,
+        "exp_n": 1,
+        "passed": true,
+        "hit": [
+          "src/libs/StepTicker.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H7",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 1,
+        "exp_n": 1,
+        "passed": true,
+        "hit": [
+          "src/libs/StepperMotor.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H8",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 0.5,
+        "hit_n": 1,
+        "exp_n": 2,
+        "passed": true,
+        "hit": [
+          "src/main.cpp"
+        ],
+        "miss": [
+          "src/libs/Kernel.cpp"
+        ],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H9",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 2,
+        "exp_n": 2,
+        "passed": true,
+        "hit": [
+          "src/libs/PublicData.cpp",
+          "src/libs/PublicData.h"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H10",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 1,
+        "exp_n": 1,
+        "passed": true,
+        "hit": [
+          "src/modules/tools/temperaturecontrol/TemperatureControl.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H11",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 1,
+        "exp_n": 1,
+        "passed": true,
+        "hit": [
+          "src/libs/Config.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H12",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 1,
+        "exp_n": 1,
+        "passed": true,
+        "hit": [
+          "src/libs/ConfigSources/FileConfigSource.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H13",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 1,
+        "exp_n": 1,
+        "passed": true,
+        "hit": [
+          "src/libs/SlowTicker.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H14",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 1,
+        "exp_n": 1,
+        "passed": true,
+        "hit": [
+          "src/libs/Adc.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H15",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 1,
+        "exp_n": 1,
+        "passed": true,
+        "hit": [
+          "src/libs/Watchdog.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H16",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 1,
+        "exp_n": 1,
+        "passed": true,
+        "hit": [
+          "src/modules/tools/extruder/Extruder.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H17",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 1,
+        "exp_n": 1,
+        "passed": true,
+        "hit": [
+          "src/modules/tools/laser/Laser.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H18",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 1,
+        "exp_n": 1,
+        "passed": true,
+        "hit": [
+          "src/modules/tools/switch/Switch.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H19",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 1,
+        "exp_n": 1,
+        "passed": true,
+        "hit": [
+          "src/modules/tools/filamentdetector/FilamentDetector.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H20",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 1,
+        "exp_n": 1,
+        "passed": true,
+        "hit": [
+          "src/modules/tools/zprobe/ZProbe.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H21",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 1,
+        "exp_n": 1,
+        "passed": true,
+        "hit": [
+          "src/modules/tools/zprobe/DeltaGridStrategy.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H22",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 1,
+        "exp_n": 1,
+        "passed": true,
+        "hit": [
+          "src/modules/tools/zprobe/CartGridStrategy.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H23",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 1,
+        "exp_n": 1,
+        "passed": true,
+        "hit": [
+          "src/modules/tools/temperaturecontrol/PID_Autotuner.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H24",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 1,
+        "exp_n": 1,
+        "passed": true,
+        "hit": [
+          "src/modules/tools/temperaturecontrol/Thermistor.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H25",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 1,
+        "exp_n": 1,
+        "passed": true,
+        "hit": [
+          "src/modules/utils/currentcontrol/CurrentControl.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H26",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 1,
+        "exp_n": 1,
+        "passed": true,
+        "hit": [
+          "src/modules/robot/Robot.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H27",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 1,
+        "exp_n": 1,
+        "passed": true,
+        "hit": [
+          "src/modules/tools/temperaturecontrol/TemperatureControl.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H28",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 1,
+        "exp_n": 1,
+        "passed": true,
+        "hit": [
+          "src/modules/tools/laser/Laser.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H29",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 1,
+        "exp_n": 1,
+        "passed": true,
+        "hit": [
+          "src/modules/utils/currentcontrol/CurrentControl.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H30",
+        "split": "holdout",
+        "dev_split": null,
+        "cov5": 1.0,
+        "hit_n": 1,
+        "exp_n": 1,
+        "passed": true,
+        "hit": [
+          "src/modules/utils/simpleshell/SimpleShell.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": false,
+        "category": "",
+        "batch": "original"
+      },
+      {
+        "id": "H31",
+        "split": "holdout",
+        "dev_split": "sealed",
+        "cov5": 0.6666666666666666,
+        "hit_n": 2,
+        "exp_n": 3,
+        "passed": true,
+        "hit": [
+          "src/libs/Kernel.cpp",
+          "src/main.cpp"
+        ],
+        "miss": [
+          "src/libs/Module.cpp"
+        ],
+        "vocab_mismatch": true,
+        "category": "hub召回",
+        "batch": "expansion_v1"
+      },
+      {
+        "id": "H32",
+        "split": "holdout",
+        "dev_split": "tune",
+        "cov5": 0.5,
+        "hit_n": 1,
+        "exp_n": 2,
+        "passed": true,
+        "hit": [
+          "src/libs/Module.cpp"
+        ],
+        "miss": [
+          "src/libs/Kernel.cpp"
+        ],
+        "vocab_mismatch": true,
+        "category": "hub召回",
+        "batch": "expansion_v1"
+      },
+      {
+        "id": "H33",
+        "split": "holdout",
+        "dev_split": "sealed",
+        "cov5": 0.0,
+        "hit_n": 0,
+        "exp_n": 2,
+        "passed": false,
+        "hit": [],
+        "miss": [
+          "src/libs/ConfigSources/FileConfigSource.cpp",
+          "src/libs/Config.cpp"
+        ],
+        "vocab_mismatch": true,
+        "category": "hub召回",
+        "batch": "expansion_v1"
+      },
+      {
+        "id": "H34",
+        "split": "holdout",
+        "dev_split": "sealed",
+        "cov5": 0.5,
+        "hit_n": 1,
+        "exp_n": 2,
+        "passed": true,
+        "hit": [
+          "src/libs/Kernel.cpp"
+        ],
+        "miss": [
+          "src/libs/PublicData.cpp"
+        ],
+        "vocab_mismatch": true,
+        "category": "hub召回",
+        "batch": "expansion_v1"
+      },
+      {
+        "id": "H35",
+        "split": "holdout",
+        "dev_split": "tune",
+        "cov5": 0.5,
+        "hit_n": 1,
+        "exp_n": 2,
+        "passed": true,
+        "hit": [
+          "src/main.cpp"
+        ],
+        "miss": [
+          "src/libs/Kernel.cpp"
+        ],
+        "vocab_mismatch": true,
+        "category": "hub召回",
+        "batch": "expansion_v1"
+      },
+      {
+        "id": "H36",
+        "split": "holdout",
+        "dev_split": "tune",
+        "cov5": 1.0,
+        "hit_n": 2,
+        "exp_n": 2,
+        "passed": true,
+        "hit": [
+          "src/libs/SlowTicker.cpp",
+          "src/libs/Kernel.cpp"
+        ],
+        "miss": [],
+        "vocab_mismatch": true,
+        "category": "hub召回",
+        "batch": "expansion_v1"
+      },
+      {
+        "id": "H37",
+        "split": "holdout",
+        "dev_split": "tune",
+        "cov5": 0.0,
+        "hit_n": 0,
+        "exp_n": 3,
+        "passed": false,
+        "hit": [],
+        "miss": [
+          "src/libs/Module.h",
+          "src/libs/Kernel.cpp",
+          "src/main.cpp"
+        ],
+        "vocab_mismatch": true,
+        "category": "hub召回",
+        "batch": "expansion_v1"
+      },
+      {
+        "id": "H38",
+        "split": "holdout",
+        "dev_split": "tune",
+        "cov5": 0.5,
+        "hit_n": 1,
+        "exp_n": 2,
+        "passed": true,
+        "hit": [
+          "src/modules/utils/configurator/Configurator.cpp"
+        ],
+        "miss": [
+          "src/libs/Config.cpp"
+        ],
+        "vocab_mismatch": false,
+        "category": "hub召回",
+        "batch": "expansion_v1"
+      },
+      {
+        "id": "H39",
+        "split": "holdout",
+        "dev_split": "tune",
+        "cov5": 0.2,
+        "hit_n": 1,
+        "exp_n": 5,
+        "passed": true,
+        "hit": [
+          "src/modules/robot/Robot.cpp"
+        ],
+        "miss": [
+          "src/modules/communication/SerialConsole.cpp",
+          "src/modules/communication/GcodeDispatch.cpp",
+          "src/modules/robot/Conveyor.cpp",
+          "src/libs/StepTicker.cpp"
+        ],
+        "vocab_mismatch": false,
+        "category": "跨模块流程",
+        "batch": "expansion_v1"
+      },
+      {
+        "id": "H40",
+        "split": "holdout",
+        "dev_split": "tune",
+        "cov5": 0.5,
+        "hit_n": 1,
+        "exp_n": 2,
+        "passed": true,
+        "hit": [
+          "src/modules/tools/temperaturecontrol/TemperatureControl.cpp"
+        ],
+        "miss": [
+          "src/modules/communication/GcodeDispatch.cpp"
+        ],
+        "vocab_mismatch": false,
+        "category": "跨模块流程",
+        "batch": "expansion_v1"
+      },
+      {
+        "id": "H41",
+        "split": "holdout",
+        "dev_split": "sealed",
+        "cov5": 0.6666666666666666,
+        "hit_n": 2,
+        "exp_n": 3,
+        "passed": true,
+        "hit": [
+          "src/modules/tools/endstops/Endstops.cpp",
+          "src/libs/Kernel.cpp"
+        ],
+        "miss": [
+          "src/modules/robot/Conveyor.cpp"
+        ],
+        "vocab_mismatch": true,
+        "category": "跨模块流程",
+        "batch": "expansion_v1"
+      },
+      {
+        "id": "H42",
+        "split": "holdout",
+        "dev_split": "tune",
+        "cov5": 0.5,
+        "hit_n": 1,
+        "exp_n": 2,
+        "passed": true,
+        "hit": [
+          "src/modules/robot/Planner.cpp"
+        ],
+        "miss": [
+          "src/modules/robot/Robot.cpp"
+        ],
+        "vocab_mismatch": false,
+        "category": "change-impact",
+        "batch": "expansion_v1"
+      },
+      {
+        "id": "H43",
+        "split": "holdout",
+        "dev_split": "sealed",
+        "cov5": 0.3333333333333333,
+        "hit_n": 1,
+        "exp_n": 3,
+        "passed": true,
+        "hit": [
+          "src/libs/Kernel.cpp"
+        ],
+        "miss": [
+          "src/libs/Module.cpp",
+          "src/main.cpp"
+        ],
+        "vocab_mismatch": true,
+        "category": "change-impact",
+        "batch": "expansion_v1"
+      }
+    ],
+    "stats": {
+      "all_mean": 0.8250992063492064,
+      "orig35_mean": 0.9639455782312926,
+      "vocab_mismatch_mean": 0.4629629629629629,
+      "vocab_mismatch_n": 9,
+      "single_holdout_pass": 27,
+      "single_holdout_n": 27,
+      "single_holdout_miss": [],
+      "sealed_pass5": 4,
+      "sealed_n": 5,
+      "q_caps": {
+        "Q3": {
+          "cov5": 0.8333333333333334,
+          "cap": 1.0,
+          "normalized": 0.8333333333333334
+        },
+        "Q4": {
+          "cov5": 0.5714285714285714,
+          "cap": 0.7142857142857143,
+          "normalized": 0.7999999999999999
+        },
+        "Q5": {
+          "cov5": 0.8333333333333334,
+          "cap": 0.8333333333333334,
+          "normalized": 1.0
+        }
+      }
+    },
+    "timing": {
+      "mean_query_ms": 118.31,
+      "mean_dense_ms": 18.02
+    }
+  },
+  "h3_ablation": {
+    "hint_on_w0": {
+      "cov5": 1.0,
+      "kernel_in_top5": true,
+      "killbutton_in_top5": true,
+      "top5_files": [
+        "src/libs/Kernel.cpp",
+        "src/libs/StepperMotor.cpp",
+        "src/modules/robot/Conveyor.cpp",
+        "src/modules/utils/killbutton/KillButton.cpp",
+        "src/modules/tools/endstops/Endstops.cpp"
+      ]
+    },
+    "hint_off_w0": {
+      "cov5": 0.5,
+      "kernel_in_top5": false,
+      "killbutton_in_top5": true,
+      "top5_files": [
+        "src/modules/utils/killbutton/KillButton.cpp",
+        "src/modules/utils/panel/Button.cpp",
+        "src/modules/utils/killbutton/KillButton.h",
+        "src/modules/utils/panel/Button.h",
+        "src/modules/utils/killbutton/KillButton.cpp",
+        "src/modules/utils/panel/Panel.h",
+        "src/main.cpp",
+        "src/libs/Module.h"
+      ]
+    },
+    "hint_off_wbest": {
+      "cov5": 0.5,
+      "kernel_in_top5": false,
+      "killbutton_in_top5": true,
+      "top5_files": [
+        "src/modules/utils/killbutton/KillButton.cpp",
+        "src/modules/utils/panel/Button.cpp",
+        "src/modules/utils/killbutton/KillButton.h",
+        "src/modules/utils/panel/Button.h",
+        "src/modules/utils/killbutton/KillButton.cpp",
+        "src/modules/utils/panel/Panel.h",
+        "src/main.cpp",
+        "src/libs/Module.h"
+      ]
+    }
+  }
+}

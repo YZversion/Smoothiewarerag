@@ -32,6 +32,7 @@ SRC_ROOT = DEFAULT_REPO_ROOT / "src"
 CALL_GRAPH_PATH = LAB_ROOT / "data" / "call_graph.json"
 DISPATCH_INDEX_PATH = LAB_ROOT / "data" / "dispatch_index.json"
 REPOMAP_GRAPH_PATH = LAB_ROOT / "data" / "repomap_graph.json"
+DENSE_INDEX_DIR = LAB_ROOT / "data" / "dense_index"
 
 EVAL_COV5_GATE = 0.70
 
@@ -43,6 +44,12 @@ W_DISPATCH = 140.0
 W_RG = 50.0
 W_BM25 = 10.0
 W_GRAPH = 25.0
+W_DENSE_DEFAULT = 20.0
+DENSE_TOP_K = 50
+KB_W_DENSE_ENV = "KB_W_DENSE"
+KB_DISABLE_DENSE_ENV = "KB_DISABLE_DENSE"
+KB_DISABLE_HALT_SYNONYMS_ENV = "KB_DISABLE_HALT_SYNONYMS"
+KB_DISABLE_RG_PATH_CACHE_ENV = "KB_DISABLE_RG_PATH_CACHE"
 TYPE_BONUS: dict[str, float] = {
     "function": 3.0, "class": 2.0, "file_overview": 1.0, "fallback": 0.0,
 }
@@ -104,8 +111,24 @@ def _hint_motion_structure(query: str, ql: str) -> bool:
 
 
 def _hint_halt(query: str, ql: str) -> bool:
-    keys = ("halt", "stop", "emergency", "停止", "报警", "急停", "紧急停止")
+    keys = ("halt", "stop", "emergency", "停止", "报警")
+    if os.environ.get(KB_DISABLE_HALT_SYNONYMS_ENV, "").strip().lower() not in (
+        "1", "true", "yes",
+    ):
+        keys = keys + ("急停", "紧急停止")
     return any(k in ql or k in query for k in keys)
+
+
+def dense_weight() -> float:
+    if os.environ.get(KB_DISABLE_DENSE_ENV, "").strip().lower() in ("1", "true", "yes"):
+        return 0.0
+    raw = os.environ.get(KB_W_DENSE_ENV, "").strip()
+    if raw:
+        try:
+            return max(0.0, float(raw))
+        except ValueError:
+            pass
+    return W_DENSE_DEFAULT
 
 
 def _hint_module(query: str, ql: str) -> bool:
@@ -243,6 +266,8 @@ class SearchIndex:
         self._CALL_GRAPH: dict = {}
         self._DISPATCH_INDEX: list[dict] = []
         self._REPOMAP: dict = {}
+        self._DENSE = None
+        self._last_dense_ms: float = 0.0
         self._ENABLE_REPORANK: bool = (
             os.environ.get(ENABLE_REPORANK_ENV, "").strip() == "1"
         )
@@ -348,6 +373,46 @@ class SearchIndex:
         self._load_call_graph()
         self._load_dispatch_index()
         self._load_repomap()
+        if dense_weight() > 0:
+            self.load_dense_index(chunks_path=chunks_path)
+
+    def search_dense(self, query: str) -> dict[str, float]:
+        w = dense_weight()
+        if w <= 0 or not self._DENSE:
+            self._last_dense_ms = 0.0
+            return {}
+        hits, elapsed_ms = self._DENSE.search(query, top_k=DENSE_TOP_K)
+        self._last_dense_ms = elapsed_ms
+        if not hits:
+            return {}
+        mx = max(sc for _, sc in hits)
+        if mx <= 0:
+            return {}
+        return {cid: (sc / mx) * w for cid, sc in hits}
+
+    def load_dense_index(
+        self,
+        index_dir: Path = DENSE_INDEX_DIR,
+        chunks_path: Path = CHUNKS_PATH,
+        *,
+        force: bool = False,
+    ) -> bool:
+        if not force and dense_weight() <= 0:
+            self._DENSE = None
+            return False
+        from search.dense_index import DenseIndex
+
+        di = DenseIndex(index_dir)
+        if not di.load():
+            return False
+        ok, reason = di.verify_compatibility(chunks_path)
+        if not ok:
+            raise KBIndexError(
+                "dense index stale/incompatible; rebuild required. "
+                f"{reason}. Run: python scripts/build_dense_index.py"
+            )
+        self._DENSE = di
+        return True
 
     # ── Chunk 查询 ────────────────────────────────────────────
 
@@ -673,12 +738,44 @@ class SearchIndex:
             for i, score in candidates[:BM25_CANDIDATE_LIMIT]
         }
 
-    def _rg_path_to_manifest(self, path_part: str, repo_root: Path) -> str | None:
+    def _rg_path_to_manifest(
+        self,
+        path_part: str,
+        repo_root: Path,
+        cache: dict[str, str | None] | None = None,
+    ) -> str | None:
+        if cache is not None and path_part in cache:
+            return cache[path_part]
+        path_norm = path_part.replace("\\", "/")
+        root_norm = str(repo_root.resolve()).replace("\\", "/")
+        path_fold = path_norm.lower()
+        root_fold = root_norm.lower()
+        if path_fold == root_fold:
+            out = ""
+            if cache is not None:
+                cache[path_part] = out
+            return out
+        prefix = root_fold + "/"
+        if path_fold.startswith(prefix):
+            out = path_norm[len(root_norm) + 1:]
+            if cache is not None:
+                cache[path_part] = out
+            return out
+        if not Path(path_part).is_absolute():
+            out = path_norm
+            if cache is not None:
+                cache[path_part] = out
+            return out
         try:
-            return str(
+            out = str(
                 Path(path_part).resolve().relative_to(repo_root)
             ).replace("\\", "/")
+            if cache is not None:
+                cache[path_part] = out
+            return out
         except ValueError:
+            if cache is not None:
+                cache[path_part] = None
             return None
 
     def _candidate_files_from_scores(
@@ -736,13 +833,17 @@ class SearchIndex:
             return {}
 
         scores: dict[str, float] = {}
+        use_cache = os.environ.get(KB_DISABLE_RG_PATH_CACHE_ENV, "").strip().lower() not in (
+            "1", "true", "yes",
+        )
+        rg_path_cache: dict[str, str | None] | None = {} if use_cache else None
         for line in result.stdout.splitlines():
             if ":" not in line:
                 continue
             parts = line.split(":", 2)
             if len(parts) < 3:
                 continue
-            rel = self._rg_path_to_manifest(parts[0], repo_root)
+            rel = self._rg_path_to_manifest(parts[0], repo_root, cache=rg_path_cache)
             if not rel:
                 continue
             try:
@@ -1031,9 +1132,10 @@ class SearchIndex:
             repo_root=repo,
         )
         rg_scores = self.search_rg(tokens, src, repo, candidate_files=rg_candidates)
+        dense_scores = self.search_dense(query)
         merged = self.merge_scores(
             method_scores, class_scores, dispatch_scores,
-            sym_scores, bm25_scores, rg_scores,
+            sym_scores, bm25_scores, rg_scores, dense_scores,
             query_tokens=tokens, query=query,
         )
 
@@ -1045,6 +1147,7 @@ class SearchIndex:
                     ("method", method_scores), ("class", class_scores),
                     ("dispatch", dispatch_scores), ("symbol", sym_scores),
                     ("bm25", bm25_scores), ("rg", rg_scores),
+                    ("dense", dense_scores),
                 )
                 if cid in m
             ]
@@ -1188,6 +1291,7 @@ class SearchIndex:
         src_root: Path | None = None,
         repo_root: Path | None = None,
         enable_reporank: bool | None = None,
+        unseal: bool = False,
     ) -> int:
         data = json.loads(eval_path.read_text(encoding="utf-8"))
         questions = data["questions"]
@@ -1197,17 +1301,30 @@ class SearchIndex:
             f"eval: {eval_path.name} ({len(questions)} questions: "
             f"{n_tune} tune + {n_hold} holdout)\n"
         )
+        if unseal:
+            print("[UNSEAL] sealed details enabled for this run.\n")
         summary = self.eval_summary(
             eval_path, src_root=src_root, repo_root=repo_root,
             enable_reporank=enable_reporank,
         )
+        question_map = {q["id"]: q for q in questions}
+        sealed_rows = []
         current_split = None
         for d in summary["details"]:
             sp = d["split"]
             if sp != current_split:
                 current_split = sp
                 print(f"--- {sp} ---")
-            q = next(x for x in questions if x["id"] == d["id"])
+            q = question_map[d["id"]]
+            is_sealed = q.get("dev_split") == "sealed"
+            if is_sealed and not unseal:
+                sealed_rows.append(d)
+                print(
+                    f"{d['id']} [SEALED] {'PASS' if d['ok5'] else 'FAIL'}@5 / "
+                    f"{'PASS' if d['ok10'] else 'FAIL'}@10"
+                )
+                print()
+                continue
             groups = matched_hint_groups(q["question"])
             ghint = ",".join(groups) if groups else "(none)"
             print(
@@ -1222,6 +1339,14 @@ class SearchIndex:
             if d["miss5"]:
                 print(f"  miss@5: {d['miss5']}")
             print()
+
+        if sealed_rows and not unseal:
+            pass5 = sum(1 for d in sealed_rows if d["ok5"])
+            pass10 = sum(1 for d in sealed_rows if d["ok10"])
+            print(
+                f"[SEALED] aggregate only: Recall@5 {pass5}/{len(sealed_rows)}  "
+                f"Recall@10 {pass10}/{len(sealed_rows)}\n"
+            )
 
         print("=" * 50)
         t, h = summary["tune"], summary["holdout"]
