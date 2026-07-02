@@ -51,3 +51,4 @@
 - 影响评估：sealed 裁决效力受损（尤其是机制验证场景），后续重大机制验收前需评估是否更换 sealed 题集。
 - 根因：存在 eval 输出路径直接消费 `eval_summary().details`，未统一走 `run_eval()` 的 sealed 输出保护。
 - 修复：sealed 脱敏下沉到 `eval_summary(unseal=False)` 默认行为；所有入口默认仅保留 sealed PASS/FAIL。仅 `--unseal` 显式开启明细，并保留 `[UNSEAL]` 日志。
+- 交叉验证：lexical-tier 实测 `mean_cov@5 = 75.91%`（约 76%），与 dense 转正前基线 75.9% 一致，支持“本次 CI 失败主因是环境视差而非检索逻辑回归”的诊断。

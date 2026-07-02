@@ -35,6 +35,7 @@ REPOMAP_GRAPH_PATH = LAB_ROOT / "data" / "repomap_graph.json"
 DENSE_INDEX_DIR = LAB_ROOT / "data" / "dense_index"
 
 EVAL_COV5_GATE = 0.70
+KB_EVAL_COV5_GATE_ENV = "KB_EVAL_COV5_GATE"
 
 # ── 检索权重常量 ───────────────────────────────────────────────
 W_SYMBOL = 100.0
@@ -120,7 +121,7 @@ def _hint_halt(query: str, ql: str) -> bool:
 
 
 def dense_weight() -> float:
-    if os.environ.get(KB_DISABLE_DENSE_ENV, "").strip().lower() in ("1", "true", "yes"):
+    if dense_disabled_explicit():
         return 0.0
     raw = os.environ.get(KB_W_DENSE_ENV, "").strip()
     if raw:
@@ -129,6 +130,29 @@ def dense_weight() -> float:
         except ValueError:
             pass
     return W_DENSE_DEFAULT
+
+
+def dense_disabled_explicit() -> bool:
+    return os.environ.get(KB_DISABLE_DENSE_ENV, "").strip().lower() in ("1", "true", "yes")
+
+
+def active_retrieval_tier() -> str:
+    return "lexical-tier" if dense_disabled_explicit() else "full-tier"
+
+
+def eval_cov5_gate() -> float:
+    raw = os.environ.get(KB_EVAL_COV5_GATE_ENV, "").strip()
+    if not raw:
+        return EVAL_COV5_GATE
+    try:
+        val = float(raw)
+    except ValueError:
+        return EVAL_COV5_GATE
+    return min(1.0, max(0.0, val))
+
+
+def eval_cov5_gate_source() -> str:
+    return "KB_EVAL_COV5_GATE" if os.environ.get(KB_EVAL_COV5_GATE_ENV, "").strip() else "local default"
 
 
 def _hint_module(query: str, ql: str) -> bool:
@@ -271,6 +295,7 @@ class SearchIndex:
         self._ENABLE_REPORANK: bool = (
             os.environ.get(ENABLE_REPORANK_ENV, "").strip() == "1"
         )
+        self._warned_dense_disabled = False
 
     # ── 静态工具 ─────────────────────────────────────────────
 
@@ -374,7 +399,16 @@ class SearchIndex:
         self._load_dispatch_index()
         self._load_repomap()
         if dense_weight() > 0:
-            self.load_dense_index(chunks_path=chunks_path)
+            loaded = self.load_dense_index(chunks_path=chunks_path)
+            if not loaded:
+                raise KBIndexError(
+                    "dense index unavailable; fail-loud by default. "
+                    "Run: python scripts/build_dense_index.py "
+                    "or set KB_DISABLE_DENSE=1 for lexical-tier mode."
+                )
+        elif dense_disabled_explicit() and not self._warned_dense_disabled:
+            print("[WARN] DENSE DISABLED (KB_DISABLE_DENSE=1) — lexical-tier mode.")
+            self._warned_dense_disabled = True
 
     def search_dense(self, query: str) -> dict[str, float]:
         w = dense_weight()
@@ -1247,6 +1281,7 @@ class SearchIndex:
     ) -> dict:
         data = json.loads(eval_path.read_text(encoding="utf-8"))
         questions = data["questions"]
+        question_map = {q["id"]: q for q in questions}
         rows5 = self._split_stats(
             questions, 5, src_root=src_root, repo_root=repo_root,
             enable_reporank=enable_reporank,
@@ -1260,7 +1295,7 @@ class SearchIndex:
         details = []
         for r5 in rows5:
             r10 = by_id10[r5["id"]]
-            q = next((x for x in questions if x["id"] == r5["id"]), None)
+            q = question_map.get(r5["id"])
             is_sealed = bool(q and q.get("dev_split") == "sealed")
             if is_sealed and not unseal:
                 hit5 = []
@@ -1281,13 +1316,19 @@ class SearchIndex:
         tune5 = self._aggregate(rows5, "tune")
         hold5 = self._aggregate(rows5, "holdout")
         all5 = self._aggregate(rows5)
+        gate = eval_cov5_gate()
         return {
+            "tier": active_retrieval_tier(),
+            "dense_enabled": dense_weight() > 0,
+            "dense_weight": dense_weight(),
+            "gate_source": eval_cov5_gate_source(),
             "total": len(questions),
             "pass5": all5["pass"],
             "pass10": sum(1 for r in rows10 if r["passed"]),
             "mean_cov5": all5["mean_coverage"],
-            "gate_ok": all5["mean_coverage"] >= EVAL_COV5_GATE,
-            "recall5_ok": all5["mean_coverage"] >= EVAL_COV5_GATE,
+            "gate_ok": all5["mean_coverage"] >= gate,
+            "gate_cov5": gate,
+            "recall5_ok": all5["mean_coverage"] >= gate,
             "tune": {"pass5": tune5["pass"], "count": tune5["count"],
                      "mean_cov5": tune5["mean_coverage"]},
             "holdout": {"pass5": hold5["pass"], "count": hold5["count"],
@@ -1311,6 +1352,11 @@ class SearchIndex:
             f"eval: {eval_path.name} ({len(questions)} questions: "
             f"{n_tune} tune + {n_hold} holdout)\n"
         )
+        tier = active_retrieval_tier()
+        dense_on = "on" if dense_weight() > 0 else "off"
+        print(f"[CONFIG] tier={tier} dense={dense_on} w_dense={dense_weight():g}")
+        if dense_disabled_explicit():
+            print("[WARN] DENSE DISABLED (KB_DISABLE_DENSE=1)\n")
         if unseal:
             print("[UNSEAL] sealed details enabled for this run.\n")
         summary = self.eval_summary(
@@ -1368,10 +1414,11 @@ class SearchIndex:
             f"holdout  Recall@5: {h['pass5']}/{h['count']}  "
             f"mean_cov@5: {h['mean_cov5']:.0%}  (report only)"
         )
-        gate = EVAL_COV5_GATE
+        gate = summary.get("gate_cov5", eval_cov5_gate())
+        gate_source = summary.get("gate_source", eval_cov5_gate_source())
         print(
             f"all      Recall@5: {summary['pass5']}/{summary['total']}  "
-            f"mean_cov@5: {summary['mean_cov5']:.0%}  "
+            f"mean_cov@5: {summary['mean_cov5']:.0%}  gate={gate:.0%} ({gate_source})  "
             f"{'PASS' if summary['gate_ok'] else f'FAIL (need mean cov@5 >= {gate:.0%})'}"
         )
         return 0 if summary["gate_ok"] else 1

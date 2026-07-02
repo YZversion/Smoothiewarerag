@@ -65,3 +65,6 @@
 ## 变更记录
 
 - 2026-07-02：dense@20 人工裁决转正，建立本 baseline。
+- lexical-tier 参考点（`KB_DISABLE_DENSE=1`）：
+  - 实测全量 48 题 `mean_cov@5 = 75.91%`（`0.7591269841`，即历史 75.9% 口径）。
+  - CI lexical gate 设为 `72%`，依据“先实测再留余量”原则（约 3.9pp buffer），不是先拍门槛再反推。

@@ -83,6 +83,14 @@ def main(skip_llm: bool | None = None) -> int:
     failed = False
     print("=== [1/4] Recall@K + coverage (03_search) ===\n")
     summary = search.eval_summary(EVAL_PATH)
+    tier = summary.get("tier", "unknown")
+    dense_on = "on" if summary.get("dense_enabled") else "off"
+    gate_cov5 = summary.get("gate_cov5", search.EVAL_COV5_GATE)
+    gate_source = summary.get("gate_source", "local default")
+    print(
+        f"  [CONFIG] tier={tier} dense={dense_on} gate_cov5={gate_cov5:.0%} "
+        f"source={gate_source}\n"
+    )
     current_split = None
     for d in summary["details"]:
         sp = d["split"]
@@ -100,9 +108,9 @@ def main(skip_llm: bool | None = None) -> int:
           f"mean_cov@5: {h['mean_cov5']:.0%}  (report only)")
     if not summary["gate_ok"]:
         failed = True
-        print(f"  FAIL: mean cov@5 需要 >= {search.EVAL_COV5_GATE:.0%}")
+        print(f"  FAIL: mean cov@5 需要 >= {gate_cov5:.0%}")
     else:
-        print(f"  PASS (gate: all mean cov@5 >= {search.EVAL_COV5_GATE:.0%})")
+        print(f"  PASS (gate: all mean cov@5 >= {gate_cov5:.0%})")
 
     print("\n=== [2/4] Bundle coverage (03_search --bundle) ===\n")
     data = json.loads(EVAL_PATH.read_text(encoding="utf-8"))
