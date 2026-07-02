@@ -59,7 +59,23 @@ REPORANK_ITERS = 30
 REPORANK_EXTRAS = 3
 REPORANK_SCORE_SCALE = 1000.0
 BM25_CANDIDATE_LIMIT = 200
-RG_CANDIDATE_FILE_LIMIT = 12
+RG_CANDIDATE_FILE_LIMIT_DEFAULT = 12
+KB_HALT_HINT_EXTENDED_ENV = "KB_HALT_HINT_EXTENDED"
+RG_CANDIDATE_FILE_LIMIT_ENV = "RG_CANDIDATE_FILE_LIMIT"
+
+
+def rg_candidate_file_limit() -> int:
+    raw = os.environ.get(RG_CANDIDATE_FILE_LIMIT_ENV, "").strip()
+    if raw:
+        try:
+            return max(1, int(raw))
+        except ValueError:
+            pass
+    return RG_CANDIDATE_FILE_LIMIT_DEFAULT
+
+
+# backward-compat name used by diagnostics
+RG_CANDIDATE_FILE_LIMIT = RG_CANDIDATE_FILE_LIMIT_DEFAULT
 
 SNIPPET_DEFAULT_LINES = 10
 SNIPPET_EVENT_MARKERS = ("call_event", "THEKERNEL->call_event")
@@ -105,6 +121,8 @@ def _hint_motion_structure(query: str, ql: str) -> bool:
 
 def _hint_halt(query: str, ql: str) -> bool:
     keys = ("halt", "stop", "emergency", "停止", "报警")
+    if os.environ.get(KB_HALT_HINT_EXTENDED_ENV, "").strip().lower() in ("1", "true", "yes"):
+        keys = keys + ("急停", "紧急停止")
     return any(k in ql or k in query for k in keys)
 
 
@@ -685,8 +703,9 @@ class SearchIndex:
         self,
         *score_maps: dict[str, float],
         repo_root: Path,
-        limit: int = RG_CANDIDATE_FILE_LIMIT,
+        limit: int | None = None,
     ) -> list[Path]:
+        lim = limit if limit is not None else rg_candidate_file_limit()
         file_scores: dict[str, float] = {}
         for score_map in score_maps:
             for cid, score in score_map.items():
@@ -697,7 +716,7 @@ class SearchIndex:
                 file_scores[file] = max(file_scores.get(file, 0.0), float(score))
 
         paths: list[Path] = []
-        for file, _score in sorted(file_scores.items(), key=lambda item: -item[1])[:limit]:
+        for file, _score in sorted(file_scores.items(), key=lambda item: -item[1])[:lim]:
             path = repo_root / file
             if path.is_file():
                 paths.append(path)

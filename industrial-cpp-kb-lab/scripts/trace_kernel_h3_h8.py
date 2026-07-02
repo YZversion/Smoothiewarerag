@@ -50,6 +50,43 @@ def load_dotenv(path: Path) -> None:
             os.environ[key] = val
 
 
+def rg_prefilter_kernel_rank(inst, channels: dict) -> dict:
+    """Kernel.cpp rank in BM25/symbol prefilter file list (before rg runs)."""
+    from search.index import rg_candidate_file_limit
+    KERNEL = "src/libs/Kernel.cpp"
+    file_scores: dict[str, float] = {}
+    for name in ("method", "class", "dispatch", "symbol", "bm25"):
+        for cid, score in channels[name].items():
+            chunk = inst._CHUNK_BY_ID.get(cid)
+            if not chunk:
+                continue
+            f = chunk["file"]
+            file_scores[f] = max(file_scores.get(f, 0.0), float(score))
+    ranked = sorted(file_scores.items(), key=lambda x: -x[1])
+    limit = rg_candidate_file_limit()
+    kernel_rank = None
+    kernel_prefilter_score = 0.0
+    for i, (f, sc) in enumerate(ranked, 1):
+        if f == KERNEL:
+            kernel_rank = i
+            kernel_prefilter_score = sc
+            break
+    rg_kernel_scores = [
+        {"chunk_id": cid, "score": sc}
+        for cid, sc in channels["rg"].items()
+        if inst._CHUNK_BY_ID.get(cid, {}).get("file") == KERNEL
+    ]
+    return {
+        "prefilter_limit": limit,
+        "prefilter_total_files_scored": len(ranked),
+        "kernel_prefilter_rank": kernel_rank,
+        "kernel_prefilter_score": kernel_prefilter_score,
+        "kernel_in_prefilter_top_n": kernel_rank is not None and kernel_rank <= limit,
+        "kernel_rg_chunk_scores": rg_kernel_scores,
+        "kernel_rg_max": max((x["score"] for x in rg_kernel_scores), default=0.0),
+    }
+
+
 def channel_maps(inst, query: str, tokens: list[str], src, repo):
     """Mirror search() score channels without modifying index.py."""
     method_scores = inst.search_method(query, tokens)
@@ -71,6 +108,11 @@ def channel_maps(inst, query: str, tokens: list[str], src, repo):
         "rg": rg_scores,
         "dispatch_focus": dispatch_focus,
         "rg_candidate_files": [str(p) for p in rg_candidates],
+        "rg_prefilter": rg_prefilter_kernel_rank(inst, {
+            "method": method_scores, "class": class_scores,
+            "dispatch": dispatch_scores, "symbol": sym_scores, "bm25": bm25_scores,
+            "rg": rg_scores,
+        }),
     }
 
 
@@ -278,6 +320,7 @@ def trace_retrieval(search_mod, q: dict, *, top_k: int = 5) -> dict:
         "per_file_diversify": per_file,
         "use_reporank": use_reporank,
         "rg_candidate_files": channels["rg_candidate_files"],
+        "rg_prefilter": channels.get("rg_prefilter", {}),
         "kernel_chunk_total": len(k_chunks),
         "kernel_in_merged_pool": len(k_in_merged),
         "kernel_not_in_merged": [

@@ -1,0 +1,2200 @@
+{
+  "label": "hint_rg_30",
+  "env": {
+    "KB_HALT_HINT_EXTENDED": "1",
+    "RG_CANDIDATE_FILE_LIMIT": "30"
+  },
+  "eval_summary": {
+    "total": 35,
+    "pass5": 35,
+    "pass10": 35,
+    "mean_cov5": 0.9639455782312926,
+    "gate_ok": true,
+    "recall5_ok": true,
+    "tune": {
+      "pass5": 5,
+      "count": 5,
+      "mean_cov5": 0.8476190476190476
+    },
+    "holdout": {
+      "pass5": 30,
+      "count": 30,
+      "mean_cov5": 0.9833333333333333
+    },
+    "details": [
+      {
+        "id": "Q1",
+        "split": "tune",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 3,
+        "hit10_n": 3,
+        "exp_n": 3,
+        "hit5": [
+          "src/modules/communication/SerialConsole.cpp",
+          "src/modules/communication/GcodeDispatch.cpp",
+          "src/modules/utils/player/Player.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "Q2",
+        "split": "tune",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 5,
+        "hit10_n": 5,
+        "exp_n": 5,
+        "hit5": [
+          "src/modules/communication/GcodeDispatch.cpp",
+          "src/modules/robot/Robot.cpp",
+          "src/modules/robot/Planner.cpp",
+          "src/modules/robot/Conveyor.cpp",
+          "src/libs/StepTicker.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "Q3",
+        "split": "tune",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 0.8333333333333334,
+        "cov10": 1.0,
+        "hit5_n": 5,
+        "hit10_n": 6,
+        "exp_n": 6,
+        "hit5": [
+          "src/modules/robot/Planner.cpp",
+          "src/modules/robot/Block.cpp",
+          "src/modules/robot/Conveyor.cpp",
+          "src/libs/StepTicker.cpp",
+          "src/libs/StepperMotor.cpp"
+        ],
+        "miss5": [
+          "src/modules/robot/Robot.cpp"
+        ]
+      },
+      {
+        "id": "Q4",
+        "split": "tune",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 0.5714285714285714,
+        "cov10": 1.0,
+        "hit5_n": 4,
+        "hit10_n": 7,
+        "exp_n": 7,
+        "hit5": [
+          "src/libs/Kernel.cpp",
+          "src/modules/tools/endstops/Endstops.cpp",
+          "src/modules/robot/Conveyor.cpp",
+          "src/libs/StepperMotor.cpp"
+        ],
+        "miss5": [
+          "src/modules/communication/SerialConsole.cpp",
+          "src/modules/communication/GcodeDispatch.cpp",
+          "src/modules/utils/killbutton/KillButton.cpp"
+        ]
+      },
+      {
+        "id": "Q5",
+        "split": "tune",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 0.8333333333333334,
+        "cov10": 1.0,
+        "hit5_n": 5,
+        "hit10_n": 6,
+        "exp_n": 6,
+        "hit5": [
+          "src/libs/Module.h",
+          "src/libs/Module.cpp",
+          "src/libs/Kernel.cpp",
+          "src/main.cpp",
+          "src/libs/PublicData.cpp"
+        ],
+        "miss5": [
+          "src/libs/Kernel.h"
+        ]
+      },
+      {
+        "id": "H1",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 1,
+        "hit5": [
+          "src/modules/robot/Planner.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H2",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 1,
+        "hit5": [
+          "src/libs/Kernel.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H3",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 2,
+        "hit10_n": 2,
+        "exp_n": 2,
+        "hit5": [
+          "src/modules/utils/killbutton/KillButton.cpp",
+          "src/libs/Kernel.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H4",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 1,
+        "hit5": [
+          "src/modules/tools/endstops/Endstops.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H5",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 1,
+        "hit5": [
+          "src/modules/robot/Block.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H6",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 1,
+        "hit5": [
+          "src/libs/StepTicker.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H7",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 1,
+        "hit5": [
+          "src/libs/StepperMotor.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H8",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 0.5,
+        "cov10": 0.5,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 2,
+        "hit5": [
+          "src/main.cpp"
+        ],
+        "miss5": [
+          "src/libs/Kernel.cpp"
+        ]
+      },
+      {
+        "id": "H9",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 2,
+        "hit10_n": 2,
+        "exp_n": 2,
+        "hit5": [
+          "src/libs/PublicData.cpp",
+          "src/libs/PublicData.h"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H10",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 1,
+        "hit5": [
+          "src/modules/tools/temperaturecontrol/TemperatureControl.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H11",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 1,
+        "hit5": [
+          "src/libs/Config.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H12",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 1,
+        "hit5": [
+          "src/libs/ConfigSources/FileConfigSource.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H13",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 1,
+        "hit5": [
+          "src/libs/SlowTicker.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H14",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 1,
+        "hit5": [
+          "src/libs/Adc.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H15",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 1,
+        "hit5": [
+          "src/libs/Watchdog.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H16",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 1,
+        "hit5": [
+          "src/modules/tools/extruder/Extruder.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H17",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 1,
+        "hit5": [
+          "src/modules/tools/laser/Laser.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H18",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 1,
+        "hit5": [
+          "src/modules/tools/switch/Switch.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H19",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 1,
+        "hit5": [
+          "src/modules/tools/filamentdetector/FilamentDetector.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H20",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 1,
+        "hit5": [
+          "src/modules/tools/zprobe/ZProbe.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H21",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 1,
+        "hit5": [
+          "src/modules/tools/zprobe/DeltaGridStrategy.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H22",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 1,
+        "hit5": [
+          "src/modules/tools/zprobe/CartGridStrategy.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H23",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 1,
+        "hit5": [
+          "src/modules/tools/temperaturecontrol/PID_Autotuner.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H24",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 1,
+        "hit5": [
+          "src/modules/tools/temperaturecontrol/Thermistor.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H25",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 1,
+        "hit5": [
+          "src/modules/utils/currentcontrol/CurrentControl.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H26",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 1,
+        "hit5": [
+          "src/modules/robot/Robot.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H27",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 1,
+        "hit5": [
+          "src/modules/tools/temperaturecontrol/TemperatureControl.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H28",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 1,
+        "hit5": [
+          "src/modules/tools/laser/Laser.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H29",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 1,
+        "hit5": [
+          "src/modules/utils/currentcontrol/CurrentControl.cpp"
+        ],
+        "miss5": []
+      },
+      {
+        "id": "H30",
+        "split": "holdout",
+        "ok5": true,
+        "ok10": true,
+        "cov5": 1.0,
+        "cov10": 1.0,
+        "hit5_n": 1,
+        "hit10_n": 1,
+        "exp_n": 1,
+        "hit5": [
+          "src/modules/utils/simpleshell/SimpleShell.cpp"
+        ],
+        "miss5": []
+      }
+    ]
+  },
+  "multiplicity": {
+    "all_mean": 0.9639455782312926,
+    "single_mean": 1.0,
+    "multi_mean": 0.8422619047619048,
+    "tune_mean": 0.8476190476190476,
+    "holdout_mean": 0.9833333333333333,
+    "holdout_single_mean": 1.0,
+    "holdout_multi_mean": 0.8333333333333334,
+    "single_holdout_regressions": [],
+    "per_question": {
+      "Q1": {
+        "id": "Q1",
+        "split": "tune",
+        "multiplicity": "multi",
+        "cov5": 1.0,
+        "hit5": [
+          "src/modules/communication/SerialConsole.cpp",
+          "src/modules/communication/GcodeDispatch.cpp",
+          "src/modules/utils/player/Player.cpp"
+        ],
+        "miss5": []
+      },
+      "Q2": {
+        "id": "Q2",
+        "split": "tune",
+        "multiplicity": "multi",
+        "cov5": 1.0,
+        "hit5": [
+          "src/modules/communication/GcodeDispatch.cpp",
+          "src/modules/robot/Robot.cpp",
+          "src/modules/robot/Planner.cpp",
+          "src/modules/robot/Conveyor.cpp",
+          "src/libs/StepTicker.cpp"
+        ],
+        "miss5": []
+      },
+      "Q3": {
+        "id": "Q3",
+        "split": "tune",
+        "multiplicity": "multi",
+        "cov5": 0.8333333333333334,
+        "hit5": [
+          "src/modules/robot/Planner.cpp",
+          "src/modules/robot/Block.cpp",
+          "src/modules/robot/Conveyor.cpp",
+          "src/libs/StepTicker.cpp",
+          "src/libs/StepperMotor.cpp"
+        ],
+        "miss5": [
+          "src/modules/robot/Robot.cpp"
+        ]
+      },
+      "Q4": {
+        "id": "Q4",
+        "split": "tune",
+        "multiplicity": "multi",
+        "cov5": 0.5714285714285714,
+        "hit5": [
+          "src/libs/Kernel.cpp",
+          "src/modules/tools/endstops/Endstops.cpp",
+          "src/modules/robot/Conveyor.cpp",
+          "src/libs/StepperMotor.cpp"
+        ],
+        "miss5": [
+          "src/modules/communication/SerialConsole.cpp",
+          "src/modules/communication/GcodeDispatch.cpp",
+          "src/modules/utils/killbutton/KillButton.cpp"
+        ]
+      },
+      "Q5": {
+        "id": "Q5",
+        "split": "tune",
+        "multiplicity": "multi",
+        "cov5": 0.8333333333333334,
+        "hit5": [
+          "src/libs/Module.h",
+          "src/libs/Module.cpp",
+          "src/libs/Kernel.cpp",
+          "src/main.cpp",
+          "src/libs/PublicData.cpp"
+        ],
+        "miss5": [
+          "src/libs/Kernel.h"
+        ]
+      },
+      "H1": {
+        "id": "H1",
+        "split": "holdout",
+        "multiplicity": "single",
+        "cov5": 1.0,
+        "hit5": [
+          "src/modules/robot/Planner.cpp"
+        ],
+        "miss5": []
+      },
+      "H2": {
+        "id": "H2",
+        "split": "holdout",
+        "multiplicity": "single",
+        "cov5": 1.0,
+        "hit5": [
+          "src/libs/Kernel.cpp"
+        ],
+        "miss5": []
+      },
+      "H3": {
+        "id": "H3",
+        "split": "holdout",
+        "multiplicity": "multi",
+        "cov5": 1.0,
+        "hit5": [
+          "src/modules/utils/killbutton/KillButton.cpp",
+          "src/libs/Kernel.cpp"
+        ],
+        "miss5": []
+      },
+      "H4": {
+        "id": "H4",
+        "split": "holdout",
+        "multiplicity": "single",
+        "cov5": 1.0,
+        "hit5": [
+          "src/modules/tools/endstops/Endstops.cpp"
+        ],
+        "miss5": []
+      },
+      "H5": {
+        "id": "H5",
+        "split": "holdout",
+        "multiplicity": "single",
+        "cov5": 1.0,
+        "hit5": [
+          "src/modules/robot/Block.cpp"
+        ],
+        "miss5": []
+      },
+      "H6": {
+        "id": "H6",
+        "split": "holdout",
+        "multiplicity": "single",
+        "cov5": 1.0,
+        "hit5": [
+          "src/libs/StepTicker.cpp"
+        ],
+        "miss5": []
+      },
+      "H7": {
+        "id": "H7",
+        "split": "holdout",
+        "multiplicity": "single",
+        "cov5": 1.0,
+        "hit5": [
+          "src/libs/StepperMotor.cpp"
+        ],
+        "miss5": []
+      },
+      "H8": {
+        "id": "H8",
+        "split": "holdout",
+        "multiplicity": "multi",
+        "cov5": 0.5,
+        "hit5": [
+          "src/main.cpp"
+        ],
+        "miss5": [
+          "src/libs/Kernel.cpp"
+        ]
+      },
+      "H9": {
+        "id": "H9",
+        "split": "holdout",
+        "multiplicity": "multi",
+        "cov5": 1.0,
+        "hit5": [
+          "src/libs/PublicData.cpp",
+          "src/libs/PublicData.h"
+        ],
+        "miss5": []
+      },
+      "H10": {
+        "id": "H10",
+        "split": "holdout",
+        "multiplicity": "single",
+        "cov5": 1.0,
+        "hit5": [
+          "src/modules/tools/temperaturecontrol/TemperatureControl.cpp"
+        ],
+        "miss5": []
+      },
+      "H11": {
+        "id": "H11",
+        "split": "holdout",
+        "multiplicity": "single",
+        "cov5": 1.0,
+        "hit5": [
+          "src/libs/Config.cpp"
+        ],
+        "miss5": []
+      },
+      "H12": {
+        "id": "H12",
+        "split": "holdout",
+        "multiplicity": "single",
+        "cov5": 1.0,
+        "hit5": [
+          "src/libs/ConfigSources/FileConfigSource.cpp"
+        ],
+        "miss5": []
+      },
+      "H13": {
+        "id": "H13",
+        "split": "holdout",
+        "multiplicity": "single",
+        "cov5": 1.0,
+        "hit5": [
+          "src/libs/SlowTicker.cpp"
+        ],
+        "miss5": []
+      },
+      "H14": {
+        "id": "H14",
+        "split": "holdout",
+        "multiplicity": "single",
+        "cov5": 1.0,
+        "hit5": [
+          "src/libs/Adc.cpp"
+        ],
+        "miss5": []
+      },
+      "H15": {
+        "id": "H15",
+        "split": "holdout",
+        "multiplicity": "single",
+        "cov5": 1.0,
+        "hit5": [
+          "src/libs/Watchdog.cpp"
+        ],
+        "miss5": []
+      },
+      "H16": {
+        "id": "H16",
+        "split": "holdout",
+        "multiplicity": "single",
+        "cov5": 1.0,
+        "hit5": [
+          "src/modules/tools/extruder/Extruder.cpp"
+        ],
+        "miss5": []
+      },
+      "H17": {
+        "id": "H17",
+        "split": "holdout",
+        "multiplicity": "single",
+        "cov5": 1.0,
+        "hit5": [
+          "src/modules/tools/laser/Laser.cpp"
+        ],
+        "miss5": []
+      },
+      "H18": {
+        "id": "H18",
+        "split": "holdout",
+        "multiplicity": "single",
+        "cov5": 1.0,
+        "hit5": [
+          "src/modules/tools/switch/Switch.cpp"
+        ],
+        "miss5": []
+      },
+      "H19": {
+        "id": "H19",
+        "split": "holdout",
+        "multiplicity": "single",
+        "cov5": 1.0,
+        "hit5": [
+          "src/modules/tools/filamentdetector/FilamentDetector.cpp"
+        ],
+        "miss5": []
+      },
+      "H20": {
+        "id": "H20",
+        "split": "holdout",
+        "multiplicity": "single",
+        "cov5": 1.0,
+        "hit5": [
+          "src/modules/tools/zprobe/ZProbe.cpp"
+        ],
+        "miss5": []
+      },
+      "H21": {
+        "id": "H21",
+        "split": "holdout",
+        "multiplicity": "single",
+        "cov5": 1.0,
+        "hit5": [
+          "src/modules/tools/zprobe/DeltaGridStrategy.cpp"
+        ],
+        "miss5": []
+      },
+      "H22": {
+        "id": "H22",
+        "split": "holdout",
+        "multiplicity": "single",
+        "cov5": 1.0,
+        "hit5": [
+          "src/modules/tools/zprobe/CartGridStrategy.cpp"
+        ],
+        "miss5": []
+      },
+      "H23": {
+        "id": "H23",
+        "split": "holdout",
+        "multiplicity": "single",
+        "cov5": 1.0,
+        "hit5": [
+          "src/modules/tools/temperaturecontrol/PID_Autotuner.cpp"
+        ],
+        "miss5": []
+      },
+      "H24": {
+        "id": "H24",
+        "split": "holdout",
+        "multiplicity": "single",
+        "cov5": 1.0,
+        "hit5": [
+          "src/modules/tools/temperaturecontrol/Thermistor.cpp"
+        ],
+        "miss5": []
+      },
+      "H25": {
+        "id": "H25",
+        "split": "holdout",
+        "multiplicity": "single",
+        "cov5": 1.0,
+        "hit5": [
+          "src/modules/utils/currentcontrol/CurrentControl.cpp"
+        ],
+        "miss5": []
+      },
+      "H26": {
+        "id": "H26",
+        "split": "holdout",
+        "multiplicity": "single",
+        "cov5": 1.0,
+        "hit5": [
+          "src/modules/robot/Robot.cpp"
+        ],
+        "miss5": []
+      },
+      "H27": {
+        "id": "H27",
+        "split": "holdout",
+        "multiplicity": "single",
+        "cov5": 1.0,
+        "hit5": [
+          "src/modules/tools/temperaturecontrol/TemperatureControl.cpp"
+        ],
+        "miss5": []
+      },
+      "H28": {
+        "id": "H28",
+        "split": "holdout",
+        "multiplicity": "single",
+        "cov5": 1.0,
+        "hit5": [
+          "src/modules/tools/laser/Laser.cpp"
+        ],
+        "miss5": []
+      },
+      "H29": {
+        "id": "H29",
+        "split": "holdout",
+        "multiplicity": "single",
+        "cov5": 1.0,
+        "hit5": [
+          "src/modules/utils/currentcontrol/CurrentControl.cpp"
+        ],
+        "miss5": []
+      },
+      "H30": {
+        "id": "H30",
+        "split": "holdout",
+        "multiplicity": "single",
+        "cov5": 1.0,
+        "hit5": [
+          "src/modules/utils/simpleshell/SimpleShell.cpp"
+        ],
+        "miss5": []
+      }
+    }
+  },
+  "timing": {
+    "eval_summary_sec": 16.884,
+    "mean_query_ms": 278.46,
+    "max_query_ms": 593.78
+  },
+  "traces": {
+    "H3": {
+      "retrieval": {
+        "id": "H3",
+        "question": "硬件急停按钮 KillButton 如何处理？",
+        "expected_files": [
+          "src/modules/utils/killbutton/KillButton.cpp",
+          "src/libs/Kernel.cpp"
+        ],
+        "expected_symbols": [
+          "KillButton::on_idle",
+          "Kernel::immediate_halt"
+        ],
+        "tokens": [
+          "killbutton",
+          "kill",
+          "button",
+          "halt",
+          "on_halt",
+          "immediate_halt",
+          "endstops",
+          "serialconsole",
+          "halt_flag",
+          "gcodedispatch",
+          "kernel",
+          "conveyor",
+          "steppermotor"
+        ],
+        "why_not_recalled": [
+          "- **method**: 2 Kernel chunk(s) scored",
+          "- **class**: 7 Kernel chunk(s) scored",
+          "- **dispatch**: 0 Kernel chunk(s)",
+          "- **symbol**: 2 Kernel chunk(s) scored",
+          "- **bm25**: 9 Kernel chunk(s) scored",
+          "- **rg**: 0 Kernel chunk(s)",
+          "",
+          "**symbol 通道细查（expected symbols）：**",
+          "- `immediate_halt` → Kernel.cpp 有 1 个符号；query token 命中=True",
+          "- `add_module` → Kernel.cpp 有 1 个符号；query token 命中=True",
+          "- `Kernel` → Kernel.cpp 有 1 个符号；query token 命中=True",
+          "",
+          "**rg 预筛**: Kernel.cpp 在 top-30 候选文件列表；rg 仅在预筛文件内跑 pattern 匹配",
+          "- rg patterns（来自 tokens）: `['immediate_halt', 'serialconsole', 'gcodedispatch', 'steppermotor', 'killbutton', 'halt_flag', 'endstops', 'conveyor']` — Kernel.cpp 内无这些 token 的字面匹配则 rg=0",
+          "",
+          "**hint 扩展**: groups=`['halt']`；扩展 token=`['halt', 'on_halt', 'immediate_halt', 'endstops', 'serialconsole', 'halt_flag', 'gcodedispatch', 'kernel', 'conveyor', 'steppermotor']`"
+        ],
+        "hint_groups": [
+          "halt"
+        ],
+        "flow_intent": true,
+        "multi_file_structure": true,
+        "per_file_diversify": 1,
+        "use_reporank": false,
+        "rg_candidate_files": [
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\utils\\killbutton\\KillButton.cpp",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\utils\\panel\\Button.cpp",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\libs\\Kernel.cpp",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\tools\\endstops\\Endstops.cpp",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\communication\\SerialConsole.cpp",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\communication\\GcodeDispatch.cpp",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\robot\\Conveyor.cpp",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\libs\\StepperMotor.cpp",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\utils\\killbutton\\KillButton.h",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\utils\\panel\\Button.h",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\libs\\Module.h",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\libs\\StepperMotor.h",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\robot\\Conveyor.h",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\tools\\laser\\Laser.cpp",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\tools\\laser\\Laser.h",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\tools\\spindle\\SpindleControl.cpp",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\tools\\spindle\\SpindleControl.h",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\tools\\switch\\Switch.cpp",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\tools\\switch\\Switch.h",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\tools\\temperaturecontrol\\TemperatureControl.cpp",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\tools\\temperaturecontrol\\TemperatureControl.h",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\utils\\motordrivercontrol\\MotorDriverControl.cpp",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\utils\\motordrivercontrol\\MotorDriverControl.h",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\utils\\player\\Player.cpp",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\utils\\player\\Player.h",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\libs\\Kernel.h",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\tools\\endstops\\Endstops.h",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\communication\\SerialConsole.h",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\communication\\GcodeDispatch.h",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\main.cpp"
+        ],
+        "rg_prefilter": {
+          "prefilter_limit": 30,
+          "prefilter_total_files_scored": 65,
+          "kernel_prefilter_rank": 3,
+          "kernel_prefilter_score": 125.0,
+          "kernel_in_prefilter_top_n": true,
+          "kernel_rg_chunk_scores": [],
+          "kernel_rg_max": 0.0
+        },
+        "kernel_chunk_total": 9,
+        "kernel_in_merged_pool": 9,
+        "kernel_not_in_merged": [],
+        "kernel_merged_detail": [
+          {
+            "chunk_id": "src_libs_Kernel_cpp::351-356",
+            "symbol": "immediate_halt",
+            "type": "function",
+            "lines": "351-356",
+            "rank_all": 1,
+            "score": 347.4,
+            "source": "method+class+symbol+bm25",
+            "in_top_k_diversified": true,
+            "in_eval_top_k": true,
+            "diversify_drop": null,
+            "base_channels": {
+              "method": 125.0,
+              "class": 108.0,
+              "symbol": 85.0,
+              "bm25": 8.40228090717569
+            },
+            "chunk_score_bonus": 13.0,
+            "context_coherence": 8.0,
+            "hint_key_header_boost": 0.0,
+            "merged_pre_sort": 347.4022809071757
+          },
+          {
+            "chunk_id": "src_libs_Kernel_cpp::56-174",
+            "symbol": "Kernel",
+            "type": "function",
+            "lines": "56-174",
+            "rank_all": 7,
+            "score": 216.4,
+            "source": "method+symbol+bm25",
+            "in_top_k_diversified": false,
+            "in_eval_top_k": false,
+            "diversify_drop": "diversify per_file=1: 1 earlier chunk(s) from same file",
+            "base_channels": {
+              "method": 125.0,
+              "symbol": 85.0,
+              "bm25": 3.4005714139371306
+            },
+            "chunk_score_bonus": -5.0,
+            "context_coherence": 8.0,
+            "hint_key_header_boost": 0.0,
+            "merged_pre_sort": 216.40057141393714
+          },
+          {
+            "chunk_id": "src_libs_Kernel_cpp::359-381",
+            "symbol": "call_event",
+            "type": "function",
+            "lines": "359-381",
+            "rank_all": 20,
+            "score": 134.01,
+            "source": "class+bm25",
+            "in_top_k_diversified": false,
+            "in_eval_top_k": false,
+            "diversify_drop": "diversify per_file=1: 2 earlier chunk(s) from same file",
+            "base_channels": {
+              "class": 108.0,
+              "bm25": 5.01237798359184
+            },
+            "chunk_score_bonus": 13.0,
+            "context_coherence": 8.0,
+            "hint_key_header_boost": 0.0,
+            "merged_pre_sort": 134.01237798359185
+          },
+          {
+            "chunk_id": "src_libs_Kernel_cpp::177-334",
+            "symbol": "get_query_string",
+            "type": "function",
+            "lines": "177-334",
+            "rank_all": 31,
+            "score": 131.47,
+            "source": "class+bm25",
+            "in_top_k_diversified": false,
+            "in_eval_top_k": false,
+            "diversify_drop": "diversify per_file=1: 3 earlier chunk(s) from same file",
+            "base_channels": {
+              "class": 108.0,
+              "bm25": 2.4698545266869276
+            },
+            "chunk_score_bonus": 13.0,
+            "context_coherence": 8.0,
+            "hint_key_header_boost": 0.0,
+            "merged_pre_sort": 131.46985452668693
+          },
+          {
+            "chunk_id": "src_libs_Kernel_cpp::337-340",
+            "symbol": "add_module",
+            "type": "function",
+            "lines": "337-340",
+            "rank_all": 53,
+            "score": 130.79,
+            "source": "class+bm25",
+            "in_top_k_diversified": false,
+            "in_eval_top_k": false,
+            "diversify_drop": "diversify per_file=1: 4 earlier chunk(s) from same file",
+            "base_channels": {
+              "class": 108.0,
+              "bm25": 1.7948671196250843
+            },
+            "chunk_score_bonus": 13.0,
+            "context_coherence": 8.0,
+            "hint_key_header_boost": 0.0,
+            "merged_pre_sort": 130.79486711962508
+          },
+          {
+            "chunk_id": "src_libs_Kernel_cpp::343-346",
+            "symbol": "register_for_event",
+            "type": "function",
+            "lines": "343-346",
+            "rank_all": 56,
+            "score": 130.66,
+            "source": "class+bm25",
+            "in_top_k_diversified": false,
+            "in_eval_top_k": false,
+            "diversify_drop": "diversify per_file=1: 5 earlier chunk(s) from same file",
+            "base_channels": {
+              "class": 108.0,
+              "bm25": 1.6632025189423496
+            },
+            "chunk_score_bonus": 13.0,
+            "context_coherence": 8.0,
+            "hint_key_header_boost": 0.0,
+            "merged_pre_sort": 130.66320251894234
+          },
+          {
+            "chunk_id": "src_libs_Kernel_cpp::384-390",
+            "symbol": "kernel_has_event",
+            "type": "function",
+            "lines": "384-390",
+            "rank_all": 57,
+            "score": 130.65,
+            "source": "class+bm25",
+            "in_top_k_diversified": false,
+            "in_eval_top_k": false,
+            "diversify_drop": "diversify per_file=1: 6 earlier chunk(s) from same file",
+            "base_channels": {
+              "class": 108.0,
+              "bm25": 1.6497558751981516
+            },
+            "chunk_score_bonus": 13.0,
+            "context_coherence": 8.0,
+            "hint_key_header_boost": 0.0,
+            "merged_pre_sort": 130.64975587519814
+          },
+          {
+            "chunk_id": "src_libs_Kernel_cpp::392-400",
+            "symbol": "unregister_for_event",
+            "type": "function",
+            "lines": "392-400",
+            "rank_all": 58,
+            "score": 130.64,
+            "source": "class+bm25",
+            "in_top_k_diversified": false,
+            "in_eval_top_k": false,
+            "diversify_drop": "diversify per_file=1: 7 earlier chunk(s) from same file",
+            "base_channels": {
+              "class": 108.0,
+              "bm25": 1.6365249142956677
+            },
+            "chunk_score_bonus": 13.0,
+            "context_coherence": 8.0,
+            "hint_key_header_boost": 0.0,
+            "merged_pre_sort": 130.63652491429565
+          },
+          {
+            "chunk_id": "src_libs_Kernel_cpp::1-40::overview",
+            "symbol": "",
+            "type": "file_overview",
+            "lines": "1-40",
+            "rank_all": 104,
+            "score": 17.7,
+            "source": "bm25",
+            "in_top_k_diversified": false,
+            "in_eval_top_k": false,
+            "diversify_drop": "diversify per_file=1: 8 earlier chunk(s) from same file",
+            "base_channels": {
+              "bm25": 8.70265852669791
+            },
+            "chunk_score_bonus": 1.0,
+            "context_coherence": 8.0,
+            "hint_key_header_boost": 0.0,
+            "merged_pre_sort": 17.70265852669791
+          }
+        ],
+        "top5_diversified": [
+          {
+            "rank": 1,
+            "file": "src/libs/Kernel.cpp",
+            "symbol": "immediate_halt",
+            "score": 347.4,
+            "source": "method+class+symbol+bm25",
+            "lines": "351-356"
+          },
+          {
+            "rank": 2,
+            "file": "src/libs/StepperMotor.cpp",
+            "symbol": "on_halt",
+            "score": 227.27,
+            "source": "class+symbol+bm25",
+            "lines": "47-53"
+          },
+          {
+            "rank": 3,
+            "file": "src/modules/robot/Conveyor.cpp",
+            "symbol": "on_halt",
+            "score": 226.28,
+            "source": "class+symbol+bm25",
+            "lines": "89-97"
+          },
+          {
+            "rank": 4,
+            "file": "src/modules/utils/killbutton/KillButton.cpp",
+            "symbol": "KillButton",
+            "score": 221.91,
+            "source": "method+symbol+bm25",
+            "lines": "22-26"
+          },
+          {
+            "rank": 5,
+            "file": "src/modules/tools/endstops/Endstops.cpp",
+            "symbol": "Endstops",
+            "score": 216.99,
+            "source": "method+symbol+bm25",
+            "lines": "107-112"
+          }
+        ],
+        "reporank_extras": [],
+        "graph_extras": [],
+        "eval_top_k_files": [
+          "src/libs/Kernel.cpp",
+          "src/libs/StepperMotor.cpp",
+          "src/modules/robot/Conveyor.cpp",
+          "src/modules/utils/killbutton/KillButton.cpp",
+          "src/modules/tools/endstops/Endstops.cpp"
+        ],
+        "all_hits_kernel_ranks": [
+          {
+            "file": "src/libs/Kernel.cpp",
+            "line_start": 351,
+            "chunk_line_start": 351,
+            "chunk_line_end": 356,
+            "symbol_start": 351,
+            "type": "function",
+            "symbol": "immediate_halt",
+            "class": "Kernel",
+            "snippet": "void Kernel::immediate_halt()\n{\n    this->halted = true;\n    conveyor->flush_queue(); // make sure no queued up codes get through\n    for(auto &a : robot->actuators) a->stop_moving();\n}",
+            "score": 347.4,
+            "source": "method+class+symbol+bm25",
+            "chunk_id": "src_libs_Kernel_cpp::351-356",
+            "line_end": 356,
+            "rank": 1
+          },
+          {
+            "file": "src/libs/Kernel.cpp",
+            "line_start": 56,
+            "chunk_line_start": 56,
+            "chunk_line_end": 174,
+            "symbol_start": 56,
+            "type": "function",
+            "symbol": "Kernel",
+            "class": "Kernel",
+            "snippet": "Kernel::Kernel()\n{\n    halted = false;\n    feed_hold = false;\n    enable_feed_hold = false;\n    bad_mcu= true;\n    stop_request= false;\n\n    instance = this; // setup the Singleton instance of the kernel\n",
+            "score": 216.4,
+            "source": "method+symbol+bm25",
+            "chunk_id": "src_libs_Kernel_cpp::56-174",
+            "line_end": 174,
+            "rank": 7
+          },
+          {
+            "file": "src/libs/Kernel.cpp",
+            "line_start": 359,
+            "chunk_line_start": 359,
+            "chunk_line_end": 381,
+            "symbol_start": 359,
+            "type": "function",
+            "symbol": "call_event",
+            "class": "Kernel",
+            "snippet": "void Kernel::call_event(_EVENT_ENUM id_event, void * argument)\n{\n    bool was_idle = true;\n    if(id_event == ON_HALT) {\n        this->halted = (argument == nullptr);\n        if(!this->halted && this->feed_hold) this->feed_hold= false; // also clear feed hold\n        was_idle = conveyor->is_idle(); // see if we were doing anything like printing\n    }\n\n    // send to all registered modules",
+            "score": 134.01,
+            "source": "class+bm25",
+            "chunk_id": "src_libs_Kernel_cpp::359-381",
+            "line_end": 381,
+            "rank": 20
+          },
+          {
+            "file": "src/libs/Kernel.cpp",
+            "line_start": 177,
+            "chunk_line_start": 177,
+            "chunk_line_end": 334,
+            "symbol_start": 177,
+            "type": "function",
+            "symbol": "get_query_string",
+            "class": "Kernel",
+            "snippet": "std::string Kernel::get_query_string()\n{\n    std::string str;\n    bool homing;\n    bool ok = PublicData::get_value(endstops_checksum, get_homing_status_checksum, 0, &homing);\n    if(!ok) homing = false;\n    bool running = false;\n\n    // current Laser power\n    Laser *plaser= nullptr;",
+            "score": 131.47,
+            "source": "class+bm25",
+            "chunk_id": "src_libs_Kernel_cpp::177-334",
+            "line_end": 334,
+            "rank": 31
+          },
+          {
+            "file": "src/libs/Kernel.cpp",
+            "line_start": 337,
+            "chunk_line_start": 337,
+            "chunk_line_end": 340,
+            "symbol_start": 337,
+            "type": "function",
+            "symbol": "add_module",
+            "class": "Kernel",
+            "snippet": "void Kernel::add_module(Module* module)\n{\n    module->on_module_loaded();\n}",
+            "score": 130.79,
+            "source": "class+bm25",
+            "chunk_id": "src_libs_Kernel_cpp::337-340",
+            "line_end": 340,
+            "rank": 53
+          },
+          {
+            "file": "src/libs/Kernel.cpp",
+            "line_start": 343,
+            "chunk_line_start": 343,
+            "chunk_line_end": 346,
+            "symbol_start": 343,
+            "type": "function",
+            "symbol": "register_for_event",
+            "class": "Kernel",
+            "snippet": "void Kernel::register_for_event(_EVENT_ENUM id_event, Module *mod)\n{\n    this->hooks[id_event].push_back(mod);\n}",
+            "score": 130.66,
+            "source": "class+bm25",
+            "chunk_id": "src_libs_Kernel_cpp::343-346",
+            "line_end": 346,
+            "rank": 56
+          },
+          {
+            "file": "src/libs/Kernel.cpp",
+            "line_start": 384,
+            "chunk_line_start": 384,
+            "chunk_line_end": 390,
+            "symbol_start": 384,
+            "type": "function",
+            "symbol": "kernel_has_event",
+            "class": "Kernel",
+            "snippet": "bool Kernel::kernel_has_event(_EVENT_ENUM id_event, Module *mod)\n{\n    for (auto m : hooks[id_event]) {\n        if(m == mod) return true;\n    }\n    return false;\n}",
+            "score": 130.65,
+            "source": "class+bm25",
+            "chunk_id": "src_libs_Kernel_cpp::384-390",
+            "line_end": 390,
+            "rank": 57
+          },
+          {
+            "file": "src/libs/Kernel.cpp",
+            "line_start": 392,
+            "chunk_line_start": 392,
+            "chunk_line_end": 400,
+            "symbol_start": 392,
+            "type": "function",
+            "symbol": "unregister_for_event",
+            "class": "Kernel",
+            "snippet": "void Kernel::unregister_for_event(_EVENT_ENUM id_event, Module *mod)\n{\n    for (auto i = hooks[id_event].begin(); i != hooks[id_event].end(); ++i) {\n        if(*i == mod) {\n            hooks[id_event].erase(i);\n            return;\n        }\n    }\n}",
+            "score": 130.64,
+            "source": "class+bm25",
+            "chunk_id": "src_libs_Kernel_cpp::392-400",
+            "line_end": 400,
+            "rank": 58
+          },
+          {
+            "file": "src/libs/Kernel.cpp",
+            "line_start": 1,
+            "chunk_line_start": 1,
+            "chunk_line_end": 40,
+            "symbol_start": 1,
+            "type": "file_overview",
+            "symbol": "",
+            "class": "",
+            "snippet": "/*\n      This file is part of Smoothie (http://smoothieware.org/). The motion control part is heavily based on Grbl (https://github.com/simen/grbl).\n      Smoothie is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.\n      Smoothie is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.\n      You should have received a copy of the GNU General Public License along with Smoothie. If not, see <http://www.gnu.org/licenses/>.\n*/\n\n#include \"libs/Kernel.h\"\n#include \"libs/Module.h\"\n#include \"libs/Config.h\"",
+            "score": 17.7,
+            "source": "bm25",
+            "chunk_id": "src_libs_Kernel_cpp::1-40::overview",
+            "line_end": 40,
+            "rank": 104
+          }
+        ]
+      },
+      "topk_channel": {
+        "in_eval_top5": true,
+        "winning_channel": "method",
+        "rank": 1,
+        "score": 347.4,
+        "source": "method+class+symbol+bm25"
+      },
+      "rg_prefilter": {
+        "prefilter_limit": 30,
+        "prefilter_total_files_scored": 65,
+        "kernel_prefilter_rank": 3,
+        "kernel_prefilter_score": 125.0,
+        "kernel_in_prefilter_top_n": true,
+        "kernel_rg_chunk_scores": [],
+        "kernel_rg_max": 0.0
+      }
+    },
+    "H8": {
+      "retrieval": {
+        "id": "H8",
+        "question": "main 函数和系统启动入口在哪里？",
+        "expected_files": [
+          "src/main.cpp",
+          "src/libs/Kernel.cpp"
+        ],
+        "expected_symbols": [
+          "main",
+          "Kernel::add_module"
+        ],
+        "tokens": [
+          "main"
+        ],
+        "why_not_recalled": [
+          "- **method**: 0 Kernel chunk(s)",
+          "- **class**: 0 Kernel chunk(s)",
+          "- **dispatch**: 0 Kernel chunk(s)",
+          "- **symbol**: 0 Kernel chunk(s)",
+          "- **bm25**: 0 Kernel chunk(s)",
+          "- **rg**: 0 Kernel chunk(s)",
+          "",
+          "**symbol 通道细查（expected symbols）：**",
+          "- `immediate_halt` → Kernel.cpp 有 1 个符号；query token 命中=False",
+          "- `add_module` → Kernel.cpp 有 1 个符号；query token 命中=False",
+          "- `Kernel` → Kernel.cpp 有 1 个符号；query token 命中=False",
+          "",
+          "**rg 预筛**: Kernel.cpp 不在 top-30 候选文件列表；rg 仅在预筛文件内跑 pattern 匹配",
+          "- rg patterns（来自 tokens）: `['main']` — Kernel.cpp 内无这些 token 的字面匹配则 rg=0",
+          "",
+          "**hint 扩展**: groups=`(none)`；扩展 token=`(none)`",
+          "- 未触发 entry/module hint；query 仅含 `main`，未注入 Kernel / add_module"
+        ],
+        "hint_groups": [],
+        "flow_intent": true,
+        "multi_file_structure": false,
+        "per_file_diversify": 2,
+        "use_reporank": false,
+        "rg_candidate_files": [
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\main.cpp",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\utils\\panel\\Panel.cpp",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\utils\\panel\\screens\\ModifyValuesScreen.h",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\utils\\panel\\screens\\3dprinter\\MainMenuScreen.cpp",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\utils\\panel\\screens\\cnc\\MainMenuScreen.cpp",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\utils\\panel\\screens\\ModifyValuesScreen.cpp",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\utils\\panel\\screens\\ControlScreen.cpp",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\utils\\panel\\screens\\FileScreen.cpp",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\utils\\panel\\screens\\3dprinter\\WatchScreen.cpp",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\utils\\panel\\screens\\cnc\\WatchScreen.cpp",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\tools\\switch\\Switch.cpp",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\utils\\panel\\screens\\CustomScreen.cpp",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\utils\\panel\\screens\\3dprinter\\MainMenuScreen.h",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\utils\\panel\\screens\\cnc\\MainMenuScreen.h",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\communication\\SerialConsole.cpp",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\utils\\panel\\screens\\DynMenuScreen.cpp",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\utils\\panel\\screens\\FileScreen.h",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\tools\\filamentdetector\\FilamentDetector.cpp",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\utils\\panel\\PanelScreen.cpp",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\utils\\panel\\screens\\3dprinter\\ProbeScreen.h",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\libs\\Module.h",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\utils\\player\\Player.cpp",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\utils\\panel\\screens\\3dprinter\\ProbeScreen.cpp",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\utils\\panel\\screens\\ControlScreen.h",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\utils\\panel\\screens\\cnc\\ProbeScreen.h",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\communication\\SerialConsole.h",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\utils\\panel\\screens\\cnc\\DirectJogScreen.h",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\utils\\panel\\screens\\cnc\\WatchScreen.h",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\utils\\panel\\screens\\3dprinter\\WatchScreen.h",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\utils\\panel\\PanelScreen.h"
+        ],
+        "rg_prefilter": {
+          "prefilter_limit": 30,
+          "prefilter_total_files_scored": 46,
+          "kernel_prefilter_rank": null,
+          "kernel_prefilter_score": 0.0,
+          "kernel_in_prefilter_top_n": false,
+          "kernel_rg_chunk_scores": [],
+          "kernel_rg_max": 0.0
+        },
+        "kernel_chunk_total": 9,
+        "kernel_in_merged_pool": 0,
+        "kernel_not_in_merged": [
+          {
+            "chunk_id": "src_libs_Kernel_cpp::1-40::overview",
+            "symbol": "",
+            "type": "file_overview",
+            "lines": "1-40"
+          },
+          {
+            "chunk_id": "src_libs_Kernel_cpp::56-174",
+            "symbol": "Kernel",
+            "type": "function",
+            "lines": "56-174"
+          },
+          {
+            "chunk_id": "src_libs_Kernel_cpp::177-334",
+            "symbol": "get_query_string",
+            "type": "function",
+            "lines": "177-334"
+          },
+          {
+            "chunk_id": "src_libs_Kernel_cpp::337-340",
+            "symbol": "add_module",
+            "type": "function",
+            "lines": "337-340"
+          },
+          {
+            "chunk_id": "src_libs_Kernel_cpp::343-346",
+            "symbol": "register_for_event",
+            "type": "function",
+            "lines": "343-346"
+          },
+          {
+            "chunk_id": "src_libs_Kernel_cpp::351-356",
+            "symbol": "immediate_halt",
+            "type": "function",
+            "lines": "351-356"
+          },
+          {
+            "chunk_id": "src_libs_Kernel_cpp::359-381",
+            "symbol": "call_event",
+            "type": "function",
+            "lines": "359-381"
+          },
+          {
+            "chunk_id": "src_libs_Kernel_cpp::384-390",
+            "symbol": "kernel_has_event",
+            "type": "function",
+            "lines": "384-390"
+          },
+          {
+            "chunk_id": "src_libs_Kernel_cpp::392-400",
+            "symbol": "unregister_for_event",
+            "type": "function",
+            "lines": "392-400"
+          }
+        ],
+        "kernel_merged_detail": [],
+        "top5_diversified": [
+          {
+            "rank": 1,
+            "file": "src/main.cpp",
+            "symbol": "main",
+            "score": 240.1,
+            "source": "method+symbol+bm25",
+            "lines": "263-277"
+          },
+          {
+            "rank": 2,
+            "file": "src/modules/utils/panel/screens/3dprinter/MainMenuScreen.cpp",
+            "symbol": "on_enter",
+            "score": 30.6,
+            "source": "bm25",
+            "lines": "100-105"
+          },
+          {
+            "rank": 3,
+            "file": "src/modules/utils/panel/screens/cnc/MainMenuScreen.cpp",
+            "symbol": "on_enter",
+            "score": 30.38,
+            "source": "bm25",
+            "lines": "95-100"
+          },
+          {
+            "rank": 4,
+            "file": "src/modules/utils/panel/screens/3dprinter/MainMenuScreen.cpp",
+            "symbol": "on_refresh",
+            "score": 30.16,
+            "source": "bm25",
+            "lines": "107-115"
+          },
+          {
+            "rank": 5,
+            "file": "src/modules/utils/panel/screens/cnc/MainMenuScreen.cpp",
+            "symbol": "on_refresh",
+            "score": 30.16,
+            "source": "bm25",
+            "lines": "102-110"
+          }
+        ],
+        "reporank_extras": [],
+        "graph_extras": [
+          {
+            "file": "src/modules/utils/panel/PanelScreen.h",
+            "symbol": "PanelScreen",
+            "score": 105.0
+          },
+          {
+            "file": "src/modules/utils/panel/screens/3dprinter/ExtruderScreen.h",
+            "symbol": "ExtruderScreen",
+            "score": 105.0
+          },
+          {
+            "file": "src/modules/utils/panel/screens/3dprinter/JogScreen.h",
+            "symbol": "JogScreen",
+            "score": 105.0
+          }
+        ],
+        "eval_top_k_files": [
+          "src/main.cpp",
+          "src/modules/utils/panel/screens/3dprinter/MainMenuScreen.cpp",
+          "src/modules/utils/panel/screens/cnc/MainMenuScreen.cpp",
+          "src/modules/utils/panel/screens/3dprinter/MainMenuScreen.cpp",
+          "src/modules/utils/panel/screens/cnc/MainMenuScreen.cpp",
+          "src/modules/utils/panel/PanelScreen.h",
+          "src/modules/utils/panel/screens/3dprinter/ExtruderScreen.h",
+          "src/modules/utils/panel/screens/3dprinter/JogScreen.h"
+        ],
+        "all_hits_kernel_ranks": []
+      },
+      "topk_channel": {
+        "in_eval_top5": false,
+        "winning_channel": null
+      },
+      "rg_prefilter": {
+        "prefilter_limit": 30,
+        "prefilter_total_files_scored": 46,
+        "kernel_prefilter_rank": null,
+        "kernel_prefilter_score": 0.0,
+        "kernel_in_prefilter_top_n": false,
+        "kernel_rg_chunk_scores": [],
+        "kernel_rg_max": 0.0
+      }
+    },
+    "Q4": {
+      "retrieval": {
+        "id": "Q4",
+        "question": "error / stop / halt / emergency 逻辑在哪里？",
+        "expected_files": [
+          "src/libs/Kernel.cpp",
+          "src/modules/communication/SerialConsole.cpp",
+          "src/modules/communication/GcodeDispatch.cpp",
+          "src/modules/utils/killbutton/KillButton.cpp",
+          "src/modules/tools/endstops/Endstops.cpp",
+          "src/modules/robot/Conveyor.cpp",
+          "src/libs/StepperMotor.cpp"
+        ],
+        "expected_symbols": [
+          "Kernel::immediate_halt",
+          "KillButton::on_idle",
+          "Endstops::on_halt",
+          "Conveyor::on_halt"
+        ],
+        "tokens": [
+          "error",
+          "stop",
+          "halt",
+          "emergency",
+          "on_halt",
+          "killbutton",
+          "immediate_halt",
+          "endstops",
+          "serialconsole",
+          "halt_flag",
+          "gcodedispatch",
+          "kernel",
+          "conveyor",
+          "steppermotor"
+        ],
+        "why_not_recalled": [
+          "- **method**: 2 Kernel chunk(s) scored",
+          "- **class**: 7 Kernel chunk(s) scored",
+          "- **dispatch**: 0 Kernel chunk(s)",
+          "- **symbol**: 2 Kernel chunk(s) scored",
+          "- **bm25**: 7 Kernel chunk(s) scored",
+          "- **rg**: 0 Kernel chunk(s)",
+          "",
+          "**symbol 通道细查（expected symbols）：**",
+          "- `immediate_halt` → Kernel.cpp 有 1 个符号；query token 命中=True",
+          "- `add_module` → Kernel.cpp 有 1 个符号；query token 命中=True",
+          "- `Kernel` → Kernel.cpp 有 1 个符号；query token 命中=True",
+          "",
+          "**rg 预筛**: Kernel.cpp 在 top-30 候选文件列表；rg 仅在预筛文件内跑 pattern 匹配",
+          "- rg patterns（来自 tokens）: `['immediate_halt', 'serialconsole', 'gcodedispatch', 'steppermotor', 'killbutton', 'emergency', 'halt_flag', 'endstops']` — Kernel.cpp 内无这些 token 的字面匹配则 rg=0",
+          "",
+          "**hint 扩展**: groups=`['halt']`；扩展 token=`['on_halt', 'killbutton', 'immediate_halt', 'endstops', 'serialconsole', 'halt_flag', 'gcodedispatch', 'kernel', 'conveyor', 'steppermotor']`"
+        ],
+        "hint_groups": [
+          "halt"
+        ],
+        "flow_intent": true,
+        "multi_file_structure": true,
+        "per_file_diversify": 1,
+        "use_reporank": false,
+        "rg_candidate_files": [
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\libs\\SoftPWM.cpp",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\utils\\killbutton\\KillButton.cpp",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\libs\\Kernel.cpp",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\tools\\endstops\\Endstops.cpp",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\communication\\SerialConsole.cpp",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\communication\\GcodeDispatch.cpp",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\robot\\Conveyor.cpp",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\libs\\StepperMotor.cpp",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\libs\\SoftPWM.h",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\libs\\Module.h",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\libs\\StepperMotor.h",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\robot\\Conveyor.h",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\tools\\laser\\Laser.cpp",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\tools\\laser\\Laser.h",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\tools\\spindle\\SpindleControl.cpp",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\tools\\spindle\\SpindleControl.h",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\tools\\switch\\Switch.cpp",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\tools\\switch\\Switch.h",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\tools\\temperaturecontrol\\TemperatureControl.cpp",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\tools\\temperaturecontrol\\TemperatureControl.h",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\utils\\motordrivercontrol\\MotorDriverControl.cpp",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\utils\\motordrivercontrol\\MotorDriverControl.h",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\utils\\player\\Player.cpp",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\utils\\player\\Player.h",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\utils\\killbutton\\KillButton.h",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\libs\\Kernel.h",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\tools\\endstops\\Endstops.h",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\communication\\SerialConsole.h",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\communication\\GcodeDispatch.h",
+          "C:\\Users\\14390\\Desktop\\Code\\Smoothiewarerag\\industrial-cpp-kb-lab\\repos\\Smoothieware\\src\\modules\\tools\\zprobe\\DeltaCalibrationStrategy.cpp"
+        ],
+        "rg_prefilter": {
+          "prefilter_limit": 30,
+          "prefilter_total_files_scored": 71,
+          "kernel_prefilter_rank": 3,
+          "kernel_prefilter_score": 125.0,
+          "kernel_in_prefilter_top_n": true,
+          "kernel_rg_chunk_scores": [],
+          "kernel_rg_max": 0.0
+        },
+        "kernel_chunk_total": 9,
+        "kernel_in_merged_pool": 9,
+        "kernel_not_in_merged": [],
+        "kernel_merged_detail": [
+          {
+            "chunk_id": "src_libs_Kernel_cpp::351-356",
+            "symbol": "immediate_halt",
+            "type": "function",
+            "lines": "351-356",
+            "rank_all": 1,
+            "score": 349.0,
+            "source": "method+class+symbol+bm25",
+            "in_top_k_diversified": true,
+            "in_eval_top_k": true,
+            "diversify_drop": null,
+            "base_channels": {
+              "method": 125.0,
+              "class": 108.0,
+              "symbol": 85.0,
+              "bm25": 10.0
+            },
+            "chunk_score_bonus": 13.0,
+            "context_coherence": 8.0,
+            "hint_key_header_boost": 0.0,
+            "merged_pre_sort": 349.0
+          },
+          {
+            "chunk_id": "src_libs_Kernel_cpp::56-174",
+            "symbol": "Kernel",
+            "type": "function",
+            "lines": "56-174",
+            "rank_all": 6,
+            "score": 217.02,
+            "source": "method+symbol+bm25",
+            "in_top_k_diversified": false,
+            "in_eval_top_k": false,
+            "diversify_drop": "diversify per_file=1: 1 earlier chunk(s) from same file",
+            "base_channels": {
+              "method": 125.0,
+              "symbol": 85.0,
+              "bm25": 4.022568973066976
+            },
+            "chunk_score_bonus": -5.0,
+            "context_coherence": 8.0,
+            "hint_key_header_boost": 0.0,
+            "merged_pre_sort": 217.02256897306697
+          },
+          {
+            "chunk_id": "src_libs_Kernel_cpp::359-381",
+            "symbol": "call_event",
+            "type": "function",
+            "lines": "359-381",
+            "rank_all": 18,
+            "score": 133.83,
+            "source": "class+bm25",
+            "in_top_k_diversified": false,
+            "in_eval_top_k": false,
+            "diversify_drop": "diversify per_file=1: 2 earlier chunk(s) from same file",
+            "base_channels": {
+              "class": 108.0,
+              "bm25": 4.830624058191503
+            },
+            "chunk_score_bonus": 13.0,
+            "context_coherence": 8.0,
+            "hint_key_header_boost": 0.0,
+            "merged_pre_sort": 133.83062405819152
+          },
+          {
+            "chunk_id": "src_libs_Kernel_cpp::177-334",
+            "symbol": "get_query_string",
+            "type": "function",
+            "lines": "177-334",
+            "rank_all": 32,
+            "score": 131.38,
+            "source": "class+bm25",
+            "in_top_k_diversified": false,
+            "in_eval_top_k": false,
+            "diversify_drop": "diversify per_file=1: 3 earlier chunk(s) from same file",
+            "base_channels": {
+              "class": 108.0,
+              "bm25": 2.3802950886591803
+            },
+            "chunk_score_bonus": 13.0,
+            "context_coherence": 8.0,
+            "hint_key_header_boost": 0.0,
+            "merged_pre_sort": 131.38029508865918
+          },
+          {
+            "chunk_id": "src_libs_Kernel_cpp::337-340",
+            "symbol": "add_module",
+            "type": "function",
+            "lines": "337-340",
+            "rank_all": 53,
+            "score": 130.73,
+            "source": "class+bm25",
+            "in_top_k_diversified": false,
+            "in_eval_top_k": false,
+            "diversify_drop": "diversify per_file=1: 4 earlier chunk(s) from same file",
+            "base_channels": {
+              "class": 108.0,
+              "bm25": 1.7297834117260078
+            },
+            "chunk_score_bonus": 13.0,
+            "context_coherence": 8.0,
+            "hint_key_header_boost": 0.0,
+            "merged_pre_sort": 130.729783411726
+          },
+          {
+            "chunk_id": "src_libs_Kernel_cpp::343-346",
+            "symbol": "register_for_event",
+            "type": "function",
+            "lines": "343-346",
+            "rank_all": 56,
+            "score": 130.6,
+            "source": "class+bm25",
+            "in_top_k_diversified": false,
+            "in_eval_top_k": false,
+            "diversify_drop": "diversify per_file=1: 5 earlier chunk(s) from same file",
+            "base_channels": {
+              "class": 108.0,
+              "bm25": 1.6028931034227967
+            },
+            "chunk_score_bonus": 13.0,
+            "context_coherence": 8.0,
+            "hint_key_header_boost": 0.0,
+            "merged_pre_sort": 130.6028931034228
+          },
+          {
+            "chunk_id": "src_libs_Kernel_cpp::384-390",
+            "symbol": "kernel_has_event",
+            "type": "function",
+            "lines": "384-390",
+            "rank_all": 57,
+            "score": 129.0,
+            "source": "class",
+            "in_top_k_diversified": false,
+            "in_eval_top_k": false,
+            "diversify_drop": "diversify per_file=1: 6 earlier chunk(s) from same file",
+            "base_channels": {
+              "class": 108.0
+            },
+            "chunk_score_bonus": 13.0,
+            "context_coherence": 8.0,
+            "hint_key_header_boost": 0.0,
+            "merged_pre_sort": 129.0
+          },
+          {
+            "chunk_id": "src_libs_Kernel_cpp::392-400",
+            "symbol": "unregister_for_event",
+            "type": "function",
+            "lines": "392-400",
+            "rank_all": 58,
+            "score": 129.0,
+            "source": "class",
+            "in_top_k_diversified": false,
+            "in_eval_top_k": false,
+            "diversify_drop": "diversify per_file=1: 7 earlier chunk(s) from same file",
+            "base_channels": {
+              "class": 108.0
+            },
+            "chunk_score_bonus": 13.0,
+            "context_coherence": 8.0,
+            "hint_key_header_boost": 0.0,
+            "merged_pre_sort": 129.0
+          },
+          {
+            "chunk_id": "src_libs_Kernel_cpp::1-40::overview",
+            "symbol": "",
+            "type": "file_overview",
+            "lines": "1-40",
+            "rank_all": 100,
+            "score": 17.39,
+            "source": "bm25",
+            "in_top_k_diversified": false,
+            "in_eval_top_k": false,
+            "diversify_drop": "diversify per_file=1: 8 earlier chunk(s) from same file",
+            "base_channels": {
+              "bm25": 8.38709127422335
+            },
+            "chunk_score_bonus": 1.0,
+            "context_coherence": 8.0,
+            "hint_key_header_boost": 0.0,
+            "merged_pre_sort": 17.38709127422335
+          }
+        ],
+        "top5_diversified": [
+          {
+            "rank": 1,
+            "file": "src/libs/Kernel.cpp",
+            "symbol": "immediate_halt",
+            "score": 349.0,
+            "source": "method+class+symbol+bm25",
+            "lines": "351-356"
+          },
+          {
+            "rank": 2,
+            "file": "src/libs/StepperMotor.cpp",
+            "symbol": "on_halt",
+            "score": 227.04,
+            "source": "class+symbol+bm25",
+            "lines": "47-53"
+          },
+          {
+            "rank": 3,
+            "file": "src/modules/robot/Conveyor.cpp",
+            "symbol": "on_halt",
+            "score": 226.09,
+            "source": "class+symbol+bm25",
+            "lines": "89-97"
+          },
+          {
+            "rank": 4,
+            "file": "src/libs/SoftPWM.cpp",
+            "symbol": "stop",
+            "score": 225.13,
+            "source": "method+symbol+bm25",
+            "lines": "32-37"
+          },
+          {
+            "rank": 5,
+            "file": "src/modules/tools/endstops/Endstops.cpp",
+            "symbol": "Endstops",
+            "score": 216.85,
+            "source": "method+symbol+bm25",
+            "lines": "107-112"
+          }
+        ],
+        "reporank_extras": [],
+        "graph_extras": [],
+        "eval_top_k_files": [
+          "src/libs/Kernel.cpp",
+          "src/libs/StepperMotor.cpp",
+          "src/modules/robot/Conveyor.cpp",
+          "src/libs/SoftPWM.cpp",
+          "src/modules/tools/endstops/Endstops.cpp"
+        ],
+        "all_hits_kernel_ranks": [
+          {
+            "file": "src/libs/Kernel.cpp",
+            "line_start": 351,
+            "chunk_line_start": 351,
+            "chunk_line_end": 356,
+            "symbol_start": 351,
+            "type": "function",
+            "symbol": "immediate_halt",
+            "class": "Kernel",
+            "snippet": "void Kernel::immediate_halt()\n{\n    this->halted = true;\n    conveyor->flush_queue(); // make sure no queued up codes get through\n    for(auto &a : robot->actuators) a->stop_moving();\n}",
+            "score": 349.0,
+            "source": "method+class+symbol+bm25",
+            "chunk_id": "src_libs_Kernel_cpp::351-356",
+            "line_end": 356,
+            "rank": 1
+          },
+          {
+            "file": "src/libs/Kernel.cpp",
+            "line_start": 56,
+            "chunk_line_start": 56,
+            "chunk_line_end": 174,
+            "symbol_start": 56,
+            "type": "function",
+            "symbol": "Kernel",
+            "class": "Kernel",
+            "snippet": "Kernel::Kernel()\n{\n    halted = false;\n    feed_hold = false;\n    enable_feed_hold = false;\n    bad_mcu= true;\n    stop_request= false;\n\n    instance = this; // setup the Singleton instance of the kernel\n",
+            "score": 217.02,
+            "source": "method+symbol+bm25",
+            "chunk_id": "src_libs_Kernel_cpp::56-174",
+            "line_end": 174,
+            "rank": 6
+          },
+          {
+            "file": "src/libs/Kernel.cpp",
+            "line_start": 359,
+            "chunk_line_start": 359,
+            "chunk_line_end": 381,
+            "symbol_start": 359,
+            "type": "function",
+            "symbol": "call_event",
+            "class": "Kernel",
+            "snippet": "void Kernel::call_event(_EVENT_ENUM id_event, void * argument)\n{\n    bool was_idle = true;\n    if(id_event == ON_HALT) {\n        this->halted = (argument == nullptr);\n        if(!this->halted && this->feed_hold) this->feed_hold= false; // also clear feed hold\n        was_idle = conveyor->is_idle(); // see if we were doing anything like printing\n    }\n\n    // send to all registered modules",
+            "score": 133.83,
+            "source": "class+bm25",
+            "chunk_id": "src_libs_Kernel_cpp::359-381",
+            "line_end": 381,
+            "rank": 18
+          },
+          {
+            "file": "src/libs/Kernel.cpp",
+            "line_start": 177,
+            "chunk_line_start": 177,
+            "chunk_line_end": 334,
+            "symbol_start": 177,
+            "type": "function",
+            "symbol": "get_query_string",
+            "class": "Kernel",
+            "snippet": "std::string Kernel::get_query_string()\n{\n    std::string str;\n    bool homing;\n    bool ok = PublicData::get_value(endstops_checksum, get_homing_status_checksum, 0, &homing);\n    if(!ok) homing = false;\n    bool running = false;\n\n    // current Laser power\n    Laser *plaser= nullptr;",
+            "score": 131.38,
+            "source": "class+bm25",
+            "chunk_id": "src_libs_Kernel_cpp::177-334",
+            "line_end": 334,
+            "rank": 32
+          },
+          {
+            "file": "src/libs/Kernel.cpp",
+            "line_start": 337,
+            "chunk_line_start": 337,
+            "chunk_line_end": 340,
+            "symbol_start": 337,
+            "type": "function",
+            "symbol": "add_module",
+            "class": "Kernel",
+            "snippet": "void Kernel::add_module(Module* module)\n{\n    module->on_module_loaded();\n}",
+            "score": 130.73,
+            "source": "class+bm25",
+            "chunk_id": "src_libs_Kernel_cpp::337-340",
+            "line_end": 340,
+            "rank": 53
+          },
+          {
+            "file": "src/libs/Kernel.cpp",
+            "line_start": 343,
+            "chunk_line_start": 343,
+            "chunk_line_end": 346,
+            "symbol_start": 343,
+            "type": "function",
+            "symbol": "register_for_event",
+            "class": "Kernel",
+            "snippet": "void Kernel::register_for_event(_EVENT_ENUM id_event, Module *mod)\n{\n    this->hooks[id_event].push_back(mod);\n}",
+            "score": 130.6,
+            "source": "class+bm25",
+            "chunk_id": "src_libs_Kernel_cpp::343-346",
+            "line_end": 346,
+            "rank": 56
+          },
+          {
+            "file": "src/libs/Kernel.cpp",
+            "line_start": 384,
+            "chunk_line_start": 384,
+            "chunk_line_end": 390,
+            "symbol_start": 384,
+            "type": "function",
+            "symbol": "kernel_has_event",
+            "class": "Kernel",
+            "snippet": "bool Kernel::kernel_has_event(_EVENT_ENUM id_event, Module *mod)\n{\n    for (auto m : hooks[id_event]) {\n        if(m == mod) return true;\n    }\n    return false;\n}",
+            "score": 129.0,
+            "source": "class",
+            "chunk_id": "src_libs_Kernel_cpp::384-390",
+            "line_end": 390,
+            "rank": 57
+          },
+          {
+            "file": "src/libs/Kernel.cpp",
+            "line_start": 392,
+            "chunk_line_start": 392,
+            "chunk_line_end": 400,
+            "symbol_start": 392,
+            "type": "function",
+            "symbol": "unregister_for_event",
+            "class": "Kernel",
+            "snippet": "void Kernel::unregister_for_event(_EVENT_ENUM id_event, Module *mod)\n{\n    for (auto i = hooks[id_event].begin(); i != hooks[id_event].end(); ++i) {\n        if(*i == mod) {\n            hooks[id_event].erase(i);\n            return;\n        }\n    }\n}",
+            "score": 129.0,
+            "source": "class",
+            "chunk_id": "src_libs_Kernel_cpp::392-400",
+            "line_end": 400,
+            "rank": 58
+          },
+          {
+            "file": "src/libs/Kernel.cpp",
+            "line_start": 1,
+            "chunk_line_start": 1,
+            "chunk_line_end": 40,
+            "symbol_start": 1,
+            "type": "file_overview",
+            "symbol": "",
+            "class": "",
+            "snippet": "/*\n      This file is part of Smoothie (http://smoothieware.org/). The motion control part is heavily based on Grbl (https://github.com/simen/grbl).\n      Smoothie is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.\n      Smoothie is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.\n      You should have received a copy of the GNU General Public License along with Smoothie. If not, see <http://www.gnu.org/licenses/>.\n*/\n\n#include \"libs/Kernel.h\"\n#include \"libs/Module.h\"\n#include \"libs/Config.h\"",
+            "score": 17.39,
+            "source": "bm25",
+            "chunk_id": "src_libs_Kernel_cpp::1-40::overview",
+            "line_end": 40,
+            "rank": 100
+          }
+        ]
+      },
+      "topk_channel": {
+        "in_eval_top5": true,
+        "winning_channel": "method",
+        "rank": 1,
+        "score": 349.0,
+        "source": "method+class+symbol+bm25"
+      },
+      "rg_prefilter": {
+        "prefilter_limit": 30,
+        "prefilter_total_files_scored": 71,
+        "kernel_prefilter_rank": 3,
+        "kernel_prefilter_score": 125.0,
+        "kernel_in_prefilter_top_n": true,
+        "kernel_rg_chunk_scores": [],
+        "kernel_rg_max": 0.0
+      }
+    }
+  }
+}
